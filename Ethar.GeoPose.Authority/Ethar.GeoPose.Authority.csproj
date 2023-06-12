@@ -1,0 +1,80 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFrameworks>net452;net462;net48;netstandard2.0;netstandard2.1;netcoreapp3.1;net5.0;net6.0;net7.0</TargetFrameworks>
+    <EnableNETAnalyzers>True</EnableNETAnalyzers>
+    <AnalysisLevel>latest</AnalysisLevel>
+    <GenerateDocumentationFile>true</GenerateDocumentationFile>
+    <NoWarn>1701;1702;8765;NETSDK1138</NoWarn>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <PackageReadmeFile>readme.md</PackageReadmeFile>
+    <PackageIcon>nuget.png</PackageIcon>
+    <AssemblyName>Ethar.GeoPose.Authority</AssemblyName>
+    <RootNamespace>Ethar.GeoPose.Authority</RootNamespace>
+    <Company>Ethar Inc.</Company>
+    <Product>Ethar.GeoPose.Authority</Product>
+    <Description>Ethar's authority implementation of version 1.0.0 of the GeoPose spec http://www.opengis.net/doc/DIS/geopose/1.0.</Description>
+    <Authors>Ethar Inc.</Authors>
+    <Copyright>Copyright (c) Ethar Inc. and Contributors</Copyright>
+    <PackageId>Ethar.GeoPose.Authority</PackageId>
+    <PublishRepositoryUrl>true</PublishRepositoryUrl>
+    <ContinuousIntegrationBuild>true</ContinuousIntegrationBuild>
+    <PackageLicenseExpression>(LGPL-2.0-only WITH FLTK-exception OR Apache-2.0+)</PackageLicenseExpression>
+    <PackageProjectUrl>https://github.com/EtharInc/Ethar.GeoPose.Unity</PackageProjectUrl>
+    <RepositoryUrl>https://github.com/EtharInc/Ethar.GeoPose.Unity.git</RepositoryUrl>
+    <RepositoryType>git</RepositoryType>
+    <PackageTags>GeoPose Location GeoLocation Unity Positioning Authority</PackageTags>
+    <NeutralLanguage>en-US</NeutralLanguage>
+    <GeneratePackageOnBuild>True</GeneratePackageOnBuild>
+    <DelaySign>false</DelaySign>
+    <SignAssembly>false</SignAssembly>
+    <IncludeSymbols>true</IncludeSymbols>
+    <SymbolPackageFormat>snupkg</SymbolPackageFormat>
+    <EnableNETAnalyzers>false</EnableNETAnalyzers>
+    <EnforceCodeStyleInBuild>false</EnforceCodeStyleInBuild>
+    <EmbedUntrackedSources>true</EmbedUntrackedSources>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)'=='Debug'">
+    <DebugType>Full</DebugType>
+  </PropertyGroup>
+
+  <PropertyGroup Condition=" '$(Configuration)' == 'Release' ">
+    <CheckForOverflowUnderflow>false</CheckForOverflowUnderflow>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <AdditionalFiles Include="stylecop.json" />
+  </ItemGroup>
+
+  <ItemGroup>
+      <None Include="../Images/nuget.png">
+          <Pack>True</Pack>
+          <PackagePath>\</PackagePath>
+      </None>
+      <None Include="readme.md">
+          <Pack>True</Pack>
+          <PackagePath>\</PackagePath>
+      </None>
+      <None Include="LICENSE">
+          <Pack>True</Pack>
+          <PackagePath>\</PackagePath>
+      </None>
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Ethar.GeoPose\Ethar.GeoPose.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+      <PackageReference Include="Microsoft.SourceLink.GitHub" Version="1.1.1" PrivateAssets="All" />
+      <PackageReference Include="Ethar.GeoPose" Version="1.0.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="StyleCop.Analyzers" Version="1.2.0-beta.435">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers;</IncludeAssets>
+    </PackageReference>
+  </ItemGroup>
+</Project>

@@ -1,0 +1,84 @@
+name: CI Release
+
+on: 
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - name: Setup dotnet
+        uses: actions/setup-dotnet@v3
+        with:
+          dotnet-version: | 
+            5.x
+            6.x
+            7.x
+      - uses: actions/cache@v3
+        with:
+          path: .nuget/packages
+          # Look to see if there is a cache hit for the corresponding requirements file
+          key: ${{ runner.os }}-nuget-${{ hashFiles('**/packages.lock.json') }}
+          restore-keys: |
+            ${{ runner.os }}-nuget          
+      - name: Install dependencies
+        run: dotnet restore
+      - name: Build
+        run: dotnet build --configuration Release
+      - name: Create packages # This would actually build your project, using zip for an example artifact
+        run: |
+          zip -r Ethar.GeoPose.zip Ethar.GeoPose/bin/Release
+          zip -r Ethar.GeoPose.Authority.zip Ethar.GeoPose.Authority/bin/Release
+      - name: Tag Release
+        run: |
+          git config user.email "github-action@users.noreply.github.com"
+          git config user.name "GitHub Action"
+          git tag v1.0.0
+          git add .
+          git push origin v1.0.0
+      - name: Create Release
+        id: create_release
+        uses: marvinpinto/action-automatic-releases@latest
+        with:
+          repo_token: ${{ secrets.CI_TOKEN }}
+          automatic_release_tag: "latest"
+          prerelease: false
+          title: "Release ${{ github.job }}"
+          draft: false
+          files: |
+            ./Ethar.GeoPose.zip
+            ./Ethar.GeoPose.Authority.zip
+            Ethar.GeoPose/bin/Release/Ethar.GeoPose.1.0.0.nupkg
+            Ethar.GeoPose.Authority/bin/Release/Ethar.GeoPose.Authority.1.0.0.nupkg
+      - name: Clone UPM branch
+        uses: actions/checkout@v3
+        with:
+          ref: upm
+          path: upm
+          token: ${{ secrets.CI_TOKEN }}
+      - name: Copy Releases to upm
+        run: |
+          Copy-Item ./Ethar.GeoPose/bin/Release/net48/Ethar.GeoPose*.* -Destination ./upm/Runtime/Plugins/Ethar.GeoPose -Recurse -Force
+          Copy-Item ./Ethar.GeoPose.Authority/bin/Release/net48/Ethar.GeoPose.Authority*.* -Destination ./upm/Runtime/Plugins/Ethar.GeoPose.Authority -Recurse -Force
+          Copy-Item ./Ethar.GeoPose.Examples/Example_BasicSerialization.cs -Destination ./upm/Samples~/BasicSerialization -Force
+          Copy-Item ./Ethar.GeoPose.Examples/Example_AuthorityImplementation.cs -Destination ./upm/Samples~/AuthorityImplementation -Force
+          Copy-Item ./Ethar.GeoPose.UnitTests/*.cs -Destination ./upm/Samples~/Tests/Editor/GeoPose -Force
+          Copy-Item ./Ethar.GeoPose.Authority.UnitTests/*.cs -Destination ./upm/Samples~/Tests/Editor/Authority -Force
+        shell: pwsh
+      - name: Publish upm changes
+        run: |
+          cd upm
+          git config user.email "github-action@users.noreply.github.com"
+          git config user.name "GitHub Action"
+          git add .
+          git commit -m "upm package updated to ${{ steps.create_release.outputs.automatic_releases_tag }} [skip ci]"
+          git push origin upm
+          git tag upm-v1.0.0
+          git add .
+          git push origin upm-v1.0.0
+        shell: pwsh
+      - name: Push GeoPose generated package to GitHub registry
+        run: dotnet nuget push Ethar.GeoPose/bin/Release/Ethar.GeoPose.1.0.0.nupkg --api-key ${{ secrets.NUGET_TOKEN }} --source https://api.nuget.org/v3/index.json --skip-duplicate
+      - name: Push Ethar Authority generated package to GitHub registry
+        run: dotnet nuget push Ethar.GeoPose.Authority/bin/Release/Ethar.GeoPose.Authority.1.0.0.nupkg --api-key ${{ secrets.NUGET_TOKEN }} --source https://api.nuget.org/v3/index.json --skip-duplicate

@@ -1,0 +1,41 @@
+name: Development dotnet build and test
+
+on: 
+  push:
+    branches-ignore:
+      - main
+      - upm
+
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - name: Setup dotnet
+        uses: actions/setup-dotnet@v3
+        with:
+          dotnet-version: | 
+            5.x
+            6.x
+            7.x
+      - uses: actions/cache@v3
+        with:
+          path: ~/.nuget/packages
+          # Look to see if there is a cache hit for the corresponding requirements file
+          key: ${{ runner.os }}-nuget-${{ hashFiles('**/packages.lock.json') }}
+          restore-keys: |
+            ${{ runner.os }}-nuget          
+      - name: Install dependencies
+        run: dotnet restore
+      - name: Build
+        run: dotnet build --configuration Release
+      - name: Test with dotnet
+        run: dotnet test --logger trx --results-directory "TestResults-dotnet-6"
+      - name: Upload dotnet test results
+        uses: actions/upload-artifact@v3
+        with:
+          name: dotnet-results-dotnet-6
+          path: TestResults-dotnet-6
+        # Use always() to always run this step to publish test results when there are test failures
+        if: ${{ always() }}
