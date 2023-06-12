@@ -1,0 +1,47 @@
+{
+  "name": "com.ethar.geopose",
+  "displayName": "Ethar GeoPose implementation",
+  "version": "1.0.0",
+  "unity": "2020.3",
+  "description": "GeoPose specification V1.0 Unity implementation by Ethar.",
+  "dependencies": {
+    "com.unity.nuget.newtonsoft-json": "3.0.2"
+  },
+  "keywords": [
+    "geopose",
+    "location",
+    "pose"
+  ],
+  "license": "APACHE2.0",
+  "author": {
+    "name": "Ethar, Inc.",
+    "email": "techdesk@ethar.com",
+    "url": "https://Ethar.com"
+  },
+  "samples": [
+    {
+      "displayName": "Ethar GeoPose Serialization Sample",
+      "description": "Serialization sample for the GeoPose specification provided by Ethar",
+      "path": "Samples~/BasicSerialization"
+    },
+    {
+      "displayName": "Ethar GeoPose Authority Sample",
+      "description": "Example Authority sample for the GeoPose specification provided by Ethar",
+      "path": "Samples~/AuthorityImplementation"
+    },
+    {
+      "displayName": "Ethar GeoPose Tests",
+      "description": "Unit Tests for the GeoPose specification provided by Ethar",
+      "path": "Samples~/Tests"
+    }
+  ], 
+  "homepage": "https://etharinc.github.io/Ethar.GeoPose.Docs/",
+  "bugs": {
+    "url": "https://github.com/EtharInc/Ethar.GeoPose/issues",
+    "email" : "techdesk@ethar.com"
+  },
+  "repository": {
+    "type": "git",
+    "url": "ssh://git@github.com/EtharInc/Ethar.GeoPose.git#upm"
+  }
+}

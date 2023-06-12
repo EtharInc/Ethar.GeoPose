@@ -1,0 +1,1627 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>Ethar.GeoPose</name>
+    </assembly>
+    <members>
+        <member name="T:Ethar.GeoPose.Authority.AuthorityProvider">
+            <summary>
+            A static management class that provides the application with information about which authorities are implemented, including registration management.
+            </summary>
+        </member>
+        <member name="P:Ethar.GeoPose.Authority.AuthorityProvider.Authorities">
+            <summary>
+            Gets a list that contains the supported authorities.
+            </summary>
+        </member>
+        <member name="M:Ethar.GeoPose.Authority.AuthorityProvider.RegisterAuthority(Ethar.GeoPose.Authority.IAuthority)">
+            <summary>
+            Adds an <see cref="T:Ethar.GeoPose.Authority.IAuthority"/> to the list of supported authorities.
+            </summary>
+            <param name="authority">The authority to add.</param>
+        </member>
+        <member name="M:Ethar.GeoPose.Authority.AuthorityProvider.UnregisterAuthority(System.String)">
+            <summary>
+            Removes an <see cref="T:Ethar.GeoPose.Authority.IAuthority"/> from the list of supported authorities.
+            </summary>
+            <param name="authorityName">The name authority to remove.</param>
+        </member>
+        <member name="M:Ethar.GeoPose.Authority.AuthorityProvider.GetAuthority(System.String)">
+            <summary>
+            Gets the authority associated with the identifier, if it exists in the supported authorities.
+            </summary>
+            <param name="authorityName">The name of the authority to get.</param>
+            <returns>The authority if it exists.</returns>
+            <exception cref="T:Ethar.GeoPose.Exceptions.AuthorityNotSupportedException">Thrown if the authority does not exist in the supported authorities.</exception>
+        </member>
+        <member name="T:Ethar.GeoPose.Authority.IAuthority">
+            <summary>
+            Interface that represents a GeoPose authority.
+            </summary>
+        </member>
+        <member name="P:Ethar.GeoPose.Authority.IAuthority.AuthorityName">
+            <summary>
+            Gets the name of the authority.
+            </summary>
+        </member>
+        <member name="M:Ethar.GeoPose.Authority.IAuthority.ConvertJsonToFrameSpec(Newtonsoft.Json.Linq.JObject)">
+            <summary>
+            Converts json to an <see cref="T:Ethar.GeoPose.Interfaces.IFrameSpecification"/> from the authority.
+            </summary>
+            <param name="jsonObject">The json to convert.</param>
+            <returns>An <see cref="T:Ethar.GeoPose.Interfaces.IFrameSpecification"/> from the authority.</returns>
+            <exception cref="T:System.NotImplementedException">
+            Thrown when the frame specification has not been implemented or does not exist in the authority.
+            </exception>
+        </member>
+        <member name="M:Ethar.GeoPose.Authority.IAuthority.ConvertFrameSpecToJson(Ethar.GeoPose.Interfaces.IFrameSpecification)">
+            <summary>
+            Converts an <see cref="T:Ethar.GeoPose.Interfaces.IFrameSpecification"/> from the authority to json.
+            </summary>
+            <param name="frameSpec">The <see cref="T:Ethar.GeoPose.Interfaces.IFrameSpecification"/> to convert.</param>
+            <returns>A json representation of an <see cref="T:Ethar.GeoPose.Interfaces.IFrameSpecification"/> from the authority.</returns>
+            <exception cref="T:System.NotImplementedException">
+            Thrown when the frame specification has not been implemented or does not exist in the authority.
+            </exception>
+            <exception cref="T:Ethar.GeoPose.Exceptions.FrameSpecificationInvalidException">
+            May be thrown if the frame specification contains invalid parameters.
+            </exception>
+        </member>
+        <member name="M:Ethar.GeoPose.Authority.IAuthority.ConvertJsonToTransitionModel(Newtonsoft.Json.Linq.JObject)">
+            <summary>
+            Converts json to an <see cref="T:Ethar.GeoPose.TransitionModels.TransitionModel"/> from the authority.
+            </summary>
+            <param name="jsonObject">The json to convert.</param>
+            <returns>An <see cref="T:Ethar.GeoPose.TransitionModels.TransitionModel"/> from the authority.</returns>
+            <exception cref="T:System.NotImplementedException">
+            Thrown when the transition model has not been implemented or does not exist in the authority.
+            </exception>
+        </member>
+        <member name="M:Ethar.GeoPose.Authority.IAuthority.ConvertTransitionModelToJson(Ethar.GeoPose.TransitionModels.TransitionModel)">
+            <summary>
+            Converts an <see cref="T:Ethar.GeoPose.TransitionModels.TransitionModel"/> from the authority to json.
+            </summary>
+            <param name="transitionModel">The <see cref="T:Ethar.GeoPose.TransitionModels.TransitionModel"/> to convert.</param>
+            <returns>A json representation of an <see cref="T:Ethar.GeoPose.TransitionModels.TransitionModel"/> from the authority.</returns>
+            <exception cref="T:System.NotImplementedException">
+            Thrown when the transition model has not been implemented or does not exist in the authority.
+            </exception>
+            <exception cref="T:Ethar.GeoPose.Exceptions.TransitionModelInvalidException">
+            May be thrown if the transition model contains invalid parameters.
+            </exception>
+        </member>
+        <member name="M:Ethar.GeoPose.Authority.IAuthority.IsFrameSpecificationExtrinsic(Ethar.GeoPose.Interfaces.IFrameSpecification)">
+            <summary>
+            Method to check if the <see cref="T:Ethar.GeoPose.Interfaces.IFrameSpecification"/> is extrinsic.
+            </summary>
+            <param name="frameSpec">The <see cref="T:Ethar.GeoPose.Interfaces.IFrameSpecification"/> to check.</param>
+            <returns>True if the <see cref="T:Ethar.GeoPose.Interfaces.IFrameSpecification"/> is extrinsic, false otherwise.</returns>
+        </member>
+        <member name="T:Ethar.GeoPose.DataTypes.FrameAndTimeElement">
+             <summary>
+             A construct that represents a frame and time used in a chain of poses.
+            
+             Requirements derived from Figure 13 in section 7.2.4 of version 1.0.0 of the GeoPose spec http://www.opengis.net/doc/DIS/geopose/1.0.
+             </summary>
+        </member>
+        <member name="M:Ethar.GeoPose.DataTypes.FrameAndTimeElement.#ctor(Ethar.GeoPose.FrameSpecifications.BaseFrameSpecification,System.Int64)">
+            <summary>
+            Initializes a new instance of the <see cref="T:Ethar.GeoPose.DataTypes.FrameAndTimeElement"/> struct.
+            </summary>
+            <param name="frame">The <see cref="T:Ethar.GeoPose.FrameSpecifications.BaseFrameSpecification"/>.</param>
+            <param name="validTime">The valid time.</param>
+        </member>
+        <member name="P:Ethar.GeoPose.DataTypes.FrameAndTimeElement.Frame">
+            <summary>
+            Gets or sets the frame specification.
+            </summary>
+        </member>
+        <member name="P:Ethar.GeoPose.DataTypes.FrameAndTimeElement.ValidTime">
+            <summary>
+            Gets or sets the valid time.
+            </summary>
+        </member>
+        <member name="M:Ethar.GeoPose.DataTypes.FrameAndTimeElement.op_Equality(Ethar.GeoPose.DataTypes.FrameAndTimeElement,Ethar.GeoPose.DataTypes.FrameAndTimeElement)">
+            <summary>
+            Performs an equality comparison on two objects of type <see cref="T:Ethar.GeoPose.DataTypes.FrameAndTimeElement"/>.
+            </summary>
+            <param name="a">The first item.</param>
+            <param name="b">The second item.</param>
+            <returns>Whether the two items are equal.</returns>
+        </member>
+        <member name="M:Ethar.GeoPose.DataTypes.FrameAndTimeElement.op_Inequality(Ethar.GeoPose.DataTypes.FrameAndTimeElement,Ethar.GeoPose.DataTypes.FrameAndTimeElement)">
+            <summary>
+            Performs an equality comparison on two objects of type <see cref="T:Ethar.GeoPose.DataTypes.FrameAndTimeElement"/>.
+            </summary>
+            <param name="a">The first item.</param>
+            <param name="b">The second item.</param>
+            <returns>Whether the two items are not equal.</returns>
+        </member>
+        <member name="M:Ethar.GeoPose.DataTypes.FrameAndTimeElement.Equals(Ethar.GeoPose.DataTypes.FrameAndTimeElement)">
+            <inheritdoc/>
+        </member>
+        <member name="M:Ethar.GeoPose.DataTypes.FrameAndTimeElement.Equals(System.Object)">
+            <inheritdoc/>
+        </member>
+        <member name="M:Ethar.GeoPose.DataTypes.FrameAndTimeElement.GetHashCode">
+            <inheritdoc/>
+        </member>
+        <member name="M:Ethar.GeoPose.DataTypes.FrameAndTimeElement.ToString">
+            <inheritdoc/>
+        </member>
+        <member name="T:Ethar.GeoPose.DataTypes.FrameTransformIndexPair">
+             <summary>
+             A construct that represents a outer frame index and inner frame index pair in a graph.
+            
+             Requirements derived from Figure 12 of section 7.2.4 of version 1.0.0 of the GeoPose spec http://www.opengis.net/doc/DIS/geopose/1.0.
+             </summary>
+        </member>
+        <member name="M:Ethar.GeoPose.DataTypes.FrameTransformIndexPair.#ctor(System.Collections.Generic.IEnumerable{System.Int32})">
+            <summary>
+            Initializes a new instance of the <see cref="T:Ethar.GeoPose.DataTypes.FrameTransformIndexPair"/> struct.
+            </summary>
+            <param name="link">Array where the first item is the outer frame index and the last item is the inner frame index.</param>
+        </member>
+        <member name="P:Ethar.GeoPose.DataTypes.FrameTransformIndexPair.OuterFrameIndex">
+            <summary>
+            Gets or sets the outer frame index.
+            </summary>
+        </member>
+        <member name="P:Ethar.GeoPose.DataTypes.FrameTransformIndexPair.InnerFrameIndex">
+            <summary>
+            Gets or sets the inner frame index.
+            </summary>
+        </member>
+        <member name="M:Ethar.GeoPose.DataTypes.FrameTransformIndexPair.op_Equality(Ethar.GeoPose.DataTypes.FrameTransformIndexPair,Ethar.GeoPose.DataTypes.FrameTransformIndexPair)">
+            <summary>
+            Performs an equality comparison on two objects of type <see cref="T:Ethar.GeoPose.DataTypes.FrameTransformIndexPair"/>.
+            </summary>
+            <param name="a">The first item.</param>
+            <param name="b">The second item.</param>
+            <returns>Whether the two items are equal.</returns>
+        </member>
+        <member name="M:Ethar.GeoPose.DataTypes.FrameTransformIndexPair.op_Inequality(Ethar.GeoPose.DataTypes.FrameTransformIndexPair,Ethar.GeoPose.DataTypes.FrameTransformIndexPair)">
+            <summary>
+            Performs an equality comparison on two objects of type <see cref="T:Ethar.GeoPose.DataTypes.FrameTransformIndexPair"/>.
+            </summary>
+            <param name="a">The first item.</param>
+            <param name="b">The second item.</param>
+            <returns>Whether the two items are not equal.</returns>
+        </member>
+        <member name="M:Ethar.GeoPose.DataTypes.FrameTransformIndexPair.Equals(Ethar.GeoPose.DataTypes.FrameTransformIndexPair)">
+            <inheritdoc/>
+        </member>
+        <member name="M:Ethar.GeoPose.DataTypes.FrameTransformIndexPair.Equals(System.Object)">
+            <inheritdoc/>
+        </member>
+        <member name="M:Ethar.GeoPose.DataTypes.FrameTransformIndexPair.GetHashCode">
+            <inheritdoc/>
+        </member>
+        <member name="M:Ethar.GeoPose.DataTypes.FrameTransformIndexPair.ToString">
+            <inheritdoc/>
+        </member>
+        <member name="T:Ethar.GeoPose.DataTypes.GeoPoseDuration">
+             <summary>
+             A construct that represents a duration of time in milliseconds.
+            
+             Requirements derived from Requirement 11 in section 8.3.3 of version 1.0.0 of the GeoPose spec http://www.opengis.net/doc/DIS/geopose/1.0.
+             </summary>
+        </member>
+        <member name="P:Ethar.GeoPose.DataTypes.GeoPoseDuration.NumericDuration">
+            <summary>
+            Gets or sets the duration in milliseconds.
+            </summary>
+        </member>
+        <member name="M:Ethar.GeoPose.DataTypes.GeoPoseDuration.op_Equality(Ethar.GeoPose.DataTypes.GeoPoseDuration,Ethar.GeoPose.DataTypes.GeoPoseDuration)">
+            <summary>
+            Performs an equality comparison on two objects of type <see cref="T:Ethar.GeoPose.DataTypes.GeoPoseDuration"/>.
+            </summary>
+            <param name="a">The first item.</param>
+            <param name="b">The second item.</param>
+            <returns>Whether the two items are equal.</returns>
+        </member>
+        <member name="M:Ethar.GeoPose.DataTypes.GeoPoseDuration.op_Inequality(Ethar.GeoPose.DataTypes.GeoPoseDuration,Ethar.GeoPose.DataTypes.GeoPoseDuration)">
+            <summary>
+            Performs an equality comparison on two objects of type <see cref="T:Ethar.GeoPose.DataTypes.GeoPoseDuration"/>.
+            </summary>
+            <param name="a">The first item.</param>
+            <param name="b">The second item.</param>
+            <returns>Whether the two items are not equal.</returns>
+        </member>
+        <member name="M:Ethar.GeoPose.DataTypes.GeoPoseDuration.Equals(Ethar.GeoPose.DataTypes.GeoPoseDuration)">
+            <inheritdoc/>
+        </member>
+        <member name="M:Ethar.GeoPose.DataTypes.GeoPoseDuration.Equals(System.Object)">
+            <inheritdoc/>
+        </member>
+        <member name="M:Ethar.GeoPose.DataTypes.GeoPoseDuration.GetHashCode">
+            <inheritdoc/>
+        </member>
+        <member name="M:Ethar.GeoPose.DataTypes.GeoPoseDuration.ToString">
+            <inheritdoc/>
+        </member>
+        <member name="T:Ethar.GeoPose.DataTypes.SeriesHeader">
+             <summary>
+             A construct that represents the series trailer.
+            
+             Requirements derived from figure 13 in section 7.2.4 of version 1.0.0 of the GeoPose spec http://www.opengis.net/doc/DIS/geopose/1.0.
+             </summary>
+        </member>
+        <member name="M:Ethar.GeoPose.DataTypes.SeriesHeader.#ctor(Ethar.GeoPose.TransitionModels.TransitionModel,System.Int32,System.Int64,System.Int64,System.String)">
+            <summary>
+            Initializes a new instance of the <see cref="T:Ethar.GeoPose.DataTypes.SeriesHeader"/> struct.
+            </summary>
+            <param name="transitionModel">The transition model.</param>
+            <param name="poseCount">The pose count.</param>
+            <param name="startInstant">The Unix timestamp that represents the start instant.</param>
+            <param name="stopInstant">The Unix timestamp that represents the stop instant.</param>
+            <param name="integrityCheck">The integrity check.</param>
+        </member>
+        <member name="P:Ethar.GeoPose.DataTypes.SeriesHeader.TransitionModel">
+            <summary>
+            Gets or sets the transition model.
+            </summary>
+        </member>
+        <member name="P:Ethar.GeoPose.DataTypes.SeriesHeader.PoseCount">
+            <summary>
+            Gets or sets the number of poses in the series.
+            </summary>
+        </member>
+        <member name="P:Ethar.GeoPose.DataTypes.SeriesHeader.StartInstant">
+            <summary>
+            Gets or sets the Unix timestamp that represents the start instant.
+            </summary>
+        </member>
+        <member name="P:Ethar.GeoPose.DataTypes.SeriesHeader.StopInstant">
+            <summary>
+            Gets or sets the Unix timestamp that represents the stop instant.
+            </summary>
+        </member>
+        <member name="P:Ethar.GeoPose.DataTypes.SeriesHeader.IntegrityCheck">
+            <summary>
+            Gets or sets the integrity check.
+            </summary>
+        </member>
+        <member name="M:Ethar.GeoPose.DataTypes.SeriesHeader.op_Equality(Ethar.GeoPose.DataTypes.SeriesHeader,Ethar.GeoPose.DataTypes.SeriesHeader)">
+            <summary>
+            Performs an equality comparison on two objects of type <see cref="T:Ethar.GeoPose.DataTypes.SeriesHeader"/>.
+            </summary>
+            <param name="a">The first item.</param>
+            <param name="b">The second item.</param>
+            <returns>Whether the two items are equal.</returns>
+        </member>
+        <member name="M:Ethar.GeoPose.DataTypes.SeriesHeader.op_Inequality(Ethar.GeoPose.DataTypes.SeriesHeader,Ethar.GeoPose.DataTypes.SeriesHeader)">
+            <summary>
+            Performs an equality comparison on two objects of type <see cref="T:Ethar.GeoPose.DataTypes.SeriesHeader"/>.
+            </summary>
+            <param name="a">The first item.</param>
+            <param name="b">The second item.</param>
+            <returns>Whether the two items are not equal.</returns>
+        </member>
+        <member name="M:Ethar.GeoPose.DataTypes.SeriesHeader.Equals(Ethar.GeoPose.DataTypes.SeriesHeader)">
+            <inheritdoc/>
+        </member>
+        <member name="M:Ethar.GeoPose.DataTypes.SeriesHeader.Equals(System.Object)">
+            <inheritdoc/>
+        </member>
+        <member name="M:Ethar.GeoPose.DataTypes.SeriesHeader.GetHashCode">
+            <inheritdoc/>
+        </member>
+        <member name="M:Ethar.GeoPose.DataTypes.SeriesHeader.ToString">
+            <inheritdoc/>
+        </member>
+        <member name="T:Ethar.GeoPose.DataTypes.SeriesTrailer">
+             <summary>
+             A construct that represents the series trailer.
+            
+             Requirements derived from figure 13 in section 7.2.4 of version 1.0.0 of the GeoPose spec http://www.opengis.net/doc/DIS/geopose/1.0.
+             </summary>
+        </member>
+        <member name="M:Ethar.GeoPose.DataTypes.SeriesTrailer.#ctor(System.Int32,System.String)">
+            <summary>
+            Initializes a new instance of the <see cref="T:Ethar.GeoPose.DataTypes.SeriesTrailer"/> struct.
+            </summary>
+            <param name="poseCount">The pose count.</param>
+            <param name="integrityCheck">The integrity check.</param>
+        </member>
+        <member name="P:Ethar.GeoPose.DataTypes.SeriesTrailer.PoseCount">
+            <summary>
+            Gets or sets the number of poses in the series.
+            </summary>
+        </member>
+        <member name="P:Ethar.GeoPose.DataTypes.SeriesTrailer.IntegrityCheck">
+            <summary>
+            Gets or sets the integrity check.
+            </summary>
+        </member>
+        <member name="M:Ethar.GeoPose.DataTypes.SeriesTrailer.op_Equality(Ethar.GeoPose.DataTypes.SeriesTrailer,Ethar.GeoPose.DataTypes.SeriesTrailer)">
+            <summary>
+            Performs an equality comparison on two objects of type <see cref="T:Ethar.GeoPose.DataTypes.SeriesTrailer"/>.
+            </summary>
+            <param name="a">The first item.</param>
+            <param name="b">The second item.</param>
+            <returns>Whether the two items are equal.</returns>
+        </member>
+        <member name="M:Ethar.GeoPose.DataTypes.SeriesTrailer.op_Inequality(Ethar.GeoPose.DataTypes.SeriesTrailer,Ethar.GeoPose.DataTypes.SeriesTrailer)">
+            <summary>
+            Performs an equality comparison on two objects of type <see cref="T:Ethar.GeoPose.DataTypes.SeriesTrailer"/>.
+            </summary>
+            <param name="a">The first item.</param>
+            <param name="b">The second item.</param>
+            <returns>Whether the two items are not equal.</returns>
+        </member>
+        <member name="M:Ethar.GeoPose.DataTypes.SeriesTrailer.Equals(Ethar.GeoPose.DataTypes.SeriesTrailer)">
+            <inheritdoc/>
+        </member>
+        <member name="M:Ethar.GeoPose.DataTypes.SeriesTrailer.Equals(System.Object)">
+            <inheritdoc/>
+        </member>
+        <member name="M:Ethar.GeoPose.DataTypes.SeriesTrailer.GetHashCode">
+            <inheritdoc/>
+        </member>
+        <member name="M:Ethar.GeoPose.DataTypes.SeriesTrailer.ToString">
+            <inheritdoc/>
+        </member>
+        <member name="T:Ethar.GeoPose.DataTypes.TangentPointPosition">
+             <summary>
+             A construct that represents a location represented by latitude and longitude in decimal degrees and a height in meters.
+            
+             Requirements derived from figure 13 in section 7.2.4 of version 1.0.0 of the GeoPose spec http://www.opengis.net/doc/DIS/geopose/1.0.
+             </summary>
+        </member>
+        <member name="M:Ethar.GeoPose.DataTypes.TangentPointPosition.#ctor(System.Single,System.Single,System.Single)">
+            <summary>
+            Initializes a new instance of the <see cref="T:Ethar.GeoPose.DataTypes.TangentPointPosition"/> struct.
+            </summary>
+            <param name="latitude">The latitude in decimal degrees. Valid range is from -90 to 90.</param>
+            <param name="longitude">The longitude in decimal degrees. Valid range is from -180 to 180.</param>
+            <param name="heightInMeters">The height in meters.</param>
+        </member>
+        <member name="P:Ethar.GeoPose.DataTypes.TangentPointPosition.Latitude">
+            <summary>
+            Gets or sets the latitude in decimal degrees.
+            </summary>
+        </member>
+        <member name="P:Ethar.GeoPose.DataTypes.TangentPointPosition.Longitude">
+            <summary>
+            Gets or sets the longitude in decimal degrees.
+            </summary>
+        </member>
+        <member name="P:Ethar.GeoPose.DataTypes.TangentPointPosition.HeightInMeters">
+            <summary>
+            Gets or sets the height in meters.
+            </summary>
+        </member>
+        <member name="M:Ethar.GeoPose.DataTypes.TangentPointPosition.op_Equality(Ethar.GeoPose.DataTypes.TangentPointPosition,Ethar.GeoPose.DataTypes.TangentPointPosition)">
+            <summary>
+            Performs an equality comparison on two objects of type <see cref="T:Ethar.GeoPose.DataTypes.TangentPointPosition"/>.
+            </summary>
+            <param name="a">The first item.</param>
+            <param name="b">The second item.</param>
+            <returns>Whether the two items are equal.</returns>
+        </member>
+        <member name="M:Ethar.GeoPose.DataTypes.TangentPointPosition.op_Inequality(Ethar.GeoPose.DataTypes.TangentPointPosition,Ethar.GeoPose.DataTypes.TangentPointPosition)">
+            <summary>
+            Performs an equality comparison on two objects of type <see cref="T:Ethar.GeoPose.DataTypes.TangentPointPosition"/>.
+            </summary>
+            <param name="a">The first item.</param>
+            <param name="b">The second item.</param>
+            <returns>Whether the two items are not equal.</returns>
+        </member>
+        <member name="M:Ethar.GeoPose.DataTypes.TangentPointPosition.Equals(Ethar.GeoPose.DataTypes.TangentPointPosition)">
+            <inheritdoc/>
+        </member>
+        <member name="M:Ethar.GeoPose.DataTypes.TangentPointPosition.Equals(System.Object)">
+            <inheritdoc/>
+        </member>
+        <member name="M:Ethar.GeoPose.DataTypes.TangentPointPosition.GetHashCode">
+            <inheritdoc/>
+        </member>
+        <member name="M:Ethar.GeoPose.DataTypes.TangentPointPosition.ToString">
+            <inheritdoc/>
+        </member>
+        <member name="T:Ethar.GeoPose.DataTypes.UnitQuaternion">
+            <summary>
+            A data type that represents a quaternion for serialization.
+            </summary>
+        </member>
+        <member name="M:Ethar.GeoPose.DataTypes.UnitQuaternion.#ctor(System.Single,System.Single,System.Single,System.Single)">
+            <summary>
+            Initializes a new instance of the <see cref="T:Ethar.GeoPose.DataTypes.UnitQuaternion"/> struct.
+            </summary>
+            <param name="x">The x value.</param>
+            <param name="y">The y value.</param>
+            <param name="z">The z value.</param>
+            <param name="w">The w value.</param>
+        </member>
+        <member name="M:Ethar.GeoPose.DataTypes.UnitQuaternion.#ctor(Ethar.GeoPose.DataTypes.UnitVector3,System.Single)">
+            <summary>
+            Initializes a new instance of the <see cref="T:Ethar.GeoPose.DataTypes.UnitQuaternion"/> struct from the given vector and rotation parts.
+            </summary>
+            <param name="vectorPart">The vector part of the Quaternion.</param>
+            <param name="scalarPart">The rotation part of the Quaternion.</param>
+        </member>
+        <member name="P:Ethar.GeoPose.DataTypes.UnitQuaternion.Identity">
+            <summary>
+            Gets a Quaternion representing no rotation.
+            </summary>
+        </member>
+        <member name="P:Ethar.GeoPose.DataTypes.UnitQuaternion.X">
+            <summary>
+            Gets or sets the x value.
+            </summary>
+        </member>
+        <member name="P:Ethar.GeoPose.DataTypes.UnitQuaternion.Y">
+            <summary>
+            Gets or sets the y value.
+            </summary>
+        </member>
+        <member name="P:Ethar.GeoPose.DataTypes.UnitQuaternion.Z">
+            <summary>
+            Gets or sets the z value.
+            </summary>
+        </member>
+        <member name="P:Ethar.GeoPose.DataTypes.UnitQuaternion.W">
+            <summary>
+            Gets or sets the w value.
+            </summary>
+        </member>
+        <member name="M:Ethar.GeoPose.DataTypes.UnitQuaternion.op_Equality(Ethar.GeoPose.DataTypes.UnitQuaternion,Ethar.GeoPose.DataTypes.UnitQuaternion)">
+            <summary>
+            Performs an equality comparison on two objects of type <see cref="T:Ethar.GeoPose.DataTypes.UnitQuaternion"/>.
+            </summary>
+            <param name="a">The first item.</param>
+            <param name="b">The second item.</param>
+            <returns>Whether the two items are equal.</returns>
+        </member>
+        <member name="M:Ethar.GeoPose.DataTypes.UnitQuaternion.op_Inequality(Ethar.GeoPose.DataTypes.UnitQuaternion,Ethar.GeoPose.DataTypes.UnitQuaternion)">
+            <summary>
+            Performs an equality comparison on two objects of type <see cref="T:Ethar.GeoPose.DataTypes.UnitQuaternion"/>.
+            </summary>
+            <param name="a">The first item.</param>
+            <param name="b">The second item.</param>
+            <returns>Whether the two items are not equal.</returns>
+        </member>
+        <member name="M:Ethar.GeoPose.DataTypes.UnitQuaternion.Equals(Ethar.GeoPose.DataTypes.UnitQuaternion)">
+            <inheritdoc/>
+        </member>
+        <member name="M:Ethar.GeoPose.DataTypes.UnitQuaternion.Equals(System.Object)">
+            <inheritdoc/>
+        </member>
+        <member name="M:Ethar.GeoPose.DataTypes.UnitQuaternion.GetHashCode">
+            <inheritdoc/>
+        </member>
+        <member name="M:Ethar.GeoPose.DataTypes.UnitQuaternion.ToString">
+            <inheritdoc/>
+        </member>
+        <member name="T:Ethar.GeoPose.DataTypes.UnitVector3">
+            <summary>
+            A data type that represents a vector3 for serialization.
+            </summary>
+        </member>
+        <member name="M:Ethar.GeoPose.DataTypes.UnitVector3.#ctor(System.Single,System.Single,System.Single)">
+            <summary>
+            Initializes a new instance of the <see cref="T:Ethar.GeoPose.DataTypes.UnitVector3"/> struct.
+            </summary>
+            <param name="x">The x value.</param>
+            <param name="y">The y value.</param>
+            <param name="z">The z value.</param>
+        </member>
+        <member name="P:Ethar.GeoPose.DataTypes.UnitVector3.Zero">
+            <summary>
+            Gets a vector whose 3 elements are equal to zero.
+            </summary>
+            <returns>
+            A vector whose three elements are equal to zero (that is, it returns the vector (0,0,0) ).
+            </returns>
+        </member>
+        <member name="P:Ethar.GeoPose.DataTypes.UnitVector3.One">
+            <summary>
+            Gets a vector whose 3 elements are equal to one.
+            </summary>
+            <returns>
+            A vector whose three elements are equal to one (that is, it returns the vector (1,1,1) ).
+            </returns>
+        </member>
+        <member name="P:Ethar.GeoPose.DataTypes.UnitVector3.UnitX">
+            <summary>
+            Gets the vector (1,0,0).
+            </summary>
+            <returns>
+            The vector (1,0,0).
+            </returns>
+        </member>
+        <member name="P:Ethar.GeoPose.DataTypes.UnitVector3.UnitY">
+            <summary>
+            Gets the vector (0,1,0).
+            </summary>
+            <returns>
+            The vector (0,1,0).
+            </returns>
+        </member>
+        <member name="P:Ethar.GeoPose.DataTypes.UnitVector3.UnitZ">
+            <summary>
+            Gets the vector (0,0,1).
+            </summary>
+            <returns>
+            The vector (0,0,1).
+            </returns>
+        </member>
+        <member name="P:Ethar.GeoPose.DataTypes.UnitVector3.X">
+            <summary>
+            Gets or sets the x value.
+            </summary>
+        </member>
+        <member name="P:Ethar.GeoPose.DataTypes.UnitVector3.Y">
+            <summary>
+            Gets or sets the y value.
+            </summary>
+        </member>
+        <member name="P:Ethar.GeoPose.DataTypes.UnitVector3.Z">
+            <summary>
+            Gets or sets the z value.
+            </summary>
+        </member>
+        <member name="M:Ethar.GeoPose.DataTypes.UnitVector3.op_Equality(Ethar.GeoPose.DataTypes.UnitVector3,Ethar.GeoPose.DataTypes.UnitVector3)">
+            <summary>
+            Performs an equality comparison on two objects of type <see cref="T:Ethar.GeoPose.DataTypes.UnitVector3"/>.
+            </summary>
+            <param name="a">The first item.</param>
+            <param name="b">The second item.</param>
+            <returns>Whether the two items are equal.</returns>
+        </member>
+        <member name="M:Ethar.GeoPose.DataTypes.UnitVector3.op_Inequality(Ethar.GeoPose.DataTypes.UnitVector3,Ethar.GeoPose.DataTypes.UnitVector3)">
+            <summary>
+            Performs an equality comparison on two objects of type <see cref="T:Ethar.GeoPose.DataTypes.UnitVector3"/>.
+            </summary>
+            <param name="a">The first item.</param>
+            <param name="b">The second item.</param>
+            <returns>Whether the two items are not equal.</returns>
+        </member>
+        <member name="M:Ethar.GeoPose.DataTypes.UnitVector3.CombineHashCodes(System.Int32,System.Int32)">
+            <summary>
+            Combines two hash codes, useful for combining hash codes of individual vector elements.
+            </summary>
+            <param name="h1">First Hash.</param>
+            <param name="h2">Second Hash to add.</param>
+            <returns>Combined Hashcode.</returns>
+        </member>
+        <member name="M:Ethar.GeoPose.DataTypes.UnitVector3.Equals(Ethar.GeoPose.DataTypes.UnitVector3)">
+            <inheritdoc/>
+        </member>
+        <member name="M:Ethar.GeoPose.DataTypes.UnitVector3.Equals(System.Object)">
+            <inheritdoc/>
+        </member>
+        <member name="M:Ethar.GeoPose.DataTypes.UnitVector3.GetHashCode">
+            <inheritdoc/>
+        </member>
+        <member name="M:Ethar.GeoPose.DataTypes.UnitVector3.ToString">
+            <inheritdoc/>
+        </member>
+        <member name="T:Ethar.GeoPose.DataTypes.YawPitchRollAngles">
+             <summary>
+             A construct that represents yaw, pitch, and roll angles specified in decimal degrees.
+            
+             Requirements derived from figure 8 in section 7.2.1 of version 1.0.0 of the GeoPose spec http://www.opengis.net/doc/DIS/geopose/1.0.
+             </summary>
+        </member>
+        <member name="M:Ethar.GeoPose.DataTypes.YawPitchRollAngles.#ctor(System.Single,System.Single,System.Single)">
+            <summary>
+            Initializes a new instance of the <see cref="T:Ethar.GeoPose.DataTypes.YawPitchRollAngles"/> struct.
+            </summary>
+            <param name="yaw">The yaw in decimal degrees.</param>
+            <param name="pitch">The pitch in decimal degrees.</param>
+            <param name="roll">The roll in decimal degrees.</param>
+        </member>
+        <member name="P:Ethar.GeoPose.DataTypes.YawPitchRollAngles.Yaw">
+            <summary>
+            Gets or sets yaw specified in decimal degrees.
+            </summary>
+        </member>
+        <member name="P:Ethar.GeoPose.DataTypes.YawPitchRollAngles.Pitch">
+            <summary>
+            Gets or sets pitch specified in decimal degrees.
+            </summary>
+        </member>
+        <member name="P:Ethar.GeoPose.DataTypes.YawPitchRollAngles.Roll">
+            <summary>
+            Gets or sets roll specified in decimal degrees.
+            </summary>
+        </member>
+        <member name="M:Ethar.GeoPose.DataTypes.YawPitchRollAngles.op_Equality(Ethar.GeoPose.DataTypes.YawPitchRollAngles,Ethar.GeoPose.DataTypes.YawPitchRollAngles)">
+            <summary>
+            Performs an equality comparison on two objects of type <see cref="T:Ethar.GeoPose.DataTypes.YawPitchRollAngles"/>.
+            </summary>
+            <param name="a">The first item.</param>
+            <param name="b">The second item.</param>
+            <returns>Whether the two items are equal.</returns>
+        </member>
+        <member name="M:Ethar.GeoPose.DataTypes.YawPitchRollAngles.op_Inequality(Ethar.GeoPose.DataTypes.YawPitchRollAngles,Ethar.GeoPose.DataTypes.YawPitchRollAngles)">
+            <summary>
+            Performs an equality comparison on two objects of type <see cref="T:Ethar.GeoPose.DataTypes.YawPitchRollAngles"/>.
+            </summary>
+            <param name="a">The first item.</param>
+            <param name="b">The second item.</param>
+            <returns>Whether the two items are not equal.</returns>
+        </member>
+        <member name="M:Ethar.GeoPose.DataTypes.YawPitchRollAngles.Equals(Ethar.GeoPose.DataTypes.YawPitchRollAngles)">
+            <inheritdoc/>
+        </member>
+        <member name="M:Ethar.GeoPose.DataTypes.YawPitchRollAngles.Equals(System.Object)">
+            <inheritdoc/>
+        </member>
+        <member name="M:Ethar.GeoPose.DataTypes.YawPitchRollAngles.GetHashCode">
+            <inheritdoc/>
+        </member>
+        <member name="M:Ethar.GeoPose.DataTypes.YawPitchRollAngles.ToString">
+            <inheritdoc/>
+        </member>
+        <member name="T:Ethar.GeoPose.Exceptions.AuthorityNotSupportedException">
+            <summary>
+            Exception that is thrown when a user attempts to get information about an <see cref="T:Ethar.GeoPose.Authority.IAuthority"/> that is not supported.
+            </summary>
+        </member>
+        <member name="M:Ethar.GeoPose.Exceptions.AuthorityNotSupportedException.#ctor(System.String)">
+            <summary>
+            Initializes a new instance of the <see cref="T:Ethar.GeoPose.Exceptions.AuthorityNotSupportedException"/> class.
+            </summary>
+            <param name="message">The error message.</param>
+        </member>
+        <member name="T:Ethar.GeoPose.Exceptions.FrameSpecificationInvalidException">
+            <summary>
+            Exception thrown when a <see cref="T:Ethar.GeoPose.Interfaces.IFrameSpecification"/> has invalid parameters.
+            </summary>
+        </member>
+        <member name="M:Ethar.GeoPose.Exceptions.FrameSpecificationInvalidException.#ctor(System.String)">
+            <summary>
+            Initializes a new instance of the <see cref="T:Ethar.GeoPose.Exceptions.FrameSpecificationInvalidException"/> class.
+            </summary>
+            <param name="message">The error message.</param>
+        </member>
+        <member name="T:Ethar.GeoPose.Exceptions.TransitionModelInvalidException">
+            <summary>
+            Exception thrown when a <see cref="T:Ethar.GeoPose.TransitionModels.TransitionModel"/> has invalid parameters.
+            </summary>
+        </member>
+        <member name="M:Ethar.GeoPose.Exceptions.TransitionModelInvalidException.#ctor(System.String)">
+            <summary>
+            Initializes a new instance of the <see cref="T:Ethar.GeoPose.Exceptions.TransitionModelInvalidException"/> class.
+            </summary>
+            <param name="message">The error message.</param>
+        </member>
+        <member name="T:Ethar.GeoPose.Extensions.ChainSduExtensions">
+            <summary>
+            Extensions for the <see cref="T:Ethar.GeoPose.StructuralDataUnits.ChainSdu"/>.
+            </summary>
+        </member>
+        <member name="M:Ethar.GeoPose.Extensions.ChainSduExtensions.Validate(Ethar.GeoPose.StructuralDataUnits.ChainSdu)">
+            <summary>
+            Validates that the outer frame of the <see cref="T:Ethar.GeoPose.StructuralDataUnits.ChainSdu"/> is extrinsic.
+            </summary>
+            <param name="sdu">The <see cref="T:Ethar.GeoPose.StructuralDataUnits.ChainSdu"/> to validate.</param>
+            <returns>True if the sdu is valid, false otherwise.</returns>
+        </member>
+        <member name="T:Ethar.GeoPose.Extensions.DictionaryExtensions">
+            <summary>
+            Extensions for the Dictionary<![CDATA[<TKey>,<TValue>]]> class to allow safer addition.
+            </summary>
+        </member>
+        <member name="M:Ethar.GeoPose.Extensions.DictionaryExtensions.TryAdd``2(System.Collections.Generic.IDictionary{``0,``1},``0,``1)">
+            <summary>
+            TryAdd extension to safely add an element to a dictionary.
+            </summary>
+            <typeparam name="TKey">Key value for the Dictionary.</typeparam>
+            <typeparam name="TValue">Value to add to the Key in the dictionary.</typeparam>
+            <param name="input">Input dictionary for the extension.</param>
+            <param name="key">Dictionary index to try and add.</param>
+            <param name="value">Dictionary item to add for Key.</param>
+            <exception cref="T:System.ArgumentNullException">Input dictionary is null.</exception>
+        </member>
+        <member name="T:Ethar.GeoPose.Extensions.GraphSduExtensions">
+            <summary>
+            Extensions for the <see cref="T:Ethar.GeoPose.StructuralDataUnits.GraphSdu"/>.
+            </summary>
+        </member>
+        <member name="M:Ethar.GeoPose.Extensions.GraphSduExtensions.Validate(Ethar.GeoPose.StructuralDataUnits.GraphSdu)">
+            <summary>
+            Validates that the <see cref="T:Ethar.GeoPose.StructuralDataUnits.GraphSdu"/> has does not have any transform indices out of bounds. Also validates that every node is
+            extrinsic or reachable from an extrinsic node.
+            </summary>
+            <param name="sdu">The <see cref="T:Ethar.GeoPose.StructuralDataUnits.GraphSdu"/> to validate.</param>
+            <returns>True if the sdu is valid, false otherwise.</returns>
+        </member>
+        <member name="T:Ethar.GeoPose.Extensions.IEnumerableTExtensions">
+            <summary>
+            Extensions for IEnumerable<![CDATA[<T>]]> to generate hash codes.
+            </summary>
+        </member>
+        <member name="M:Ethar.GeoPose.Extensions.IEnumerableTExtensions.GetHashCodeForCollection``1(System.Collections.Generic.IEnumerable{``0})">
+            <summary>
+            Gets a hashcode for a collection of items.
+            </summary>
+            <typeparam name="T">The type of object in the collection.</typeparam>
+            <param name="enumerable">The collection to generate a hashcode for.</param>
+            <returns>A hashcode for a collection of items.</returns>
+            <remarks>This method will currently not work properly for a collection of collections.</remarks>
+        </member>
+        <member name="T:Ethar.GeoPose.Extensions.TangentPointPositionExtensions">
+            <summary>
+            Extensions for the <see cref="T:Ethar.GeoPose.DataTypes.TangentPointPosition"/> struct.
+            </summary>
+        </member>
+        <member name="M:Ethar.GeoPose.Extensions.TangentPointPositionExtensions.Validate(Ethar.GeoPose.DataTypes.TangentPointPosition)">
+            <summary>
+            Validates that the <see cref="T:Ethar.GeoPose.DataTypes.TangentPointPosition"/> contains a valid latitude and longitude.
+            </summary>
+            <param name="position">The position to validate.</param>
+            <returns>A <see cref="T:Ethar.GeoPose.Validation.FrameSpecificationValidationResult"/> with information on the validity of the <see cref="T:Ethar.GeoPose.DataTypes.TangentPointPosition"/>.</returns>
+        </member>
+        <member name="M:Ethar.GeoPose.Extensions.TangentPointPositionExtensions.BuildParamString(Ethar.GeoPose.DataTypes.TangentPointPosition)">
+            <summary>
+            Builds a parameter string for various frame specification types.
+            </summary>
+            <param name="position">The position to build the parameter string for.</param>
+            <returns>A parameter string representation of the <see cref="T:Ethar.GeoPose.DataTypes.TangentPointPosition"/>.</returns>
+        </member>
+        <member name="T:Ethar.GeoPose.Extensions.UnitQuaternionExtensions">
+            <summary>
+            Extensions for the <see cref="T:Ethar.GeoPose.DataTypes.UnitQuaternion"/> data type.
+            </summary>
+        </member>
+        <member name="M:Ethar.GeoPose.Extensions.UnitQuaternionExtensions.BuildRotationParamString(Ethar.GeoPose.DataTypes.UnitQuaternion)">
+            <summary>
+            Builds a parameter string for a <see cref="T:Ethar.GeoPose.DataTypes.UnitQuaternion"/>. The string will have "rotation" prepended to the members.
+            </summary>
+            <param name="quat">The <see cref="T:Ethar.GeoPose.DataTypes.UnitQuaternion"/> to generate the parameter string for.</param>
+            <returns>A string representing the <see cref="T:Ethar.GeoPose.DataTypes.UnitQuaternion"/>.</returns>
+        </member>
+        <member name="M:Ethar.GeoPose.Extensions.UnitQuaternionExtensions.BuildOrientationParamString(Ethar.GeoPose.DataTypes.UnitQuaternion)">
+            <summary>
+            Builds a parameter string for a <see cref="T:Ethar.GeoPose.DataTypes.UnitQuaternion"/>. The string will have "orientation" prepended to the members.
+            </summary>
+            <param name="quat">The <see cref="T:Ethar.GeoPose.DataTypes.UnitQuaternion"/> to generate the parameter string for.</param>
+            <returns>A string representing the <see cref="T:Ethar.GeoPose.DataTypes.UnitQuaternion"/>.</returns>
+        </member>
+        <member name="T:Ethar.GeoPose.Extensions.UnitVector3Extensions">
+            <summary>
+            Extensions for the <see cref="T:Ethar.GeoPose.DataTypes.UnitVector3"/> data type.
+            </summary>
+        </member>
+        <member name="M:Ethar.GeoPose.Extensions.UnitVector3Extensions.BuildTranslationParamString(Ethar.GeoPose.DataTypes.UnitVector3)">
+            <summary>
+            Builds a parameter string for the <see cref="T:Ethar.GeoPose.DataTypes.UnitVector3"/>.
+            </summary>
+            <param name="vector">The <see cref="T:Ethar.GeoPose.DataTypes.UnitVector3"/> to generate a parameter string for.</param>
+            <returns>A string representation of the <see cref="T:Ethar.GeoPose.DataTypes.UnitVector3"/>.</returns>
+            <remarks>Convenience method used to generate parameter strings for frame specifications in the /Ethar.GeoPose/1.0 authority.</remarks>
+        </member>
+        <member name="T:Ethar.GeoPose.Extensions.YawPitchRollAnglesExtensions">
+            <summary>
+            Extensions for the <see cref="T:Ethar.GeoPose.DataTypes.YawPitchRollAngles"/> data type.
+            </summary>
+        </member>
+        <member name="M:Ethar.GeoPose.Extensions.YawPitchRollAnglesExtensions.BuildOrientationParamString(Ethar.GeoPose.DataTypes.YawPitchRollAngles)">
+            <summary>
+            Builds a parameter string for a <see cref="T:Ethar.GeoPose.DataTypes.YawPitchRollAngles"/>.
+            </summary>
+            <param name="ypr">The <see cref="T:Ethar.GeoPose.DataTypes.YawPitchRollAngles"/> to generate the parameter string for.</param>
+            <returns>A string representing the <see cref="T:Ethar.GeoPose.DataTypes.YawPitchRollAngles"/>.</returns>
+        </member>
+        <member name="T:Ethar.GeoPose.FrameSpecifications.BaseFrameSpecification">
+             <summary>
+             A construct that completely and uniquely defines a reference frame.
+            
+             Derived from Figure 8 from section 7.2.1 of version 1.0.0 of the GeoPose spec http://www.opengis.net/doc/DIS/geopose/1.0.
+             </summary>
+        </member>
+        <member name="M:Ethar.GeoPose.FrameSpecifications.BaseFrameSpecification.#ctor(System.String,System.String)">
+            <summary>
+            Initializes a new instance of the <see cref="T:Ethar.GeoPose.FrameSpecifications.BaseFrameSpecification"/> class.
+            </summary>
+            <param name="id">An ID that uniquely defines the frame within the authority.</param>
+            <param name="authority">A string uniquely specifying a source of reference frame specifications.</param>
+        </member>
+        <member name="P:Ethar.GeoPose.FrameSpecifications.BaseFrameSpecification.Authority">
+            <inheritdoc/>
+        </member>
+        <member name="P:Ethar.GeoPose.FrameSpecifications.BaseFrameSpecification.Id">
+            <inheritdoc/>
+        </member>
+        <member name="M:Ethar.GeoPose.FrameSpecifications.BaseFrameSpecification.Equals(Ethar.GeoPose.FrameSpecifications.BaseFrameSpecification)">
+            <inheritdoc/>
+        </member>
+        <member name="M:Ethar.GeoPose.FrameSpecifications.BaseFrameSpecification.Equals(System.Object)">
+            <inheritdoc/>
+        </member>
+        <member name="M:Ethar.GeoPose.FrameSpecifications.BaseFrameSpecification.GetHashCode">
+            <inheritdoc/>
+        </member>
+        <member name="M:Ethar.GeoPose.FrameSpecifications.BaseFrameSpecification.ToString">
+            <inheritdoc/>
+        </member>
+        <member name="T:Ethar.GeoPose.Interfaces.IFrameSpecification">
+             <summary>
+             A Frame Specificaton interface that completely and uniquely defines a reference frame.
+            
+             Derived from Figure 8 from section 7.2.1 of version 1.0.0 of the GeoPose spec http://www.opengis.net/doc/DIS/geopose/1.0.
+             </summary>
+        </member>
+        <member name="P:Ethar.GeoPose.Interfaces.IFrameSpecification.Authority">
+            <summary>
+            Gets the frame specification's authority.
+            </summary>
+        </member>
+        <member name="P:Ethar.GeoPose.Interfaces.IFrameSpecification.Id">
+            <summary>
+            Gets the frame specification's ID.
+            </summary>
+        </member>
+        <member name="T:Ethar.GeoPose.Interfaces.IStructuralDataUnit">
+            <summary>
+            Base interface that represents a Structural Data Unit.  Reserved for future use.
+            </summary>
+        </member>
+        <member name="T:Ethar.GeoPose.JsonConversion.BaseFrameSpecificationJsonConverter">
+            <summary>
+            A utility class that converts json into <see cref="T:Ethar.GeoPose.FrameSpecifications.BaseFrameSpecification"/> and vice versa.
+            </summary>
+        </member>
+        <member name="M:Ethar.GeoPose.JsonConversion.BaseFrameSpecificationJsonConverter.ReadJson(Newtonsoft.Json.JsonReader,System.Type,Ethar.GeoPose.FrameSpecifications.BaseFrameSpecification,System.Boolean,Newtonsoft.Json.JsonSerializer)">
+            <inheritdoc/>
+            <exception cref="T:Ethar.GeoPose.Exceptions.AuthorityNotSupportedException">Thrown when the authority that the json belongs to is not supported.</exception>
+        </member>
+        <member name="M:Ethar.GeoPose.JsonConversion.BaseFrameSpecificationJsonConverter.WriteJson(Newtonsoft.Json.JsonWriter,Ethar.GeoPose.FrameSpecifications.BaseFrameSpecification,Newtonsoft.Json.JsonSerializer)">
+            <inheritdoc/>
+        </member>
+        <member name="T:Ethar.GeoPose.JsonConversion.FrameTransformIndexPairJsonConverter">
+            <summary>
+            A utility class that converts json into a <see cref="T:Ethar.GeoPose.DataTypes.FrameTransformIndexPair"/> and vice versa.
+            </summary>
+        </member>
+        <member name="M:Ethar.GeoPose.JsonConversion.FrameTransformIndexPairJsonConverter.ReadJson(Newtonsoft.Json.JsonReader,System.Type,Ethar.GeoPose.DataTypes.FrameTransformIndexPair,System.Boolean,Newtonsoft.Json.JsonSerializer)">
+            <inheritdoc/>
+        </member>
+        <member name="M:Ethar.GeoPose.JsonConversion.FrameTransformIndexPairJsonConverter.WriteJson(Newtonsoft.Json.JsonWriter,Ethar.GeoPose.DataTypes.FrameTransformIndexPair,Newtonsoft.Json.JsonSerializer)">
+            <inheritdoc/>
+        </member>
+        <member name="T:Ethar.GeoPose.JsonConversion.GeoposeDurationJsonConverter">
+            <summary>
+            A utility class that converts json into <see cref="T:Ethar.GeoPose.DataTypes.GeoPoseDuration"/> and vice versa.
+            </summary>
+        </member>
+        <member name="M:Ethar.GeoPose.JsonConversion.GeoposeDurationJsonConverter.ReadJson(Newtonsoft.Json.JsonReader,System.Type,Ethar.GeoPose.DataTypes.GeoPoseDuration,System.Boolean,Newtonsoft.Json.JsonSerializer)">
+            <inheritdoc/>
+        </member>
+        <member name="M:Ethar.GeoPose.JsonConversion.GeoposeDurationJsonConverter.WriteJson(Newtonsoft.Json.JsonWriter,Ethar.GeoPose.DataTypes.GeoPoseDuration,Newtonsoft.Json.JsonSerializer)">
+            <inheritdoc/>
+        </member>
+        <member name="T:Ethar.GeoPose.JsonConversion.ParamStringBuilder">
+            <summary>
+            A utility class that is used to build generic parameter strings.
+            </summary>
+        </member>
+        <member name="M:Ethar.GeoPose.JsonConversion.ParamStringBuilder.BuildParamString``1(``0)">
+            <summary>
+            Builds a parameter string for the object.
+            </summary>
+            <typeparam name="T">The type of object.</typeparam>
+            <param name="obj">The object to build a parameter string for.</param>
+            <returns>A parameter string representation of the object.</returns>
+            <remarks>
+            This works by using reflection to determine which properties have the <see cref="T:Newtonsoft.Json.JsonPropertyAttribute"/> and generating a parameter
+            string from those properties.
+            </remarks>
+            <example>
+            Assume a class with the following member.
+            <code>
+            class TestClass
+            {
+                [JsonProperty("p1")]
+                int Param1
+            }
+            </code>
+            This method would generate the parameter string: "p1={value of Param1}".
+            </example>
+        </member>
+        <member name="T:Ethar.GeoPose.JsonConversion.TransitionModelJsonConverter">
+            <summary>
+            A utility class that converts transition models to json and vice versa.
+            </summary>
+        </member>
+        <member name="M:Ethar.GeoPose.JsonConversion.TransitionModelJsonConverter.ReadJson(Newtonsoft.Json.JsonReader,System.Type,Ethar.GeoPose.TransitionModels.TransitionModel,System.Boolean,Newtonsoft.Json.JsonSerializer)">
+            <inheritdoc/>
+        </member>
+        <member name="M:Ethar.GeoPose.JsonConversion.TransitionModelJsonConverter.WriteJson(Newtonsoft.Json.JsonWriter,Ethar.GeoPose.TransitionModels.TransitionModel,Newtonsoft.Json.JsonSerializer)">
+            <inheritdoc/>
+        </member>
+        <member name="T:Ethar.GeoPose.StructuralDataUnits.AdvancedSdu">
+             <summary>
+             A construct that represents an Advanced SDU.
+             The Advanced Target has a more general structure than Basic-YPR and Basic-Quaternion, supporting flexible specification of Outer Frame and a Valid Time.
+            
+             Requirements derived from section 8.4.3 of version 1.0.0 of the GeoPose spec http://www.opengis.net/doc/DIS/geopose/1.0.
+             </summary>
+        </member>
+        <member name="M:Ethar.GeoPose.StructuralDataUnits.AdvancedSdu.#ctor(System.Int64,Ethar.GeoPose.DataTypes.UnitQuaternion,Ethar.GeoPose.FrameSpecifications.BaseFrameSpecification)">
+            <summary>
+            Initializes a new instance of the <see cref="T:Ethar.GeoPose.StructuralDataUnits.AdvancedSdu"/> struct.
+            </summary>
+            <param name="validTime">The Unix Timestamp representing the valid time.</param>
+            <param name="quaternion">The quaternion to apply to the <paramref name="frameSpecification"/>.</param>.
+            <param name="frameSpecification">The reference frame for the SDU, must be an extrinsic frame specification.</param>
+        </member>
+        <member name="P:Ethar.GeoPose.StructuralDataUnits.AdvancedSdu.ValidTime">
+            <summary>
+            Gets the Unix Timestamp representing the valid time.
+            </summary>
+        </member>
+        <member name="P:Ethar.GeoPose.StructuralDataUnits.AdvancedSdu.Quaternion">
+            <summary>
+            Gets the quaternion to apply to the <see cref="P:Ethar.GeoPose.StructuralDataUnits.AdvancedSdu.FrameSpecification"/>.
+            </summary>
+        </member>
+        <member name="P:Ethar.GeoPose.StructuralDataUnits.AdvancedSdu.FrameSpecification">
+            <summary>
+            Gets the reference frame specification for the SDU.
+            </summary>
+        </member>
+        <member name="M:Ethar.GeoPose.StructuralDataUnits.AdvancedSdu.op_Equality(Ethar.GeoPose.StructuralDataUnits.AdvancedSdu,Ethar.GeoPose.StructuralDataUnits.AdvancedSdu)">
+            <summary>
+            Performs an equality comparison on two objects of type <see cref="T:Ethar.GeoPose.StructuralDataUnits.AdvancedSdu"/>.
+            </summary>
+            <param name="a">The first item.</param>
+            <param name="b">The second item.</param>
+            <returns>Whether the two items are equal.</returns>
+        </member>
+        <member name="M:Ethar.GeoPose.StructuralDataUnits.AdvancedSdu.op_Inequality(Ethar.GeoPose.StructuralDataUnits.AdvancedSdu,Ethar.GeoPose.StructuralDataUnits.AdvancedSdu)">
+            <summary>
+            Performs an equality comparison on two objects of type <see cref="T:Ethar.GeoPose.StructuralDataUnits.AdvancedSdu"/>.
+            </summary>
+            <param name="a">The first item.</param>
+            <param name="b">The second item.</param>
+            <returns>Whether the two items are not equal.</returns>
+        </member>
+        <member name="M:Ethar.GeoPose.StructuralDataUnits.AdvancedSdu.Equals(Ethar.GeoPose.StructuralDataUnits.AdvancedSdu)">
+            <inheritdoc/>
+        </member>
+        <member name="M:Ethar.GeoPose.StructuralDataUnits.AdvancedSdu.Equals(System.Object)">
+            <inheritdoc/>
+        </member>
+        <member name="M:Ethar.GeoPose.StructuralDataUnits.AdvancedSdu.GetHashCode">
+            <inheritdoc/>
+        </member>
+        <member name="M:Ethar.GeoPose.StructuralDataUnits.AdvancedSdu.ToString">
+            <inheritdoc/>
+        </member>
+        <member name="T:Ethar.GeoPose.StructuralDataUnits.BasicQuaternionSdu">
+             <summary>
+             A construct that represents a Basic Quaternion SDU.
+             The Basic-Quaternion Target has a simple structure with no options. Position is specified as a point in an LTP-ENU frame and rotation is specified as a unit quaternion.
+            
+             Requirements derived from section 8.4.2 of version 1.0.0 of the GeoPose spec http://www.opengis.net/doc/DIS/geopose/1.0.
+             </summary>
+        </member>
+        <member name="M:Ethar.GeoPose.StructuralDataUnits.BasicQuaternionSdu.#ctor(Ethar.GeoPose.DataTypes.TangentPointPosition,Ethar.GeoPose.DataTypes.UnitQuaternion)">
+            <summary>
+            Initializes a new instance of the <see cref="T:Ethar.GeoPose.StructuralDataUnits.BasicQuaternionSdu"/> struct.
+            </summary>
+            <param name="position"> The position in latitude and longitude in decimal degrees, and height in meters.</param>
+            <param name="quaternion">A quaternion representing the orientation.</param>
+        </member>
+        <member name="P:Ethar.GeoPose.StructuralDataUnits.BasicQuaternionSdu.Position">
+            <summary>
+            Gets the position in latitude and longitude in decimal degrees, and height in meters.
+            </summary>
+        </member>
+        <member name="P:Ethar.GeoPose.StructuralDataUnits.BasicQuaternionSdu.Quaternion">
+            <summary>
+            Gets a quaternion representing the orientation.
+            </summary>
+        </member>
+        <member name="M:Ethar.GeoPose.StructuralDataUnits.BasicQuaternionSdu.op_Equality(Ethar.GeoPose.StructuralDataUnits.BasicQuaternionSdu,Ethar.GeoPose.StructuralDataUnits.BasicQuaternionSdu)">
+            <summary>
+            Performs an equality comparison on two objects of type <see cref="T:Ethar.GeoPose.StructuralDataUnits.BasicQuaternionSdu"/>.
+            </summary>
+            <param name="left">The first item.</param>
+            <param name="right">The second item.</param>
+            <returns>Whether the two items are equal.</returns>
+        </member>
+        <member name="M:Ethar.GeoPose.StructuralDataUnits.BasicQuaternionSdu.op_Inequality(Ethar.GeoPose.StructuralDataUnits.BasicQuaternionSdu,Ethar.GeoPose.StructuralDataUnits.BasicQuaternionSdu)">
+            <summary>
+            Performs an equality comparison on two objects of type <see cref="T:Ethar.GeoPose.StructuralDataUnits.BasicQuaternionSdu"/>.
+            </summary>
+            <param name="left">The first item.</param>
+            <param name="right">The second item.</param>
+            <returns>Whether the two items are not equal.</returns>
+        </member>
+        <member name="M:Ethar.GeoPose.StructuralDataUnits.BasicQuaternionSdu.Equals(Ethar.GeoPose.StructuralDataUnits.BasicQuaternionSdu)">
+            <inheritdoc/>
+        </member>
+        <member name="M:Ethar.GeoPose.StructuralDataUnits.BasicQuaternionSdu.Equals(System.Object)">
+            <inheritdoc/>
+        </member>
+        <member name="M:Ethar.GeoPose.StructuralDataUnits.BasicQuaternionSdu.GetHashCode">
+            <inheritdoc/>
+        </member>
+        <member name="M:Ethar.GeoPose.StructuralDataUnits.BasicQuaternionSdu.ToString">
+            <inheritdoc/>
+        </member>
+        <member name="T:Ethar.GeoPose.StructuralDataUnits.BasicYawPitchRollSdu">
+             <summary>
+             A construct that represents a Basic YPR SDU.
+             The Basic-YPR Target has a simple structure with no options. Position is specified as a point in an LTP-ENU frame and rotation is specified by yaw, pitch, and roll angles specified in decimal degrees.
+            
+             Requirements derived from section 8.4.1 of version 1.0.0 of the GeoPose spec http://www.opengis.net/doc/DIS/geopose/1.0.
+             </summary>
+        </member>
+        <member name="M:Ethar.GeoPose.StructuralDataUnits.BasicYawPitchRollSdu.#ctor(Ethar.GeoPose.DataTypes.YawPitchRollAngles,Ethar.GeoPose.DataTypes.TangentPointPosition)">
+            <summary>
+            Initializes a new instance of the <see cref="T:Ethar.GeoPose.StructuralDataUnits.BasicYawPitchRollSdu"/> struct.
+            </summary>
+            <param name="angles">A representation of the orientation in yaw, pitch, and roll.</param>
+            <param name="position"> The position in latitude and longitude in decimal degrees, and height in meters.</param>
+        </member>
+        <member name="P:Ethar.GeoPose.StructuralDataUnits.BasicYawPitchRollSdu.Position">
+            <summary>
+             Gets the position in latitude and longitude in decimal degrees, and height in meters.
+            </summary>
+        </member>
+        <member name="P:Ethar.GeoPose.StructuralDataUnits.BasicYawPitchRollSdu.Angles">
+            <summary>
+            Gets the orientation represented in yaw, pitch, and roll in decimal degrees.
+            </summary>
+        </member>
+        <member name="M:Ethar.GeoPose.StructuralDataUnits.BasicYawPitchRollSdu.op_Equality(Ethar.GeoPose.StructuralDataUnits.BasicYawPitchRollSdu,Ethar.GeoPose.StructuralDataUnits.BasicYawPitchRollSdu)">
+            <summary>
+            Performs an equality comparison on two objects of type <see cref="T:Ethar.GeoPose.StructuralDataUnits.BasicYawPitchRollSdu"/>.
+            </summary>
+            <param name="a">The first item.</param>
+            <param name="b">The second item.</param>
+            <returns>Whether the two items are equal.</returns>
+        </member>
+        <member name="M:Ethar.GeoPose.StructuralDataUnits.BasicYawPitchRollSdu.op_Inequality(Ethar.GeoPose.StructuralDataUnits.BasicYawPitchRollSdu,Ethar.GeoPose.StructuralDataUnits.BasicYawPitchRollSdu)">
+            <summary>
+            Performs an equality comparison on two objects of type <see cref="T:Ethar.GeoPose.StructuralDataUnits.BasicYawPitchRollSdu"/>.
+            </summary>
+            <param name="a">The first item.</param>
+            <param name="b">The second item.</param>
+            <returns>Whether the two items are not equal.</returns>
+        </member>
+        <member name="M:Ethar.GeoPose.StructuralDataUnits.BasicYawPitchRollSdu.Equals(Ethar.GeoPose.StructuralDataUnits.BasicYawPitchRollSdu)">
+            <inheritdoc/>
+        </member>
+        <member name="M:Ethar.GeoPose.StructuralDataUnits.BasicYawPitchRollSdu.Equals(System.Object)">
+            <inheritdoc/>
+        </member>
+        <member name="M:Ethar.GeoPose.StructuralDataUnits.BasicYawPitchRollSdu.GetHashCode">
+            <inheritdoc/>
+        </member>
+        <member name="M:Ethar.GeoPose.StructuralDataUnits.BasicYawPitchRollSdu.ToString">
+            <inheritdoc/>
+        </member>
+        <member name="T:Ethar.GeoPose.StructuralDataUnits.ChainSdu">
+             <summary>
+             A construct that represents a Chain SDU.
+            
+             Requirements derived from section 8.4.5 of version 1.0.0 of the GeoPose spec http://www.opengis.net/doc/DIS/geopose/1.0.
+             </summary>
+        </member>
+        <member name="M:Ethar.GeoPose.StructuralDataUnits.ChainSdu.#ctor(System.Int64,Ethar.GeoPose.FrameSpecifications.BaseFrameSpecification,System.Collections.Generic.IList{Ethar.GeoPose.FrameSpecifications.BaseFrameSpecification})">
+            <summary>
+            Initializes a new instance of the <see cref="T:Ethar.GeoPose.StructuralDataUnits.ChainSdu"/> struct.
+            </summary>
+            <param name="validTime">The Unix Timestamp representing the valid time.</param>
+            <param name="outerFrame">The extrinsic frame specification for this SDU.</param>
+            <param name="frameChain">Ordered chain of <see cref="T:Ethar.GeoPose.FrameSpecifications.BaseFrameSpecification"/>.</param>
+        </member>
+        <member name="P:Ethar.GeoPose.StructuralDataUnits.ChainSdu.ValidTime">
+            <summary>
+            Gets the Unix Timestamp representing the valid time.
+            </summary>
+        </member>
+        <member name="P:Ethar.GeoPose.StructuralDataUnits.ChainSdu.OuterFrame">
+            <summary>
+            Gets the outer frame.
+            </summary>
+        </member>
+        <member name="P:Ethar.GeoPose.StructuralDataUnits.ChainSdu.FrameChain">
+            <summary>
+            Gets the frame chain.
+            </summary>
+        </member>
+        <member name="M:Ethar.GeoPose.StructuralDataUnits.ChainSdu.op_Equality(Ethar.GeoPose.StructuralDataUnits.ChainSdu,Ethar.GeoPose.StructuralDataUnits.ChainSdu)">
+            <summary>
+            Performs an equality comparison on two objects of type <see cref="T:Ethar.GeoPose.StructuralDataUnits.ChainSdu"/>.
+            </summary>
+            <param name="a">The first item.</param>
+            <param name="b">The second item.</param>
+            <returns>Whether the two items are equal.</returns>
+        </member>
+        <member name="M:Ethar.GeoPose.StructuralDataUnits.ChainSdu.op_Inequality(Ethar.GeoPose.StructuralDataUnits.ChainSdu,Ethar.GeoPose.StructuralDataUnits.ChainSdu)">
+            <summary>
+            Performs an equality comparison on two objects of type <see cref="T:Ethar.GeoPose.StructuralDataUnits.ChainSdu"/>.
+            </summary>
+            <param name="a">The first item.</param>
+            <param name="b">The second item.</param>
+            <returns>Whether the two items are not equal.</returns>
+        </member>
+        <member name="M:Ethar.GeoPose.StructuralDataUnits.ChainSdu.Equals(Ethar.GeoPose.StructuralDataUnits.ChainSdu)">
+            <inheritdoc/>
+        </member>
+        <member name="M:Ethar.GeoPose.StructuralDataUnits.ChainSdu.Equals(System.Object)">
+            <inheritdoc/>
+        </member>
+        <member name="M:Ethar.GeoPose.StructuralDataUnits.ChainSdu.GetHashCode">
+            <inheritdoc/>
+        </member>
+        <member name="M:Ethar.GeoPose.StructuralDataUnits.ChainSdu.ToString">
+            <inheritdoc/>
+        </member>
+        <member name="T:Ethar.GeoPose.StructuralDataUnits.GraphSdu">
+             <summary>
+             A construct that represents a Graph SDU.
+             The Graph Target supports a network of object relative poses. The graph is a directed acyclic graph, each node must either be an Extrinsic Frame or reachable from an Extrinsic Frame.
+            
+             Requirements derived from section 8.4.4 of version 1.0.0 of the GeoPose spec http://www.opengis.net/doc/DIS/geopose/1.0.
+             </summary>
+        </member>
+        <member name="M:Ethar.GeoPose.StructuralDataUnits.GraphSdu.#ctor(System.Int64,System.Collections.Generic.IList{Ethar.GeoPose.FrameSpecifications.BaseFrameSpecification},System.Collections.Generic.IList{Ethar.GeoPose.DataTypes.FrameTransformIndexPair})">
+            <summary>
+            Initializes a new instance of the <see cref="T:Ethar.GeoPose.StructuralDataUnits.GraphSdu"/> struct.
+            </summary>
+            <param name="validTime">The Unix Timestamp representing the valid time.</param>
+            <param name="frameList">List of frame specifications in the graph.</param>
+            <param name="transformList">List of <see cref="T:Ethar.GeoPose.DataTypes.FrameTransformIndexPair"/> that represent edges in the graph.</param>
+        </member>
+        <member name="P:Ethar.GeoPose.StructuralDataUnits.GraphSdu.ValidTime">
+            <summary>
+            Gets the Unix Timestamp representing the valid time.
+            </summary>
+        </member>
+        <member name="P:Ethar.GeoPose.StructuralDataUnits.GraphSdu.FrameList">
+            <summary>
+            Gets a list of frame specifications in the graph.
+            </summary>
+        </member>
+        <member name="P:Ethar.GeoPose.StructuralDataUnits.GraphSdu.TransformList">
+            <summary>
+            Gets a list of <see cref="T:Ethar.GeoPose.DataTypes.FrameTransformIndexPair"/> that represent edges in the graph.
+            </summary>
+        </member>
+        <member name="M:Ethar.GeoPose.StructuralDataUnits.GraphSdu.op_Equality(Ethar.GeoPose.StructuralDataUnits.GraphSdu,Ethar.GeoPose.StructuralDataUnits.GraphSdu)">
+            <summary>
+            Performs an equality comparison on two objects of type <see cref="T:Ethar.GeoPose.StructuralDataUnits.GraphSdu"/>.
+            </summary>
+            <param name="a">The first item.</param>
+            <param name="b">The second item.</param>
+            <returns>Whether the two items are equal.</returns>
+        </member>
+        <member name="M:Ethar.GeoPose.StructuralDataUnits.GraphSdu.op_Inequality(Ethar.GeoPose.StructuralDataUnits.GraphSdu,Ethar.GeoPose.StructuralDataUnits.GraphSdu)">
+            <summary>
+            Performs an equality comparison on two objects of type <see cref="T:Ethar.GeoPose.StructuralDataUnits.GraphSdu"/>.
+            </summary>
+            <param name="a">The first item.</param>
+            <param name="b">The second item.</param>
+            <returns>Whether the two items are not equal.</returns>
+        </member>
+        <member name="M:Ethar.GeoPose.StructuralDataUnits.GraphSdu.Equals(Ethar.GeoPose.StructuralDataUnits.GraphSdu)">
+            <inheritdoc/>
+        </member>
+        <member name="M:Ethar.GeoPose.StructuralDataUnits.GraphSdu.Equals(System.Object)">
+            <inheritdoc/>
+        </member>
+        <member name="M:Ethar.GeoPose.StructuralDataUnits.GraphSdu.GetHashCode">
+            <inheritdoc/>
+        </member>
+        <member name="M:Ethar.GeoPose.StructuralDataUnits.GraphSdu.ToString">
+            <inheritdoc/>
+        </member>
+        <member name="T:Ethar.GeoPose.StructuralDataUnits.IrregularSeriesSdu">
+             <summary>
+             A construct that represents an Irregular Series SDU.
+            
+             Requirements derived from section 8.4.7 of version 1.0.0 of the GeoPose spec http://www.opengis.net/doc/DIS/geopose/1.0.
+             </summary>
+        </member>
+        <member name="M:Ethar.GeoPose.StructuralDataUnits.IrregularSeriesSdu.#ctor(Ethar.GeoPose.DataTypes.SeriesHeader,Ethar.GeoPose.FrameSpecifications.BaseFrameSpecification,Ethar.GeoPose.DataTypes.SeriesTrailer,System.Collections.Generic.IEnumerable{Ethar.GeoPose.DataTypes.FrameAndTimeElement})">
+            <summary>
+            Initializes a new instance of the <see cref="T:Ethar.GeoPose.StructuralDataUnits.IrregularSeriesSdu"/> struct.
+            </summary>
+            <param name="header">The series header.</param>
+            <param name="outerFrame">The outer frame for the series.</param>
+            <param name="trailer">The series trailer.</param>
+            <param name="innerFrameAndTimeSeries">The inner frames and valid times associated with them.</param>
+        </member>
+        <member name="P:Ethar.GeoPose.StructuralDataUnits.IrregularSeriesSdu.Header">
+            <summary>
+            Gets the series header.
+            </summary>
+        </member>
+        <member name="P:Ethar.GeoPose.StructuralDataUnits.IrregularSeriesSdu.OuterFrame">
+            <summary>
+            Gets the outer frame.
+            </summary>
+        </member>
+        <member name="P:Ethar.GeoPose.StructuralDataUnits.IrregularSeriesSdu.InnerFrameAndTimeSeries">
+            <summary>
+            Gets the inner frames and their valid times.
+            </summary>
+        </member>
+        <member name="P:Ethar.GeoPose.StructuralDataUnits.IrregularSeriesSdu.Trailer">
+            <summary>
+            Gets the series trailer.
+            </summary>
+        </member>
+        <member name="M:Ethar.GeoPose.StructuralDataUnits.IrregularSeriesSdu.op_Equality(Ethar.GeoPose.StructuralDataUnits.IrregularSeriesSdu,Ethar.GeoPose.StructuralDataUnits.IrregularSeriesSdu)">
+            <summary>
+            Performs an equality comparison on two objects of type <see cref="T:Ethar.GeoPose.StructuralDataUnits.IrregularSeriesSdu"/>.
+            </summary>
+            <param name="a">The first item.</param>
+            <param name="b">The second item.</param>
+            <returns>Whether the two items are equal.</returns>
+        </member>
+        <member name="M:Ethar.GeoPose.StructuralDataUnits.IrregularSeriesSdu.op_Inequality(Ethar.GeoPose.StructuralDataUnits.IrregularSeriesSdu,Ethar.GeoPose.StructuralDataUnits.IrregularSeriesSdu)">
+            <summary>
+            Performs an equality comparison on two objects of type <see cref="T:Ethar.GeoPose.StructuralDataUnits.IrregularSeriesSdu"/>.
+            </summary>
+            <param name="a">The first item.</param>
+            <param name="b">The second item.</param>
+            <returns>Whether the two items are not equal.</returns>
+        </member>
+        <member name="M:Ethar.GeoPose.StructuralDataUnits.IrregularSeriesSdu.Equals(Ethar.GeoPose.StructuralDataUnits.IrregularSeriesSdu)">
+            <inheritdoc/>
+        </member>
+        <member name="M:Ethar.GeoPose.StructuralDataUnits.IrregularSeriesSdu.Equals(System.Object)">
+            <inheritdoc/>
+        </member>
+        <member name="M:Ethar.GeoPose.StructuralDataUnits.IrregularSeriesSdu.GetHashCode">
+            <inheritdoc/>
+        </member>
+        <member name="M:Ethar.GeoPose.StructuralDataUnits.IrregularSeriesSdu.ToString">
+            <inheritdoc/>
+        </member>
+        <member name="T:Ethar.GeoPose.StructuralDataUnits.RegularSeriesSdu">
+             <summary>
+             A construct that represents a Regular Series SDU.
+            
+             Requirements derived from section 8.4.6 of version 1.0.0 of the GeoPose spec http://www.opengis.net/doc/DIS/geopose/1.0.
+             </summary>
+        </member>
+        <member name="M:Ethar.GeoPose.StructuralDataUnits.RegularSeriesSdu.#ctor(Ethar.GeoPose.DataTypes.SeriesHeader,Ethar.GeoPose.DataTypes.GeoPoseDuration,Ethar.GeoPose.FrameSpecifications.BaseFrameSpecification,System.Collections.Generic.IEnumerable{Ethar.GeoPose.FrameSpecifications.BaseFrameSpecification},Ethar.GeoPose.DataTypes.SeriesTrailer)">
+            <summary>
+            Initializes a new instance of the <see cref="T:Ethar.GeoPose.StructuralDataUnits.RegularSeriesSdu"/> struct.
+            </summary>
+            <param name="header">The series header.</param>
+            <param name="interPoseDuration">The inter pose duration.</param>
+            <param name="outerFrame">The outer frame for the series.</param>
+            <param name="innerFrameSeries">The inner frames.</param>
+            <param name="trailer">The series trailer.</param>
+        </member>
+        <member name="P:Ethar.GeoPose.StructuralDataUnits.RegularSeriesSdu.Header">
+            <summary>
+            Gets the series header.
+            </summary>
+        </member>
+        <member name="P:Ethar.GeoPose.StructuralDataUnits.RegularSeriesSdu.InterPoseDuration">
+            <summary>
+            Gets the inter pose duration.
+            </summary>
+        </member>
+        <member name="P:Ethar.GeoPose.StructuralDataUnits.RegularSeriesSdu.OuterFrame">
+            <summary>
+            Gets the outer frame for the series.
+            </summary>
+        </member>
+        <member name="P:Ethar.GeoPose.StructuralDataUnits.RegularSeriesSdu.InnerFrameSeries">
+            <summary>
+            Gets the inner frame series.
+            </summary>
+        </member>
+        <member name="P:Ethar.GeoPose.StructuralDataUnits.RegularSeriesSdu.Trailer">
+            <summary>
+            Gets the series trailer.
+            </summary>
+        </member>
+        <member name="M:Ethar.GeoPose.StructuralDataUnits.RegularSeriesSdu.op_Equality(Ethar.GeoPose.StructuralDataUnits.RegularSeriesSdu,Ethar.GeoPose.StructuralDataUnits.RegularSeriesSdu)">
+            <summary>
+            Performs an equality comparison on two objects of type <see cref="T:Ethar.GeoPose.StructuralDataUnits.RegularSeriesSdu"/>.
+            </summary>
+            <param name="a">The first item.</param>
+            <param name="b">The second item.</param>
+            <returns>Whether the two items are equal.</returns>
+        </member>
+        <member name="M:Ethar.GeoPose.StructuralDataUnits.RegularSeriesSdu.op_Inequality(Ethar.GeoPose.StructuralDataUnits.RegularSeriesSdu,Ethar.GeoPose.StructuralDataUnits.RegularSeriesSdu)">
+            <summary>
+            Performs an equality comparison on two objects of type <see cref="T:Ethar.GeoPose.StructuralDataUnits.RegularSeriesSdu"/>.
+            </summary>
+            <param name="a">The first item.</param>
+            <param name="b">The second item.</param>
+            <returns>Whether the two items are not equal.</returns>
+        </member>
+        <member name="M:Ethar.GeoPose.StructuralDataUnits.RegularSeriesSdu.Equals(Ethar.GeoPose.StructuralDataUnits.RegularSeriesSdu)">
+            <inheritdoc/>
+        </member>
+        <member name="M:Ethar.GeoPose.StructuralDataUnits.RegularSeriesSdu.Equals(System.Object)">
+            <inheritdoc/>
+        </member>
+        <member name="M:Ethar.GeoPose.StructuralDataUnits.RegularSeriesSdu.GetHashCode">
+            <inheritdoc/>
+        </member>
+        <member name="M:Ethar.GeoPose.StructuralDataUnits.RegularSeriesSdu.ToString">
+            <inheritdoc/>
+        </member>
+        <member name="T:Ethar.GeoPose.StructuralDataUnits.StreamElementSdu">
+             <summary>
+             A construct that represents a Stream Element SDU.
+            
+             Requirements derived from section 8.4.8 of version 1.0.0 of the GeoPose spec http://www.opengis.net/doc/DIS/geopose/1.0.
+             </summary>
+        </member>
+        <member name="M:Ethar.GeoPose.StructuralDataUnits.StreamElementSdu.#ctor(Ethar.GeoPose.DataTypes.FrameAndTimeElement)">
+            <summary>
+            Initializes a new instance of the <see cref="T:Ethar.GeoPose.StructuralDataUnits.StreamElementSdu"/> struct.
+            </summary>
+            <param name="streamElement">The stream element.</param>
+        </member>
+        <member name="P:Ethar.GeoPose.StructuralDataUnits.StreamElementSdu.StreamElement">
+            <summary>
+            Gets the stream element.
+            </summary>
+        </member>
+        <member name="M:Ethar.GeoPose.StructuralDataUnits.StreamElementSdu.op_Equality(Ethar.GeoPose.StructuralDataUnits.StreamElementSdu,Ethar.GeoPose.StructuralDataUnits.StreamElementSdu)">
+            <summary>
+            Performs an equality comparison on two objects of type <see cref="T:Ethar.GeoPose.StructuralDataUnits.StreamElementSdu"/>.
+            </summary>
+            <param name="a">The first item.</param>
+            <param name="b">The second item.</param>
+            <returns>Whether the two items are equal.</returns>
+        </member>
+        <member name="M:Ethar.GeoPose.StructuralDataUnits.StreamElementSdu.op_Inequality(Ethar.GeoPose.StructuralDataUnits.StreamElementSdu,Ethar.GeoPose.StructuralDataUnits.StreamElementSdu)">
+            <summary>
+            Performs an equality comparison on two objects of type <see cref="T:Ethar.GeoPose.StructuralDataUnits.StreamElementSdu"/>.
+            </summary>
+            <param name="a">The first item.</param>
+            <param name="b">The second item.</param>
+            <returns>Whether the two items are not equal.</returns>
+        </member>
+        <member name="M:Ethar.GeoPose.StructuralDataUnits.StreamElementSdu.Equals(Ethar.GeoPose.StructuralDataUnits.StreamElementSdu)">
+            <inheritdoc/>
+        </member>
+        <member name="M:Ethar.GeoPose.StructuralDataUnits.StreamElementSdu.Equals(System.Object)">
+            <inheritdoc/>
+        </member>
+        <member name="M:Ethar.GeoPose.StructuralDataUnits.StreamElementSdu.GetHashCode">
+            <inheritdoc/>
+        </member>
+        <member name="M:Ethar.GeoPose.StructuralDataUnits.StreamElementSdu.ToString">
+            <inheritdoc/>
+        </member>
+        <member name="T:Ethar.GeoPose.StructuralDataUnits.StreamHeaderSdu">
+             <summary>
+             A construct that represents a Stream Header SDU.
+            
+             Requirements derived from section 8.4.8 of version 1.0.0 of the GeoPose spec http://www.opengis.net/doc/DIS/geopose/1.0.
+             </summary>
+        </member>
+        <member name="M:Ethar.GeoPose.StructuralDataUnits.StreamHeaderSdu.#ctor(Ethar.GeoPose.TransitionModels.TransitionModel,Ethar.GeoPose.FrameSpecifications.BaseFrameSpecification)">
+            <summary>
+            Initializes a new instance of the <see cref="T:Ethar.GeoPose.StructuralDataUnits.StreamHeaderSdu"/> struct.
+            </summary>
+            <param name="transitionModel">The transition model.</param>
+            <param name="outerFrame">The outer frame for the stream.</param>
+        </member>
+        <member name="P:Ethar.GeoPose.StructuralDataUnits.StreamHeaderSdu.TransitionModel">
+            <summary>
+            Gets the transition model.
+            </summary>
+        </member>
+        <member name="P:Ethar.GeoPose.StructuralDataUnits.StreamHeaderSdu.OuterFrame">
+            <summary>
+            Gets the outer frame.
+            </summary>
+        </member>
+        <member name="M:Ethar.GeoPose.StructuralDataUnits.StreamHeaderSdu.op_Equality(Ethar.GeoPose.StructuralDataUnits.StreamHeaderSdu,Ethar.GeoPose.StructuralDataUnits.StreamHeaderSdu)">
+            <summary>
+            Performs an equality comparison on two objects of type <see cref="T:Ethar.GeoPose.StructuralDataUnits.StreamHeaderSdu"/>.
+            </summary>
+            <param name="a">The first item.</param>
+            <param name="b">The second item.</param>
+            <returns>Whether the two items are equal.</returns>
+        </member>
+        <member name="M:Ethar.GeoPose.StructuralDataUnits.StreamHeaderSdu.op_Inequality(Ethar.GeoPose.StructuralDataUnits.StreamHeaderSdu,Ethar.GeoPose.StructuralDataUnits.StreamHeaderSdu)">
+            <summary>
+            Performs an equality comparison on two objects of type <see cref="T:Ethar.GeoPose.StructuralDataUnits.StreamHeaderSdu"/>.
+            </summary>
+            <param name="a">The first item.</param>
+            <param name="b">The second item.</param>
+            <returns>Whether the two items are not equal.</returns>
+        </member>
+        <member name="M:Ethar.GeoPose.StructuralDataUnits.StreamHeaderSdu.Equals(Ethar.GeoPose.StructuralDataUnits.StreamHeaderSdu)">
+            <inheritdoc/>
+        </member>
+        <member name="M:Ethar.GeoPose.StructuralDataUnits.StreamHeaderSdu.Equals(System.Object)">
+            <inheritdoc/>
+        </member>
+        <member name="M:Ethar.GeoPose.StructuralDataUnits.StreamHeaderSdu.GetHashCode">
+            <inheritdoc/>
+        </member>
+        <member name="M:Ethar.GeoPose.StructuralDataUnits.StreamHeaderSdu.ToString">
+            <inheritdoc/>
+        </member>
+        <member name="T:Ethar.GeoPose.StructuralDataUnits.StreamRecordSdu">
+             <summary>
+             A construct that represents an Stream Record SDU.
+            
+             Requirements derived from section 9.2.9 of version 1.0.0 of the GeoPose spec http://www.opengis.net/doc/DIS/geopose/1.0.
+             </summary>
+        </member>
+        <member name="M:Ethar.GeoPose.StructuralDataUnits.StreamRecordSdu.#ctor(Ethar.GeoPose.StructuralDataUnits.StreamHeaderSdu,System.Collections.Generic.IEnumerable{Ethar.GeoPose.StructuralDataUnits.StreamElementSdu})">
+            <summary>
+            Initializes a new instance of the <see cref="T:Ethar.GeoPose.StructuralDataUnits.StreamRecordSdu"/> struct.
+            </summary>
+            <param name="streamHeader">The stream header.</param>
+            <param name="streamElements">The stream elements.</param>
+        </member>
+        <member name="P:Ethar.GeoPose.StructuralDataUnits.StreamRecordSdu.StreamHeader">
+            <summary>
+            Gets the stream header.
+            </summary>
+        </member>
+        <member name="P:Ethar.GeoPose.StructuralDataUnits.StreamRecordSdu.StreamElements">
+            <summary>
+            Gets the stream elements.
+            </summary>
+        </member>
+        <member name="M:Ethar.GeoPose.StructuralDataUnits.StreamRecordSdu.op_Equality(Ethar.GeoPose.StructuralDataUnits.StreamRecordSdu,Ethar.GeoPose.StructuralDataUnits.StreamRecordSdu)">
+            <summary>
+            Performs an equality comparison on two objects of type <see cref="T:Ethar.GeoPose.StructuralDataUnits.StreamRecordSdu"/>.
+            </summary>
+            <param name="a">The first item.</param>
+            <param name="b">The second item.</param>
+            <returns>Whether the two items are equal.</returns>
+        </member>
+        <member name="M:Ethar.GeoPose.StructuralDataUnits.StreamRecordSdu.op_Inequality(Ethar.GeoPose.StructuralDataUnits.StreamRecordSdu,Ethar.GeoPose.StructuralDataUnits.StreamRecordSdu)">
+            <summary>
+            Performs an equality comparison on two objects of type <see cref="T:Ethar.GeoPose.StructuralDataUnits.StreamRecordSdu"/>.
+            </summary>
+            <param name="a">The first item.</param>
+            <param name="b">The second item.</param>
+            <returns>Whether the two items are not equal.</returns>
+        </member>
+        <member name="M:Ethar.GeoPose.StructuralDataUnits.StreamRecordSdu.Equals(Ethar.GeoPose.StructuralDataUnits.StreamRecordSdu)">
+            <inheritdoc/>
+        </member>
+        <member name="M:Ethar.GeoPose.StructuralDataUnits.StreamRecordSdu.Equals(System.Object)">
+            <inheritdoc/>
+        </member>
+        <member name="M:Ethar.GeoPose.StructuralDataUnits.StreamRecordSdu.GetHashCode">
+            <inheritdoc/>
+        </member>
+        <member name="M:Ethar.GeoPose.StructuralDataUnits.StreamRecordSdu.ToString">
+            <inheritdoc/>
+        </member>
+        <member name="T:Ethar.GeoPose.TransitionModels.TransitionModel">
+            <summary>
+            An abstract class that providss a base a GeoPose <see cref="T:Ethar.GeoPose.TransitionModels.TransitionModel"/> model, a specific model is required for implementation.
+            </summary>
+        </member>
+        <member name="M:Ethar.GeoPose.TransitionModels.TransitionModel.#ctor(System.String,System.String)">
+            <summary>
+            Initializes a new instance of the <see cref="T:Ethar.GeoPose.TransitionModels.TransitionModel"/> class.
+            </summary>
+            <param name="id">The id of the <see cref="T:Ethar.GeoPose.TransitionModels.TransitionModel"/>.</param>
+            <param name="authority">The authority for the <see cref="T:Ethar.GeoPose.TransitionModels.TransitionModel"/>.</param>
+        </member>
+        <member name="P:Ethar.GeoPose.TransitionModels.TransitionModel.Authority">
+            <summary>
+            Gets the authority.
+            </summary>
+        </member>
+        <member name="P:Ethar.GeoPose.TransitionModels.TransitionModel.Id">
+            <summary>
+            Gets the ID.
+            </summary>
+        </member>
+        <member name="M:Ethar.GeoPose.TransitionModels.TransitionModel.op_Equality(Ethar.GeoPose.TransitionModels.TransitionModel,Ethar.GeoPose.TransitionModels.TransitionModel)">
+            <summary>
+            Performs an equality comparison on two objects of type <see cref="T:Ethar.GeoPose.TransitionModels.TransitionModel"/>.
+            </summary>
+            <param name="a">The first item.</param>
+            <param name="b">The second item.</param>
+            <returns>Whether the two items are equal.</returns>
+        </member>
+        <member name="M:Ethar.GeoPose.TransitionModels.TransitionModel.op_Inequality(Ethar.GeoPose.TransitionModels.TransitionModel,Ethar.GeoPose.TransitionModels.TransitionModel)">
+            <summary>
+            Performs an equality comparison on two objects of type <see cref="T:Ethar.GeoPose.TransitionModels.TransitionModel"/>.
+            </summary>
+            <param name="a">The first item.</param>
+            <param name="b">The second item.</param>
+            <returns>Whether the two items are not equal.</returns>
+        </member>
+        <member name="M:Ethar.GeoPose.TransitionModels.TransitionModel.Equals(Ethar.GeoPose.TransitionModels.TransitionModel)">
+            <inheritdoc/>
+        </member>
+        <member name="M:Ethar.GeoPose.TransitionModels.TransitionModel.Equals(System.Object)">
+            <inheritdoc/>
+        </member>
+        <member name="M:Ethar.GeoPose.TransitionModels.TransitionModel.GetHashCode">
+            <inheritdoc/>
+        </member>
+        <member name="M:Ethar.GeoPose.TransitionModels.TransitionModel.ToString">
+            <inheritdoc/>
+        </member>
+        <member name="T:Ethar.GeoPose.Validation.FrameSpecificationValidationResult">
+            <summary>
+            Struct that contains data pertaining to the validity of an <see cref="T:Ethar.GeoPose.Interfaces.IFrameSpecification"/>.
+            </summary>
+        </member>
+        <member name="M:Ethar.GeoPose.Validation.FrameSpecificationValidationResult.#ctor(System.Boolean,System.String)">
+            <summary>
+            Initializes a new instance of the <see cref="T:Ethar.GeoPose.Validation.FrameSpecificationValidationResult"/> struct.
+            </summary>
+            <param name="isValid">Whether the associated <see cref="T:Ethar.GeoPose.Interfaces.IFrameSpecification"/> is valid.</param>
+            <param name="message">The error message, if any.</param>
+        </member>
+        <member name="P:Ethar.GeoPose.Validation.FrameSpecificationValidationResult.Valid">
+            <summary>
+            Gets a <see cref="T:Ethar.GeoPose.Validation.FrameSpecificationValidationResult"/> that represents a valid <see cref="T:Ethar.GeoPose.Interfaces.IFrameSpecification"/>.
+            </summary>
+        </member>
+        <member name="P:Ethar.GeoPose.Validation.FrameSpecificationValidationResult.IsValid">
+            <summary>
+            Gets a value indicating whether the associated <see cref="T:Ethar.GeoPose.Interfaces.IFrameSpecification"/> is valid.
+            </summary>
+        </member>
+        <member name="P:Ethar.GeoPose.Validation.FrameSpecificationValidationResult.Message">
+            <summary>
+            Gets the error message, if any.
+            </summary>
+        </member>
+        <member name="T:Ethar.GeoPose.Validation.IExplicitFrameSpecificationValidator">
+            <summary>
+            Interface that represents an <see cref="T:Ethar.GeoPose.Interfaces.IFrameSpecification"/> validator.
+            </summary>
+        </member>
+        <member name="M:Ethar.GeoPose.Validation.IExplicitFrameSpecificationValidator.Validate(Ethar.GeoPose.Interfaces.IFrameSpecification)">
+            <summary>
+            Determines if the <see cref="T:Ethar.GeoPose.Interfaces.IFrameSpecification"/> is valid.
+            </summary>
+            <param name="frame">The <see cref="T:Ethar.GeoPose.Interfaces.IFrameSpecification"/> to validate.</param>
+            <returns>A <see cref="T:Ethar.GeoPose.Validation.FrameSpecificationValidationResult"/> with details on the validity of the <see cref="T:Ethar.GeoPose.Interfaces.IFrameSpecification"/>.</returns>
+        </member>
+        <member name="T:Ethar.GeoPose.Validation.ValidationUtilities">
+            <summary>
+            A collection of GeoPose validation routines.
+            </summary>
+        </member>
+        <member name="M:Ethar.GeoPose.Validation.ValidationUtilities.ValidateJsonObjectParameters``1(Newtonsoft.Json.Linq.JObject,System.Collections.Specialized.NameValueCollection@)">
+            <summary>
+            Validate the inbound <see cref="T:Newtonsoft.Json.Linq.JObject"/> json definition for expected parameters.
+            </summary>
+            <typeparam name="T">A Frame Specification implementing the IFrameSpecification interface, likely derrived from BaseFrameSpecification.</typeparam>
+            <param name="jObject">The inbound JSON object in <see cref="T:Newtonsoft.Json.Linq.JObject"/> format.</param>
+            <param name="queryString">A <see cref="T:System.Collections.Specialized.NameValueCollection"/> of the json Object values.</param>
+            <returns>Returns true if the inbound JSON was valid.</returns>
+            <exception cref="T:System.NullReferenceException">Raises a <see cref="T:System.NullReferenceException"/> on input values that are missing.</exception>
+            <exception cref="T:Ethar.GeoPose.Exceptions.FrameSpecificationInvalidException">Raises a <see cref="T:Ethar.GeoPose.Exceptions.FrameSpecificationInvalidException"/> if the Frame specification ID is incorrect.</exception>
+            <exception cref="T:Ethar.GeoPose.Exceptions.AuthorityNotSupportedException">Raises a <see cref="T:Ethar.GeoPose.Exceptions.AuthorityNotSupportedException"/> if the specified authority was not found in the incoming frame.</exception>
+        </member>
+        <member name="M:Ethar.GeoPose.Validation.ValidationUtilities.GetQueryParameters(System.String)">
+            <summary>
+            Resolve the parameters in a URL Querystring.
+            </summary>
+            <param name="queryString">input query string.</param>
+            <returns>A <see cref="T:System.Collections.Specialized.NameValueCollection"/> of Query string parameters and values.</returns>
+        </member>
+        <member name="M:Ethar.GeoPose.Validation.ValidationUtilities.GetParameter(System.Collections.Specialized.NameValueCollection,System.String)">
+            <summary>
+            Utility to retrieve Frame Specification Parameter data from a deserialised <see cref="T:System.Collections.Specialized.NameValueCollection"/>.
+            </summary>
+            <param name="collection">The input <see cref="T:System.Collections.Specialized.NameValueCollection"/> containing deserialised <see cref="T:Ethar.GeoPose.Interfaces.IFrameSpecification"/> parameter data.</param>
+            <param name="parameterName">The name of the parameter to retrieve from the collection.</param>
+            <returns>Returns the string value from the collection if found.</returns>
+            <exception cref="T:System.ArgumentException">Raises a <see cref="T:System.ArgumentException"/> on input values that are missing.</exception>
+            <exception cref="T:Ethar.GeoPose.Exceptions.FrameSpecificationInvalidException">Raises a <see cref="T:Ethar.GeoPose.Exceptions.FrameSpecificationInvalidException"/> if the specified Parameter Name could not be retrieved from the Frame Specification parameters.</exception>
+        </member>
+    </members>
+</doc>
