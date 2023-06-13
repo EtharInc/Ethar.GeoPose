@@ -1,5 +1,5 @@
 <p align="center">
-    <img alt="GeoPose Logo" src="https://raw.githubusercontent.com/EtharInc/Ethar.GeoPose/main/Images/branding/GeoPoseLogoWhiteRGB.svg" width="500" height="500">
+    <img alt="GeoPose Logo" src="https://raw.githubusercontent.com/EtharInc/Ethar.GeoPose/main/Images/branding/GeoPoseLogoDarkBlueColor.svg" width="500" height="500">
 </p>
 
 [![NuGet Badge](https://buildstats.info/nuget/Ethar.GeoPose)](https://www.nuget.org/packages/Ethar.GeoPose)
