@@ -1,11 +1,16 @@
+
+
 <p align="center">
-    <img alt="GeoPose Logo" src="https://raw.githubusercontent.com/EtharInc/Ethar.GeoPose/main/Images/branding/GeoPoseLogoDarkBlueColor.svg" width="500" height="500">
+    <picture align="center">
+        <source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/EtharInc/Ethar.GeoPose/main/Images/branding/GeoPoseLogoWhiteRGB.svg">
+        <source media="(prefers-color-scheme: light)" srcset="https://raw.githubusercontent.com/EtharInc/Ethar.GeoPose/main/Images/branding/GeoPoseLogoBlackRGB.svg">
+        <img alt="GeoPose Logo" src="https://raw.githubusercontent.com/EtharInc/Ethar.GeoPose/main/Images/branding/GeoPoseLogoBlackRGB.svg" width="500" height="500">
+    </picture>
 </p>
 
-[![NuGet Badge](https://buildstats.info/nuget/Ethar.GeoPose)](https://www.nuget.org/packages/Ethar.GeoPose)
 [![CI](https://github.com/etharinc/Ethar.GeoPose/actions/workflows/main-release.yml/badge.svg?branch=main)](https://github.com/etharinc/MQTTnet/actions/workflows/main-release.yml)
-[![NPM](https://badgen.net/npm/v/Ethar.GeoPose)](https://npmjs.org/package/Ethar.GeoPose)
-![Size](https://img.shields.io/github/repo-size/etharinc/MQTTnet.svg)
+[![NuGet Badge](https://buildstats.info/nuget/Ethar.GeoPose)](https://www.nuget.org/packages/Ethar.GeoPose)
+![Size](https://img.shields.io/github/repo-size/etharinc/ethar.geopose)
 [![License: Apache 2.0](https://img.shields.io/badge/License-APACHE2.0-green.svg)](https://raw.githubusercontent.com/etharinc/Ethar.GeoPose/main/LICENSE)
 
 # GeoPose Library by [Ethar, Inc.](https://www.ethar.com/)

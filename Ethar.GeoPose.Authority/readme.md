@@ -1,5 +1,9 @@
 <p align="center">
-    <img alt="GeoPose Logo" src="https://raw.githubusercontent.com/EtharInc/Ethar.GeoPose/main/Images/branding/GeoPoseLogoWhiteRGB.svg" width="500" height="500">
+    <picture align="center">
+        <source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/EtharInc/Ethar.GeoPose/main/Images/branding/GeoPoseLogoWhiteRGB.svg">
+        <source media="(prefers-color-scheme: light)" srcset="https://raw.githubusercontent.com/EtharInc/Ethar.GeoPose/main/Images/branding/GeoPoseLogoBlackRGB.svg">
+        <img alt="GeoPose Logo" src="https://raw.githubusercontent.com/EtharInc/Ethar.GeoPose/main/Images/branding/GeoPoseLogoBlackRGB.svg" width="500" height="500">
+    </picture>
 </p>
 
 # GeoPose Authority Implementation by [Ethar, Inc.](https://www.ethar.com/)
