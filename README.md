@@ -15,8 +15,6 @@
 
 # GeoPose Library by [Ethar, Inc.](https://www.ethar.com/)
 
-[![License](https://img.shields.io/badge/license-Apache%202.0-blue.svg)](https://github.com/EtharInc/Ethar.GeoPose/blob/main/LICENSE)
-
 The [GeoPose standard](https://docs.ogc.org/dis/21-056r10/21-056r10.html) enables the easy integration of digital elements on and in relation to the surface of the planet.
 
 Ethar.GeoPose is a C# library that implements GeoPose, allowing you to assign precise 3D position and orientation of objects (virtual or real) in the real world.
