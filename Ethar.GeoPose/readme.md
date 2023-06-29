@@ -231,7 +231,7 @@ Ethar.GeoPose is made possible by the excellent work of the Ethar Team:
 
 <tr><th align="left">Simon Jackson</th><td><a href="https://github.com/SimonDarksideJ">GitHub/SimonDarksideJ</a></td><td><a href="https://www.linkedin.com/in/xrconsultant/">LinkedIn/xrconsultant</a></td></tr>
 
-<tr><th align="left">Connor Davis</th><td><a href="https://github.com/davisjc22/john-connor-davis">GitHub/john-connor-davis</a></td><td><a href="https://www.linkedin.com/in/john-connor-davis">LinkedIn/John-Connor-Davis</a></td></tr>
+<tr><th align="left">Connor Davis</th><td><a href="https://github.com/davisjc22">GitHub/john-connor-davis</a></td><td><a href="https://www.linkedin.com/in/john-connor-davis">LinkedIn/John-Connor-Davis</a></td></tr>
 
 <tr><th align="left">Colin Steinmann</th><td><a href="https://github.com/metaColin">GitHub/metaColin</a></td><td><a href="https://www.linkedin.com/in/colinsteinmann/">LinkedIn/colinsteinmann</a></td></tr>
 
