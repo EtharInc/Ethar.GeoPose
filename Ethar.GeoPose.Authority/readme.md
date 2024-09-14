@@ -164,8 +164,8 @@ public static ExampleExtrinsicFrameSpec ConvertJObjectToExampleExtrinsicFrameSpe
     if (ValidationUtilities.ValidateJsonObjectParameters(jObject, Constants.AuthorityName, out var queryString))
     {
         // Retrieves the required data from the json to construct the Frame Specification.
-        var lat = float.Parse(queryString.GetParameter("latitude"));
-        var lon = float.Parse(queryString.GetParameter("longitude"));
+        var lat = double.Parse(queryString.GetParameter("latitude"));
+        var lon = double.Parse(queryString.GetParameter("longitude"));
 
         // Returns a new instance of the Frame Specification with the data populated.
         return new ExampleExtrinsicFrameSpec { Latitude = lat, Longitude = lon };

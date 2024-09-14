@@ -19,7 +19,7 @@ namespace Ethar.GeoPose.DataTypes
         /// <param name="y">The y value.</param>
         /// <param name="z">The z value.</param>
         /// <param name="w">The w value.</param>
-        public UnitQuaternion(float x, float y, float z, float w)
+        public UnitQuaternion(double x, double y, double z, double w)
         {
             this.X = x;
             this.Y = y;
@@ -32,7 +32,7 @@ namespace Ethar.GeoPose.DataTypes
         /// </summary>
         /// <param name="vectorPart">The vector part of the Quaternion.</param>
         /// <param name="scalarPart">The rotation part of the Quaternion.</param>
-        public UnitQuaternion(UnitVector3 vectorPart, float scalarPart)
+        public UnitQuaternion(UnitVector3 vectorPart, double scalarPart)
         {
             this.X = vectorPart.X;
             this.Y = vectorPart.Y;
@@ -52,25 +52,25 @@ namespace Ethar.GeoPose.DataTypes
         /// Gets or sets the x value.
         /// </summary>
         [JsonProperty("x")]
-        public float X { get; set; }
+        public double X { get; set; }
 
         /// <summary>
         /// Gets or sets the y value.
         /// </summary>
         [JsonProperty("y")]
-        public float Y { get; set; }
+        public double Y { get; set; }
 
         /// <summary>
         /// Gets or sets the z value.
         /// </summary>
         [JsonProperty("z")]
-        public float Z { get; set; }
+        public double Z { get; set; }
 
         /// <summary>
         /// Gets or sets the w value.
         /// </summary>
         [JsonProperty("w")]
-        public float W { get; set; }
+        public double W { get; set; }
 
         /// <summary>
         /// Performs an equality comparison on two objects of type <see cref="UnitQuaternion"/>.

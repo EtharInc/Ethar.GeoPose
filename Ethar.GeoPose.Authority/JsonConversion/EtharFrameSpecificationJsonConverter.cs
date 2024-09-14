@@ -25,9 +25,9 @@ namespace Ethar.GeoPose.Authority.JsonConversion
         {
             if (ValidationUtilities.ValidateJsonObjectParameters<LtpEnuSpecification>(jObject, out var queryString))
             {
-                var lat = float.Parse(queryString.GetParameter("latitude"));
-                var lon = float.Parse(queryString.GetParameter("longitude"));
-                var height = float.Parse(queryString.GetParameter("heightInMeters"));
+                var lat = double.Parse(queryString.GetParameter("latitude"));
+                var lon = double.Parse(queryString.GetParameter("longitude"));
+                var height = double.Parse(queryString.GetParameter("heightInMeters"));
 
                 return new LtpEnuSpecification(new TangentPointPosition() { Latitude = lat, Longitude = lon, HeightInMeters = height });
             }
@@ -63,9 +63,9 @@ namespace Ethar.GeoPose.Authority.JsonConversion
         {
             if (ValidationUtilities.ValidateJsonObjectParameters<LtpNedSpecification>(jObject, out var queryString))
             {
-                var lat = float.Parse(queryString.GetParameter("latitude"));
-                var lon = float.Parse(queryString.GetParameter("longitude"));
-                var height = float.Parse(queryString.GetParameter("heightInMeters"));
+                var lat = double.Parse(queryString.GetParameter("latitude"));
+                var lon = double.Parse(queryString.GetParameter("longitude"));
+                var height = double.Parse(queryString.GetParameter("heightInMeters"));
 
                 return new LtpNedSpecification(new TangentPointPosition() { Latitude = lat, Longitude = lon, HeightInMeters = height });
             }
@@ -101,12 +101,12 @@ namespace Ethar.GeoPose.Authority.JsonConversion
         {
             if (ValidationUtilities.ValidateJsonObjectParameters<YawPitchRollOrientedLtpEnuSpecification>(jObject, out var queryString))
             {
-                var lat = float.Parse(queryString.GetParameter("latitude"));
-                var lon = float.Parse(queryString.GetParameter("longitude"));
-                var height = float.Parse(queryString.GetParameter("heightInMeters"));
-                var yaw = float.Parse(queryString.GetParameter("orientation.yaw"));
-                var pitch = float.Parse(queryString.GetParameter("orientation.pitch"));
-                var roll = float.Parse(queryString.GetParameter("orientation.roll"));
+                var lat = double.Parse(queryString.GetParameter("latitude"));
+                var lon = double.Parse(queryString.GetParameter("longitude"));
+                var height = double.Parse(queryString.GetParameter("heightInMeters"));
+                var yaw = double.Parse(queryString.GetParameter("orientation.yaw"));
+                var pitch = double.Parse(queryString.GetParameter("orientation.pitch"));
+                var roll = double.Parse(queryString.GetParameter("orientation.roll"));
 
                 return new YawPitchRollOrientedLtpEnuSpecification(new TangentPointPosition() { Latitude = lat, Longitude = lon, HeightInMeters = height }, new YawPitchRollAngles() { Yaw = yaw, Pitch = pitch, Roll = roll });
             }
@@ -143,13 +143,13 @@ namespace Ethar.GeoPose.Authority.JsonConversion
         {
             if (ValidationUtilities.ValidateJsonObjectParameters<QuaternionOrientedLtpEnuSpecification>(jObject, out var queryString))
             {
-                var lat = float.Parse(queryString.GetParameter("latitude"));
-                var lon = float.Parse(queryString.GetParameter("longitude"));
-                var height = float.Parse(queryString.GetParameter("heightInMeters"));
-                var x = float.Parse(queryString.GetParameter("orientation.x"));
-                var y = float.Parse(queryString.GetParameter("orientation.y"));
-                var z = float.Parse(queryString.GetParameter("orientation.z"));
-                var w = float.Parse(queryString.GetParameter("orientation.w"));
+                var lat = double.Parse(queryString.GetParameter("latitude"));
+                var lon = double.Parse(queryString.GetParameter("longitude"));
+                var height = double.Parse(queryString.GetParameter("heightInMeters"));
+                var x = double.Parse(queryString.GetParameter("orientation.x"));
+                var y = double.Parse(queryString.GetParameter("orientation.y"));
+                var z = double.Parse(queryString.GetParameter("orientation.z"));
+                var w = double.Parse(queryString.GetParameter("orientation.w"));
 
                 return new QuaternionOrientedLtpEnuSpecification(new TangentPointPosition() { Latitude = lat, Longitude = lon, HeightInMeters = height }, new UnitQuaternion() { X = x, Y = y, Z = z, W = w });
             }
@@ -186,13 +186,13 @@ namespace Ethar.GeoPose.Authority.JsonConversion
         {
             if (ValidationUtilities.ValidateJsonObjectParameters<TranslateRotateSpecification>(jObject, out var queryString))
             {
-                var translationX = JsonConvert.DeserializeObject<float>(queryString.GetParameter("translation.x"));
-                var translationY = JsonConvert.DeserializeObject<float>(queryString.GetParameter("translation.y"));
-                var translationZ = JsonConvert.DeserializeObject<float>(queryString.GetParameter("translation.z"));
-                var rotationX = JsonConvert.DeserializeObject<float>(queryString.GetParameter("rotation.x"));
-                var rotationY = JsonConvert.DeserializeObject<float>(queryString.GetParameter("rotation.y"));
-                var rotationZ = JsonConvert.DeserializeObject<float>(queryString.GetParameter("rotation.z"));
-                var rotationW = JsonConvert.DeserializeObject<float>(queryString.GetParameter("rotation.w"));
+                var translationX = JsonConvert.DeserializeObject<double>(queryString.GetParameter("translation.x"));
+                var translationY = JsonConvert.DeserializeObject<double>(queryString.GetParameter("translation.y"));
+                var translationZ = JsonConvert.DeserializeObject<double>(queryString.GetParameter("translation.z"));
+                var rotationX = JsonConvert.DeserializeObject<double>(queryString.GetParameter("rotation.x"));
+                var rotationY = JsonConvert.DeserializeObject<double>(queryString.GetParameter("rotation.y"));
+                var rotationZ = JsonConvert.DeserializeObject<double>(queryString.GetParameter("rotation.z"));
+                var rotationW = JsonConvert.DeserializeObject<double>(queryString.GetParameter("rotation.w"));
 
                 return new TranslateRotateSpecification(new UnitVector3() { X = translationX, Y = translationY, Z = translationZ }, new UnitQuaternion() { X = rotationX, Y = rotationY, Z = rotationZ, W = rotationW });
             }

@@ -182,8 +182,8 @@ public static ExampleExtrinsicFrameSpec ConvertJObjectToExampleExtrinsicFrameSpe
     if (ValidationUtilities.ValidateJsonObjectParameters(jObject, Constants.AuthorityName, out var queryString))
     {
         // Retrieves the required data from the json to construct the Frame Specification.
-        var lat = float.Parse(queryString.GetParameter("latitude"));
-        var lon = float.Parse(queryString.GetParameter("longitude"));
+        var lat = double.Parse(queryString.GetParameter("latitude"));
+        var lon = double.Parse(queryString.GetParameter("longitude"));
 
         // Returns a new instance of the Frame Specification with the data populated.
         return new ExampleExtrinsicFrameSpec { Latitude = lat, Longitude = lon };
@@ -227,7 +227,7 @@ Ethar.GeoPose is made possible by the excellent work of the Ethar Team:
 
 <table><tbody>
 
-<tr><th align="left">The Masked Coder</th><td>???</td><td>???</td></tr>
+<tr><th align="left">Cameron Wichael</th><td><a href="https://github.com/ckwichael">GitHub/ckwichael</a></td><td><a href="https://www.linkedin.com/in/cameron-wichael/">LinkedIn/Cameron-Wichael</a></td></tr>
 
 <tr><th align="left">Simon Jackson</th><td><a href="https://github.com/SimonDarksideJ">GitHub/SimonDarksideJ</a></td><td><a href="https://www.linkedin.com/in/xrconsultant/">LinkedIn/xrconsultant</a></td></tr>
 
