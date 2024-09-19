@@ -18,7 +18,7 @@ namespace Ethar.GeoPose.DataTypes
         /// <param name="x">The x value.</param>
         /// <param name="y">The y value.</param>
         /// <param name="z">The z value.</param>
-        public UnitVector3(float x, float y, float z)
+        public UnitVector3(double x, double y, double z)
         {
             this.X = x;
             this.Y = y;
@@ -49,7 +49,7 @@ namespace Ethar.GeoPose.DataTypes
         {
             get
             {
-                return new UnitVector3(1f, 1f, 1f);
+                return new UnitVector3(1, 1, 1);
             }
         }
 
@@ -63,7 +63,7 @@ namespace Ethar.GeoPose.DataTypes
         {
             get
             {
-                return new UnitVector3(1f, 0f, 0f);
+                return new UnitVector3(1, 0, 0);
             }
         }
 
@@ -77,7 +77,7 @@ namespace Ethar.GeoPose.DataTypes
         {
             get
             {
-                return new UnitVector3(0f, 1f, 0f);
+                return new UnitVector3(0, 1, 0);
             }
         }
 
@@ -91,7 +91,7 @@ namespace Ethar.GeoPose.DataTypes
         {
             get
             {
-                return new UnitVector3(0f, 0f, 1f);
+                return new UnitVector3(0, 0, 1);
             }
         }
 
@@ -99,19 +99,19 @@ namespace Ethar.GeoPose.DataTypes
         /// Gets or sets the x value.
         /// </summary>
         [JsonProperty("x")]
-        public float X { get; set; }
+        public double X { get; set; }
 
         /// <summary>
         /// Gets or sets the y value.
         /// </summary>
         [JsonProperty("y")]
-        public float Y { get; set; }
+        public double Y { get; set; }
 
         /// <summary>
         /// Gets or sets the z value.
         /// </summary>
         [JsonProperty("z")]
-        public float Z { get; set; }
+        public double Z { get; set; }
 
         /// <summary>
         /// Performs an equality comparison on two objects of type <see cref="UnitVector3"/>.

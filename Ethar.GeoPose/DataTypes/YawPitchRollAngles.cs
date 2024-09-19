@@ -20,7 +20,7 @@ namespace Ethar.GeoPose.DataTypes
         /// <param name="yaw">The yaw in decimal degrees.</param>
         /// <param name="pitch">The pitch in decimal degrees.</param>
         /// <param name="roll">The roll in decimal degrees.</param>
-        public YawPitchRollAngles(float yaw, float pitch, float roll)
+        public YawPitchRollAngles(double yaw, double pitch, double roll)
         {
             this.Yaw = yaw;
             this.Pitch = pitch;
@@ -31,19 +31,19 @@ namespace Ethar.GeoPose.DataTypes
         /// Gets or sets yaw specified in decimal degrees.
         /// </summary>
         [JsonProperty("yaw")]
-        public float Yaw { get; set; }
+        public double Yaw { get; set; }
 
         /// <summary>
         /// Gets or sets pitch specified in decimal degrees.
         /// </summary>
         [JsonProperty("pitch")]
-        public float Pitch { get; set; }
+        public double Pitch { get; set; }
 
         /// <summary>
         /// Gets or sets roll specified in decimal degrees.
         /// </summary>
         [JsonProperty("roll")]
-        public float Roll { get; set; }
+        public double Roll { get; set; }
 
         /// <summary>
         /// Performs an equality comparison on two objects of type <see cref="YawPitchRollAngles"/>.
