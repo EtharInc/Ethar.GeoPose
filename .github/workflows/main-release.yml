@@ -7,15 +7,15 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
       - name: Setup dotnet
-        uses: actions/setup-dotnet@v3
+        uses: actions/setup-dotnet@v4
         with:
           dotnet-version: | 
             5.x
             6.x
             7.x
-      - uses: actions/cache@v3
+      - uses: actions/cache@v4
         with:
           path: .nuget/packages
           # Look to see if there is a cache hit for the corresponding requirements file
@@ -34,9 +34,9 @@ jobs:
         run: |
           git config user.email "github-action@users.noreply.github.com"
           git config user.name "GitHub Action"
-          git tag v1.0.0
+          git tag v1.0.1
           git add .
-          git push origin v1.0.0
+          git push origin v1.0.1
       - name: Create Release
         id: create_release
         uses: marvinpinto/action-automatic-releases@latest
@@ -49,10 +49,10 @@ jobs:
           files: |
             ./Ethar.GeoPose.zip
             ./Ethar.GeoPose.Authority.zip
-            Ethar.GeoPose/bin/Release/Ethar.GeoPose.1.0.0.nupkg
-            Ethar.GeoPose.Authority/bin/Release/Ethar.GeoPose.Authority.1.0.0.nupkg
+            Ethar.GeoPose/bin/Release/Ethar.GeoPose.1.0.1.nupkg
+            Ethar.GeoPose.Authority/bin/Release/Ethar.GeoPose.Authority.1.0.1.nupkg
       - name: Clone UPM branch
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
         with:
           ref: upm
           path: upm
@@ -74,9 +74,9 @@ jobs:
           git add .
           git commit -m "upm package updated to ${{ steps.create_release.outputs.automatic_releases_tag }} [skip ci]"
           git push origin upm
-          git tag upm-v1.0.0
+          git tag upm-v1.0.1
           git add .
-          git push origin upm-v1.0.0
+          git push origin upm-v1.0.1
         shell: pwsh
       - name: Push GeoPose generated package to GitHub registry
         run: dotnet nuget push Ethar.GeoPose/bin/Release/Ethar.GeoPose.1.0.0.nupkg --api-key ${{ secrets.NUGET_TOKEN }} --source https://api.nuget.org/v3/index.json --skip-duplicate
