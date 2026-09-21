@@ -35,6 +35,18 @@ namespace Ethar.GeoPose.Authority.FrameSpecifications
         }
 
         /// <summary>
+        /// Initializes a new instance of the <see cref="LtpNedSpecification"/> class for a derived authority or id.
+        /// </summary>
+        /// <param name="id">The frame specification id.</param>
+        /// <param name="authority">The authority name.</param>
+        /// <param name="position">The tangent point.</param>
+        protected LtpNedSpecification(string id, string authority, TangentPointPosition position)
+            : base(id, authority)
+        {
+            this.Position = position;
+        }
+
+        /// <summary>
         ///  Gets the position in latitude and longitude in decimal degrees, and height in meters.
         /// </summary>
         [JsonProperty("position")]

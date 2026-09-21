@@ -38,6 +38,20 @@ namespace Ethar.GeoPose.Authority.FrameSpecifications
         }
 
         /// <summary>
+        /// Initializes a new instance of the <see cref="TranslateRotateSpecification"/> class for a derived authority or id.
+        /// </summary>
+        /// <param name="id">The frame specification id.</param>
+        /// <param name="authority">The authority name.</param>
+        /// <param name="translation">The translation.</param>
+        /// <param name="rotation">The rotation.</param>
+        protected TranslateRotateSpecification(string id, string authority, UnitVector3 translation, UnitQuaternion rotation)
+            : base(id, authority)
+        {
+            this.Translation = translation;
+            this.Rotation = rotation;
+        }
+
+        /// <summary>
         /// Gets the translation.
         /// </summary>
         [JsonProperty("translation")]

@@ -1,15 +1,33 @@
 # Contribution Guidelines
 
-The Ethar GeoPose library is under the [Apache2.0 License](https://github.com/EtharInc/Ethar.GeoPose/blob/main/LICENSE.txt). By contributing to the Ethar GeoPose library, you assert that:
+The Ethar GeoPose library is under the [Apache2.0 License](https://github.com/EtharInc/Ethar.GeoPose/blob/main/LICENSE). By contributing to the Ethar GeoPose library, you assert that:
 
 * The contribution is your own original work.
-* The contribution adheres to the [Coding Guidelines](articles/appendices/A01-CodingGuidelines.md)
+* The contribution adheres to the coding style enforced by the StyleCop analyzers in each project (see `stylecop.json`)
 * You have the right to assign the copyright for the work (it is not owned by your employer, or
   you have been given copyright assignment in writing).
 
+## Building and testing locally
+
+The core library, the Ethar authority and both test projects are plain .NET projects with no Unity dependency, so everything can be built and tested from the command line without a Unity installation:
+
+```text
+dotnet build Ethar.GeoPose.sln -c Release
+dotnet test  Ethar.GeoPose.sln
+```
+
+`dotnet test` runs both `Ethar.GeoPose.UnitTests` and `Ethar.GeoPose.Authority.UnitTests` on the current LTS runtime. The suites include:
+
+* round trips of all twenty official OGC example instances (`Ethar.GeoPose.UnitTests/Fixtures/Ogc`);
+* the orientation conventions under every axis order, intrinsic and extrinsic, in degrees and radians, checked against the OGC GeoPoseSandbox sequence and the OGC example data;
+* numeric precision from integer, single and double inputs through JSON, parameter strings and geodesy;
+* culture invariance: every parameter string, JSON payload and conversion run under nineteen locales, including the comma-decimal ones that broke version 1, with hazard tests proving the runtime would otherwise misparse.
+
+The tests that call the public `service.geopose.io` endpoint are compiled out unless the `APITEST` symbol is defined. The same test sources ship in the UPM package under `Samples~/Tests` for the Unity Test Runner; nothing in them requires Unity.
+
 ## Finding Existing Issues
 
-Before filing a new issue, please search our [open issues](https://github.com/dotnet/runtime/issues) to check if it already exists.
+Before filing a new issue, please search our [open issues](https://github.com/EtharInc/Ethar.GeoPose/issues) to check if it already exists.
 
 If you do find an existing issue, please include your own feedback in the discussion. Do consider upvoting (👍 reaction) the original post, as this helps us prioritize popular issues in our backlog.
 
@@ -23,7 +41,7 @@ Good bug reports make it easier for maintainers to verify and root cause the und
 * Information on the environment: OS/distro, CPU arch, SDK version, etc.
 * Additional information, e.g. is it a regression from previous versions? are there any known workarounds?
 
-When ready to submit a bug report, please use the [Bug Report issue template](https://github.com/dotnet/runtime/issues/new?assignees=&labels=&template=01_bug_report.yml).
+When ready to submit a bug report, please use the [Bug Report issue template](https://github.com/EtharInc/Ethar.GeoPose/issues/new?template=01_bug_report.yml).
 
 ### Why are Minimal Reproductions Important?
 
@@ -69,6 +87,8 @@ Please do not:
 * **DON'T** add API additions without filing an issue and discussing with us first. The project is governed by the [GeoPose standard](https://docs.ogc.org/dis/21-056r10/21-056r10.html) and changes need to be ratified first.
 
 ## How to contribute
+
+The following instructions detail the requirements for contribution to the project.
 
 ### Prerequisites
 

@@ -5,13 +5,32 @@
 namespace Ethar.GeoPose.DataTypes
 {
     using System;
+    using Ethar.GeoPose.JsonConversion;
     using Newtonsoft.Json;
 
     /// <summary>
     /// A construct that represents yaw, pitch, and roll angles specified in decimal degrees.
-    ///
-    /// Requirements derived from figure 8 in section 7.2.1 of version 1.0.0 of the GeoPose spec http://www.opengis.net/doc/DIS/geopose/1.0.
     /// </summary>
+    /// <remarks>
+    /// <para>
+    /// Frame and order follow OGC GeoPose 1.0 (21-056r11) requirement /req/basic-ypr/angles: three consecutive rotations of a
+    /// reference frame aligned East-North-Up (x East, y North, z Up, right-handed) about the local, already rotated, axes z (yaw),
+    /// then y (pitch), then x (roll), in that order. All three are signed decimal degrees.
+    /// </para>
+    /// <para>
+    /// The frame is right-handed, so a positive yaw is counter-clockwise viewed from above and turns East towards North. With pitch on y
+    /// and roll on x the x axis is the reference (forward) direction: an all-zero orientation faces East and a yaw of 90° faces North.
+    /// Compass bearings are clockwise from North, the opposite sense; convert with <see cref="Ethar.GeoPose.Conventions.CompassHeading"/>.
+    /// Convert to a unit quaternion with <see cref="Ethar.GeoPose.Conventions.OrientationConversions.ToQuaternion(YawPitchRollAngles)"/>.
+    /// </para>
+    /// <para>
+    /// Left-handed, Y-up engines such as Unity cannot use these values directly as Euler angles: the axes and the sense of rotation both
+    /// differ. Map through <see cref="Ethar.GeoPose.Conventions.LeftHandedYUpFrame"/> instead.
+    /// </para>
+    /// <para>
+    /// Requirements derived from figure 8 in section 7.2.1 of version 1.0 of the GeoPose standard https://docs.ogc.org/is/21-056r11/21-056r11.html.
+    /// </para>
+    /// </remarks>
     public struct YawPitchRollAngles : IEquatable<YawPitchRollAngles>
     {
         /// <summary>
@@ -90,7 +109,7 @@ namespace Ethar.GeoPose.DataTypes
         /// <inheritdoc/>
         public override string ToString()
         {
-            return $"Yaw:{this.Yaw}, Pitch:{this.Pitch}, Roll:{this.Roll}";
+            return $"Yaw:{InvariantNumber.Format(this.Yaw)}, Pitch:{InvariantNumber.Format(this.Pitch)}, Roll:{InvariantNumber.Format(this.Roll)}";
         }
     }
 }
