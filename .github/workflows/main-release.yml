@@ -7,15 +7,15 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
       - name: Setup dotnet
-        uses: actions/setup-dotnet@v4
+        uses: actions/setup-dotnet@v6
         with:
           dotnet-version: | 
             5.x
             6.x
             7.x
-      - uses: actions/cache@v4
+      - uses: actions/cache@v6
         with:
           path: .nuget/packages
           # Look to see if there is a cache hit for the corresponding requirements file
@@ -34,9 +34,9 @@ jobs:
         run: |
           git config user.email "github-action@users.noreply.github.com"
           git config user.name "GitHub Action"
-          git tag v1.0.1
+          git tag v2.0.0
           git add .
-          git push origin v1.0.1
+          git push origin v2.0.0
       - name: Create Release
         id: create_release
         uses: marvinpinto/action-automatic-releases@latest
@@ -52,7 +52,7 @@ jobs:
             Ethar.GeoPose/bin/Release/Ethar.GeoPose.1.0.1.nupkg
             Ethar.GeoPose.Authority/bin/Release/Ethar.GeoPose.Authority.1.0.1.nupkg
       - name: Clone UPM branch
-        uses: actions/checkout@v4
+        uses: actions/checkout@v7
         with:
           ref: upm
           path: upm
