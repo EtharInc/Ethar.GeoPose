@@ -8,7 +8,7 @@
     </picture>
 </p>
 
-[![CI](https://github.com/etharinc/Ethar.GeoPose/actions/workflows/main-release.yml/badge.svg?branch=main)](https://github.com/etharinc/MQTTnet/actions/workflows/main-release.yml)
+[![Build and test](https://github.com/EtharInc/Ethar.GeoPose/actions/workflows/develop-buildandtest.yml/badge.svg?branch=development)](https://github.com/EtharInc/Ethar.GeoPose/actions/workflows/develop-buildandtest.yml) [![Release](https://github.com/EtharInc/Ethar.GeoPose/actions/workflows/main-release.yml/badge.svg?branch=main)](https://github.com/EtharInc/Ethar.GeoPose/actions/workflows/main-release.yml)
 [![NuGet Badge](https://buildstats.info/nuget/Ethar.GeoPose)](https://www.nuget.org/packages/Ethar.GeoPose)
 ![Size](https://img.shields.io/github/repo-size/etharinc/ethar.geopose)
 [![License: Apache 2.0](https://img.shields.io/badge/License-APACHE2.0-green.svg)](https://raw.githubusercontent.com/etharinc/Ethar.GeoPose/main/LICENSE)

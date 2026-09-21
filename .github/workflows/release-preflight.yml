@@ -1,0 +1,114 @@
+name: Release preflight
+
+# Runs on pull requests into main (the release PRs) and on demand. It publishes nothing.
+# It builds and tests, packs the NuGet packages and checks them, confirms the version in
+# Directory.Build.props is not already tagged or on nuget.org, shows the change the upm branch
+# would receive, and reports the version the Release workflow will publish once the PR is merged.
+
+on:
+  pull_request:
+    branches:
+      - main
+  workflow_dispatch:
+
+concurrency:
+  group: preflight-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+jobs:
+  version:
+    name: Read version
+    uses: ./.github/workflows/getpackageversion.yml
+    with:
+      build-host: ubuntu-latest
+
+  preflight:
+    name: Package dry run for v${{ needs.version.outputs.packageversion }}
+    needs: version
+    runs-on: ubuntu-latest
+    env:
+      VERSION: ${{ needs.version.outputs.packageversion }}
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          persist-credentials: false
+
+      - name: Setup dotnet
+        uses: actions/setup-dotnet@v6
+        with:
+          dotnet-version: |
+            6.x
+            8.x
+
+      - uses: actions/cache@v6
+        with:
+          path: ~/.nuget/packages
+          key: ${{ runner.os }}-nuget-${{ hashFiles('**/*.csproj', 'Directory.Build.props') }}
+          restore-keys: |
+            ${{ runner.os }}-nuget-
+
+      - name: Restore
+        run: dotnet restore
+
+      - name: Build
+        run: dotnet build --configuration Release --no-restore
+
+      - name: Test
+        run: dotnet test --configuration Release --no-build --logger trx --results-directory TestResults
+
+      - name: Pack
+        run: dotnet pack --configuration Release --no-build --output artifacts/packages
+
+      - name: Validate packages
+        run: .github/scripts/validate-packages.sh "$VERSION" artifacts/packages
+
+      - name: Check the version is still free (tags and nuget.org)
+        run: .github/scripts/check-release-availability.sh "$VERSION"
+
+      - name: Check release secrets are configured
+        # Secrets are not available to pull requests from forks, so only check same-repo runs.
+        if: ${{ github.event_name != 'pull_request' || github.event.pull_request.head.repo.full_name == github.repository }}
+        env:
+          NUGET_TOKEN: ${{ secrets.NUGET_TOKEN }}
+        run: |
+          if [ -z "$NUGET_TOKEN" ]; then
+            echo "::error::The NUGET_TOKEN secret is empty or missing. The Release workflow cannot push to nuget.org without it."
+            exit 1
+          fi
+          echo "NUGET_TOKEN is present (${#NUGET_TOKEN} characters)"
+
+      - name: Checkout upm branch
+        uses: actions/checkout@v7
+        with:
+          ref: upm
+          path: upm
+          persist-credentials: false
+
+      - name: Show the change the upm branch would receive
+        run: |
+          .github/scripts/build-upm-payload.sh artifacts/upm-payload
+          .github/scripts/apply-upm-payload.sh artifacts/upm-payload upm "$VERSION"
+
+      - name: Upload packages for inspection
+        uses: actions/upload-artifact@v7
+        with:
+          name: preflight-packages-v${{ env.VERSION }}
+          path: artifacts/packages
+
+      - name: Summary
+        env:
+          PRERELEASE: ${{ needs.version.outputs.is-prerelease }}
+        run: |
+          {
+            echo "## Release preflight for v$VERSION"
+            echo ""
+            echo "- Directory.Build.props version: \`$VERSION\` (pre-release: $PRERELEASE)"
+            echo "- Tags on release: \`v$VERSION\` on main and \`upm-v$VERSION\` on upm"
+            echo "- NuGet packages: Ethar.GeoPose $VERSION, Ethar.GeoPose.Authority $VERSION"
+            echo "- Packages validated, version confirmed free on nuget.org and as a tag"
+            echo ""
+            echo "Nothing was published. After merging to main, run the Release workflow with dry-run enabled first."
+          } >> "$GITHUB_STEP_SUMMARY"

@@ -1,84 +1,270 @@
-name: CI Release
+name: Release
 
-on: 
+# Publishes a release of Ethar.GeoPose and Ethar.GeoPose.Authority from main. Run it by hand.
+#
+# dry-run (default true): builds, tests, packs, validates the packages, confirms the version is
+#   free, shows the change the upm branch would receive and uploads the packages as an artifact.
+#   Nothing is tagged, released, pushed or published. Run this first, every time.
+#
+# dry-run false (main only): does everything above, then in the "release" environment:
+#   1. tags main as v<version> and creates the GitHub release with the packages attached
+#   2. copies the net48 build and samples onto the upm branch, sets package.json to <version>,
+#      commits, pushes and tags upm-v<version>
+#   3. pushes both packages to nuget.org. This is last because it cannot be undone.
+#   4. opens a pull request to refresh development from main
+#
+# The version comes from <Version> in Directory.Build.props. Bump it in the PR that lands the change.
+# Add required reviewers to the "release" environment in repository settings for an extra approval gate.
+
+on:
   workflow_dispatch:
+    inputs:
+      dry-run:
+        description: "Dry run: validate and show what would be published, but publish nothing"
+        type: boolean
+        default: true
+
+permissions:
+  contents: read
+
+concurrency:
+  group: release-${{ github.ref }}
+  cancel-in-progress: false
 
 jobs:
-  build:
+  version:
+    name: Read version
+    uses: ./.github/workflows/getpackageversion.yml
+    with:
+      build-host: ubuntu-latest
+
+  package:
+    name: ${{ inputs.dry-run && 'Dry run' || 'Package' }} v${{ needs.version.outputs.packageversion }}
+    needs: version
     runs-on: ubuntu-latest
+    env:
+      VERSION: ${{ needs.version.outputs.packageversion }}
     steps:
-      - uses: actions/checkout@v3
+      - name: Refuse a real release from anywhere but main
+        if: ${{ !inputs.dry-run && github.ref != 'refs/heads/main' }}
+        run: |
+          echo "::error::A real release must run from main, not ${GITHUB_REF}. Re-run with dry-run enabled to test this branch."
+          exit 1
+
+      - uses: actions/checkout@v7
+        with:
+          persist-credentials: false
+
       - name: Setup dotnet
-        uses: actions/setup-dotnet@v3
+        uses: actions/setup-dotnet@v6
         with:
-          dotnet-version: | 
-            5.x
+          dotnet-version: |
             6.x
-            7.x
-      - uses: actions/cache@v3
+            8.x
+
+      - uses: actions/cache@v6
         with:
-          path: .nuget/packages
-          # Look to see if there is a cache hit for the corresponding requirements file
-          key: ${{ runner.os }}-nuget-${{ hashFiles('**/packages.lock.json') }}
+          path: ~/.nuget/packages
+          key: ${{ runner.os }}-nuget-${{ hashFiles('**/*.csproj', 'Directory.Build.props') }}
           restore-keys: |
-            ${{ runner.os }}-nuget          
-      - name: Install dependencies
+            ${{ runner.os }}-nuget-
+
+      - name: Restore
         run: dotnet restore
+
       - name: Build
-        run: dotnet build --configuration Release
-      - name: Create packages # This would actually build your project, using zip for an example artifact
+        run: dotnet build --configuration Release --no-restore
+
+      - name: Test
+        run: dotnet test --configuration Release --no-build --logger trx --results-directory TestResults
+
+      - name: Pack
+        run: dotnet pack --configuration Release --no-build --output artifacts/packages
+
+      - name: Validate packages
+        run: .github/scripts/validate-packages.sh "$VERSION" artifacts/packages
+
+      - name: Check the version is still free (tags and nuget.org)
+        run: .github/scripts/check-release-availability.sh "$VERSION"
+
+      - name: Check release secrets are configured
+        env:
+          NUGET_TOKEN: ${{ secrets.NUGET_TOKEN }}
         run: |
-          zip -r Ethar.GeoPose.zip Ethar.GeoPose/bin/Release
-          zip -r Ethar.GeoPose.Authority.zip Ethar.GeoPose.Authority/bin/Release
-      - name: Tag Release
-        run: |
-          git config user.email "github-action@users.noreply.github.com"
-          git config user.name "GitHub Action"
-          git tag v1.0.0
-          git add .
-          git push origin v1.0.0
-      - name: Create Release
-        id: create_release
-        uses: marvinpinto/action-automatic-releases@latest
-        with:
-          repo_token: ${{ secrets.CI_TOKEN }}
-          automatic_release_tag: "latest"
-          prerelease: false
-          title: "Release ${{ github.job }}"
-          draft: false
-          files: |
-            ./Ethar.GeoPose.zip
-            ./Ethar.GeoPose.Authority.zip
-            Ethar.GeoPose/bin/Release/Ethar.GeoPose.1.0.0.nupkg
-            Ethar.GeoPose.Authority/bin/Release/Ethar.GeoPose.Authority.1.0.0.nupkg
-      - name: Clone UPM branch
-        uses: actions/checkout@v3
+          if [ -z "$NUGET_TOKEN" ]; then
+            echo "::error::The NUGET_TOKEN secret is empty or missing. Add it under repository or organisation secrets."
+            exit 1
+          fi
+          echo "NUGET_TOKEN is present (${#NUGET_TOKEN} characters)"
+
+      - name: Checkout upm branch
+        uses: actions/checkout@v7
         with:
           ref: upm
           path: upm
-          token: ${{ secrets.CI_TOKEN }}
-      - name: Copy Releases to upm
+          persist-credentials: false
+
+      - name: Build the upm payload and show the change the upm branch would receive
         run: |
-          Copy-Item ./Ethar.GeoPose/bin/Release/net48/Ethar.GeoPose*.* -Destination ./upm/Runtime/Plugins/Ethar.GeoPose -Recurse -Force
-          Copy-Item ./Ethar.GeoPose.Authority/bin/Release/net48/Ethar.GeoPose.Authority*.* -Destination ./upm/Runtime/Plugins/Ethar.GeoPose.Authority -Recurse -Force
-          Copy-Item ./Ethar.GeoPose.Examples/Example_BasicSerialization.cs -Destination ./upm/Samples~/BasicSerialization -Force
-          Copy-Item ./Ethar.GeoPose.Examples/Example_AuthorityImplementation.cs -Destination ./upm/Samples~/AuthorityImplementation -Force
-          Copy-Item ./Ethar.GeoPose.UnitTests/*.cs -Destination ./upm/Samples~/Tests/Editor/GeoPose -Force
-          Copy-Item ./Ethar.GeoPose.Authority.UnitTests/*.cs -Destination ./upm/Samples~/Tests/Editor/Authority -Force
-        shell: pwsh
-      - name: Publish upm changes
+          .github/scripts/build-upm-payload.sh artifacts/upm-payload
+          .github/scripts/apply-upm-payload.sh artifacts/upm-payload upm "$VERSION"
+
+      - name: Zip release binaries
         run: |
+          zip -r -q "artifacts/Ethar.GeoPose.$VERSION.zip" Ethar.GeoPose/bin/Release
+          zip -r -q "artifacts/Ethar.GeoPose.Authority.$VERSION.zip" Ethar.GeoPose.Authority/bin/Release
+          ls -l artifacts
+
+      - name: Upload release files
+        uses: actions/upload-artifact@v7
+        with:
+          name: release-files-v${{ env.VERSION }}
+          path: |
+            artifacts/packages
+            artifacts/upm-payload
+            artifacts/*.zip
+
+      - name: Summary
+        env:
+          DRY_RUN: ${{ inputs.dry-run }}
+          PRERELEASE: ${{ needs.version.outputs.is-prerelease }}
+        run: |
+          {
+            if [ "$DRY_RUN" = "true" ]; then
+              echo "## Dry run for v$VERSION - nothing was published"
+            else
+              echo "## Packaged v$VERSION - publishing follows"
+            fi
+            echo ""
+            echo "- Version: \`$VERSION\` (pre-release: $PRERELEASE) from Directory.Build.props"
+            echo "- Would tag: \`v$VERSION\` on main and \`upm-v$VERSION\` on upm"
+            echo "- Would publish to nuget.org: Ethar.GeoPose $VERSION, Ethar.GeoPose.Authority $VERSION"
+            echo "- Would commit to upm: net48 assemblies, samples, tests and package.json version $VERSION"
+            echo "- Packages and upm payload are attached as the \`release-files-v$VERSION\` artifact"
+          } >> "$GITHUB_STEP_SUMMARY"
+
+  publish:
+    name: Publish v${{ needs.version.outputs.packageversion }}
+    if: ${{ !inputs.dry-run && github.ref == 'refs/heads/main' }}
+    needs: [version, package]
+    runs-on: ubuntu-latest
+    environment: release
+    permissions:
+      contents: write
+    env:
+      VERSION: ${{ needs.version.outputs.packageversion }}
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          fetch-depth: 0
+
+      - name: Download release files
+        uses: actions/download-artifact@v8
+        with:
+          name: release-files-v${{ env.VERSION }}
+          path: artifacts
+
+      - name: Configure git identity
+        run: |
+          git config --global user.name "github-actions[bot]"
+          git config --global user.email "41898282+github-actions[bot]@users.noreply.github.com"
+
+      - name: Check the version is still free (tags and nuget.org)
+        run: .github/scripts/check-release-availability.sh "$VERSION"
+
+      - name: Tag main
+        run: |
+          git tag -a "v$VERSION" -m "v$VERSION Release"
+          git push origin "v$VERSION"
+          echo "Tagged $(git rev-parse --short HEAD) as v$VERSION"
+
+      - name: Create GitHub release
+        uses: softprops/action-gh-release@v3
+        with:
+          tag_name: v${{ env.VERSION }}
+          name: Ethar.GeoPose v${{ env.VERSION }}
+          body_path: .github/ReleaseNotes.md
+          generate_release_notes: true
+          prerelease: ${{ needs.version.outputs.is-prerelease == 'true' }}
+          files: |
+            artifacts/packages/*.nupkg
+            artifacts/packages/*.snupkg
+            artifacts/*.zip
+
+      - name: Checkout upm branch
+        uses: actions/checkout@v7
+        with:
+          ref: upm
+          path: upm
+
+      - name: Update and push the upm branch
+        run: |
+          .github/scripts/apply-upm-payload.sh artifacts/upm-payload upm "$VERSION"
           cd upm
-          git config user.email "github-action@users.noreply.github.com"
-          git config user.name "GitHub Action"
-          git add .
-          git commit -m "upm package updated to ${{ steps.create_release.outputs.automatic_releases_tag }} [skip ci]"
-          git push origin upm
-          git tag upm-v1.0.0
-          git add .
-          git push origin upm-v1.0.0
-        shell: pwsh
-      - name: Push GeoPose generated package to GitHub registry
-        run: dotnet nuget push Ethar.GeoPose/bin/Release/Ethar.GeoPose.1.0.0.nupkg --api-key ${{ secrets.NUGET_TOKEN }} --source https://api.nuget.org/v3/index.json --skip-duplicate
-      - name: Push Ethar Authority generated package to GitHub registry
-        run: dotnet nuget push Ethar.GeoPose.Authority/bin/Release/Ethar.GeoPose.Authority.1.0.0.nupkg --api-key ${{ secrets.NUGET_TOKEN }} --source https://api.nuget.org/v3/index.json --skip-duplicate
+          git add -A
+          if git diff --cached --quiet; then
+            echo "::warning::upm branch already matches v$VERSION, nothing to commit"
+          else
+            git commit -m "upm package updated to v$VERSION [skip ci]"
+            git push origin HEAD:upm
+          fi
+          git tag -a "upm-v$VERSION" -m "upm-v$VERSION Release"
+          git push origin "upm-v$VERSION"
+          echo "Tagged $(git rev-parse --short HEAD) on upm as upm-v$VERSION"
+
+      - name: Push packages to nuget.org
+        # Last on purpose. Everything above can be deleted again, a nuget.org push cannot.
+        # Ethar.GeoPose goes first because Ethar.GeoPose.Authority depends on it.
+        env:
+          NUGET_TOKEN: ${{ secrets.NUGET_TOKEN }}
+        run: |
+          for id in Ethar.GeoPose Ethar.GeoPose.Authority; do
+            echo "Pushing $id $VERSION"
+            dotnet nuget push "artifacts/packages/$id.$VERSION.nupkg" \
+              --api-key "$NUGET_TOKEN" \
+              --source https://api.nuget.org/v3/index.json
+          done
+
+      - name: Summary
+        run: |
+          {
+            echo "## Released v$VERSION"
+            echo ""
+            echo "- GitHub release: https://github.com/$GITHUB_REPOSITORY/releases/tag/v$VERSION"
+            echo "- upm tag: \`upm-v$VERSION\`"
+            echo "- nuget.org: https://www.nuget.org/packages/Ethar.GeoPose/$VERSION and https://www.nuget.org/packages/Ethar.GeoPose.Authority/$VERSION (indexing takes a few minutes)"
+          } >> "$GITHUB_STEP_SUMMARY"
+
+  refresh-development:
+    name: Open PR to refresh development from main
+    # development is a protected branch, so the workflow cannot push the merge itself.
+    # It opens a pull request instead, which a maintainer merges with a merge commit.
+    if: ${{ !cancelled() && needs.publish.result == 'success' }}
+    needs: [version, publish]
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      pull-requests: write
+    env:
+      GH_TOKEN: ${{ github.token }}
+      VERSION: ${{ needs.version.outputs.packageversion }}
+    steps:
+      - name: Open or find the refresh pull request
+        run: |
+          if ! gh api "repos/$GITHUB_REPOSITORY/branches/development" --silent 2>/dev/null; then
+            echo "::warning::No development branch exists, nothing to refresh"
+            exit 0
+          fi
+          ahead=$(gh api "repos/$GITHUB_REPOSITORY/compare/development...main" --jq .ahead_by)
+          if [ "$ahead" = "0" ]; then
+            echo "development already contains main, nothing to refresh"
+            exit 0
+          fi
+          existing=$(gh pr list --repo "$GITHUB_REPOSITORY" --base development --head main --state open --json number --jq '.[0].number')
+          if [ -n "$existing" ]; then
+            echo "Refresh PR #$existing is already open"
+            exit 0
+          fi
+          gh pr create --repo "$GITHUB_REPOSITORY" --base development --head main \
+            --title "Refresh development from main after v$VERSION" \
+            --body "Merges the v$VERSION release on main back into development so the branches share history. Merge with a merge commit, not a squash."

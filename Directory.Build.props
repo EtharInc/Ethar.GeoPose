@@ -1,0 +1,11 @@
+<Project>
+  <!--
+    Single source of truth for the package version of Ethar.GeoPose and Ethar.GeoPose.Authority.
+    The release workflows read this value, tag the release as v<Version>, and write the same
+    version into package.json on the upm branch. Bump it in the pull request that carries the change.
+    NuGet.org never allows a version to be re-published, so check release-preflight before merging to main.
+  -->
+  <PropertyGroup>
+    <Version>1.0.1</Version>
+  </PropertyGroup>
+</Project>

@@ -1,0 +1,11 @@
+<Project>
+  <!-- Embeds .github/ReleaseNotes.md as the NuGet release notes of every packable project. -->
+  <Target Name="ImportReleaseNotes" BeforeTargets="GenerateNuspec" Condition="'$(IsPackable)' != 'false'">
+    <ReadLinesFromFile File="$(MSBuildThisFileDirectory).github/ReleaseNotes.md">
+      <Output TaskParameter="Lines" ItemName="ReleaseNotes" />
+    </ReadLinesFromFile>
+    <PropertyGroup>
+      <PackageReleaseNotes>@(ReleaseNotes, '%0a')</PackageReleaseNotes>
+    </PropertyGroup>
+  </Target>
+</Project>

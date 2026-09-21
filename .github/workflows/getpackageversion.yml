@@ -1,0 +1,66 @@
+name: Get the package version from Directory.Build.props
+
+# Reusable workflow. Reads <Version> from Directory.Build.props, the single source of truth for
+# the Ethar.GeoPose and Ethar.GeoPose.Authority package versions, and hands it to the caller.
+
+on:
+  workflow_call:
+    inputs:
+      build-host:
+        required: true
+        type: string
+      target-ref:
+        description: Ref to read the version from. Defaults to the triggering ref.
+        required: false
+        type: string
+        default: ${{ github.ref }}
+      version-file-path:
+        description: Path to the props file that holds <Version>.
+        required: false
+        type: string
+        default: Directory.Build.props
+    outputs:
+      packageversion:
+        description: The version, without a leading v (for example 1.0.1 or 2.0.0-pre.1)
+        value: ${{ jobs.get_package_version.outputs.packageversion }}
+      is-prerelease:
+        description: "true when the version carries a pre-release suffix"
+        value: ${{ jobs.get_package_version.outputs.isprerelease }}
+
+jobs:
+  get_package_version:
+    name: Read package version
+    runs-on: ${{ inputs.build-host }}
+    outputs:
+      packageversion: ${{ steps.getVersion.outputs.packageversion }}
+      isprerelease: ${{ steps.getVersion.outputs.isprerelease }}
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          ref: ${{ inputs.target-ref }}
+          persist-credentials: false
+
+      - id: getVersion
+        name: Read version
+        shell: bash
+        env:
+          VERSION_FILE: ${{ inputs.version-file-path }}
+        run: |
+          if [ ! -f "$VERSION_FILE" ]; then
+            echo "::error::No version file found at $VERSION_FILE"
+            exit 1
+          fi
+          version=$(sed -n -E 's:.*<Version>([^<]+)</Version>.*:\1:p' "$VERSION_FILE" | head -1 | tr -d '\r')
+          if [ -z "$version" ]; then
+            echo "::error::$VERSION_FILE has no <Version> element"
+            exit 1
+          fi
+          if ! [[ "$version" =~ ^[0-9]+\.[0-9]+\.[0-9]+(-[0-9A-Za-z.-]+)?$ ]]; then
+            echo "::error::'$version' is not a valid package version (expected major.minor.patch with an optional -pre suffix)"
+            exit 1
+          fi
+          isprerelease=false
+          case "$version" in *-*) isprerelease=true ;; esac
+          echo "Detected package version $version (pre-release: $isprerelease)"
+          echo "packageversion=$version" >> "$GITHUB_OUTPUT"
+          echo "isprerelease=$isprerelease" >> "$GITHUB_OUTPUT"

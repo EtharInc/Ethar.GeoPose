@@ -408,3 +408,5 @@ ASALocalRun/
 
 # docFX generated site
 _site
+# CI test output
+TestResults/
