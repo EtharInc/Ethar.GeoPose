@@ -26,7 +26,7 @@ jobs:
       build-host: ubuntu-latest
 
   preflight:
-    name: Package dry run for v${{ needs.version.outputs.packageversion }}
+    name: Package dry run
     needs: version
     runs-on: ubuntu-latest
     env:
@@ -104,6 +104,8 @@ jobs:
         run: |
           {
             echo "## Release preflight for v$VERSION"
+            echo ""
+            echo "This job is named \"Package dry run\" so it can be a required status check on main."
             echo ""
             echo "- Directory.Build.props version: \`$VERSION\` (pre-release: $PRERELEASE)"
             echo "- Tags on release: \`v$VERSION\` on main and \`upm-v$VERSION\` on upm"
