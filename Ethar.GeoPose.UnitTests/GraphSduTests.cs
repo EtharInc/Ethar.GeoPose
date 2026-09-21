@@ -78,29 +78,29 @@ namespace Ethar.GeoPose.UnitTests
 
             var translateRotateList = sdu.FrameList.OfType<TranslateRotateSpecification>().ToList();
 
-            Assert.That(translateRotateList.ElementAt(0).Translation.X, Is.EqualTo(0.1f));
-            Assert.That(translateRotateList.ElementAt(0).Translation.Y, Is.EqualTo(0.2f));
-            Assert.That(translateRotateList.ElementAt(0).Translation.Z, Is.EqualTo(0.3f));
-            Assert.That(translateRotateList.ElementAt(0).Rotation.X, Is.EqualTo(0.692f));
-            Assert.That(translateRotateList.ElementAt(0).Rotation.Y, Is.EqualTo(0.691f));
-            Assert.That(translateRotateList.ElementAt(0).Rotation.Z, Is.EqualTo(0.141f));
-            Assert.That(translateRotateList.ElementAt(0).Rotation.W, Is.EqualTo(0.14f));
+            Assert.That(translateRotateList.ElementAt(0).Translation.X, Is.EqualTo(0.1));
+            Assert.That(translateRotateList.ElementAt(0).Translation.Y, Is.EqualTo(0.2));
+            Assert.That(translateRotateList.ElementAt(0).Translation.Z, Is.EqualTo(0.3));
+            Assert.That(translateRotateList.ElementAt(0).Rotation.X, Is.EqualTo(0.692));
+            Assert.That(translateRotateList.ElementAt(0).Rotation.Y, Is.EqualTo(0.691));
+            Assert.That(translateRotateList.ElementAt(0).Rotation.Z, Is.EqualTo(0.141));
+            Assert.That(translateRotateList.ElementAt(0).Rotation.W, Is.EqualTo(0.14));
 
-            Assert.That(translateRotateList.ElementAt(1).Translation.X, Is.EqualTo(0.4f));
-            Assert.That(translateRotateList.ElementAt(1).Translation.Y, Is.EqualTo(0.5f));
-            Assert.That(translateRotateList.ElementAt(1).Translation.Z, Is.EqualTo(0.6f));
-            Assert.That(translateRotateList.ElementAt(1).Rotation.X, Is.EqualTo(0.692f));
-            Assert.That(translateRotateList.ElementAt(1).Rotation.Y, Is.EqualTo(0.691f));
-            Assert.That(translateRotateList.ElementAt(1).Rotation.Z, Is.EqualTo(0.141f));
-            Assert.That(translateRotateList.ElementAt(1).Rotation.W, Is.EqualTo(0.14f));
+            Assert.That(translateRotateList.ElementAt(1).Translation.X, Is.EqualTo(0.4));
+            Assert.That(translateRotateList.ElementAt(1).Translation.Y, Is.EqualTo(0.5));
+            Assert.That(translateRotateList.ElementAt(1).Translation.Z, Is.EqualTo(0.6));
+            Assert.That(translateRotateList.ElementAt(1).Rotation.X, Is.EqualTo(0.692));
+            Assert.That(translateRotateList.ElementAt(1).Rotation.Y, Is.EqualTo(0.691));
+            Assert.That(translateRotateList.ElementAt(1).Rotation.Z, Is.EqualTo(0.141));
+            Assert.That(translateRotateList.ElementAt(1).Rotation.W, Is.EqualTo(0.14));
 
-            Assert.That(translateRotateList.ElementAt(2).Translation.X, Is.EqualTo(0.7f));
-            Assert.That(translateRotateList.ElementAt(2).Translation.Y, Is.EqualTo(0.8f));
-            Assert.That(translateRotateList.ElementAt(2).Translation.Z, Is.EqualTo(0.9f));
-            Assert.That(translateRotateList.ElementAt(2).Rotation.X, Is.EqualTo(0.692f));
-            Assert.That(translateRotateList.ElementAt(2).Rotation.Y, Is.EqualTo(0.691f));
-            Assert.That(translateRotateList.ElementAt(2).Rotation.Z, Is.EqualTo(0.141f));
-            Assert.That(translateRotateList.ElementAt(2).Rotation.W, Is.EqualTo(0.14f));
+            Assert.That(translateRotateList.ElementAt(2).Translation.X, Is.EqualTo(0.7));
+            Assert.That(translateRotateList.ElementAt(2).Translation.Y, Is.EqualTo(0.8));
+            Assert.That(translateRotateList.ElementAt(2).Translation.Z, Is.EqualTo(0.9));
+            Assert.That(translateRotateList.ElementAt(2).Rotation.X, Is.EqualTo(0.692));
+            Assert.That(translateRotateList.ElementAt(2).Rotation.Y, Is.EqualTo(0.691));
+            Assert.That(translateRotateList.ElementAt(2).Rotation.Z, Is.EqualTo(0.141));
+            Assert.That(translateRotateList.ElementAt(2).Rotation.W, Is.EqualTo(0.14));
 
             Assert.That(sdu.TransformList.Count, Is.EqualTo(4));
             Assert.That(sdu.TransformList.Any(x => x.OuterFrameIndex == 0 && x.InnerFrameIndex == 1), Is.True);
@@ -115,9 +115,9 @@ namespace Ethar.GeoPose.UnitTests
             var frameList = new List<BaseFrameSpecification>()
             {
                 new LtpEnuSpecification(new DataTypes.TangentPointPosition() {Latitude = 48, Longitude = -122, HeightInMeters = 5}),
-                new TranslateRotateSpecification(new DataTypes.UnitVector3(0.1f, 0.2f, 0.3f), new DataTypes.UnitQuaternion() {X = 0.692f, Y = 0.691f, Z = 0.141f, W = 0.14f}),
-                new TranslateRotateSpecification(new DataTypes.UnitVector3(0.4f, 0.5f, 0.6f), new DataTypes.UnitQuaternion() {X = 0.692f, Y = 0.691f, Z = 0.141f, W = 0.14f}),
-                new TranslateRotateSpecification(new DataTypes.UnitVector3(0.7f, 0.8f, 0.9f), new DataTypes.UnitQuaternion() {X = 0.692f, Y = 0.691f, Z = 0.141f, W = 0.14f})
+                new TranslateRotateSpecification(new DataTypes.UnitVector3(0.1, 0.2, 0.3), new DataTypes.UnitQuaternion() {X = 0.692, Y = 0.691, Z = 0.141, W = 0.14}),
+                new TranslateRotateSpecification(new DataTypes.UnitVector3(0.4, 0.5, 0.6), new DataTypes.UnitQuaternion() {X = 0.692, Y = 0.691, Z = 0.141, W = 0.14}),
+                new TranslateRotateSpecification(new DataTypes.UnitVector3(0.7, 0.8, 0.9), new DataTypes.UnitQuaternion() {X = 0.692, Y = 0.691, Z = 0.141, W = 0.14})
             };
 
             var transformList = new List<FrameTransformIndexPair>()
@@ -192,9 +192,9 @@ namespace Ethar.GeoPose.UnitTests
             var frameList = new List<BaseFrameSpecification>()
             {
                 new LtpEnuSpecification(new DataTypes.TangentPointPosition() {Latitude = 48, Longitude = -122, HeightInMeters = 5}),
-                new TranslateRotateSpecification(new DataTypes.UnitVector3(0.1f, 0.2f, 0.3f), new DataTypes.UnitQuaternion() {X = 0.692f, Y = 0.691f, Z = 0.141f, W = 0.14f}),
-                new TranslateRotateSpecification(new DataTypes.UnitVector3(0.4f, 0.5f, 0.6f), new DataTypes.UnitQuaternion() {X = 0.692f, Y = 0.691f, Z = 0.141f, W = 0.14f}),
-                new TranslateRotateSpecification(new DataTypes.UnitVector3(0.7f, 0.8f, 0.9f), new DataTypes.UnitQuaternion() {X = 0.692f, Y = 0.691f, Z = 0.141f, W = 0.14f})
+                new TranslateRotateSpecification(new DataTypes.UnitVector3(0.1, 0.2, 0.3), new DataTypes.UnitQuaternion() {X = 0.692, Y = 0.691, Z = 0.141, W = 0.14}),
+                new TranslateRotateSpecification(new DataTypes.UnitVector3(0.4, 0.5, 0.6), new DataTypes.UnitQuaternion() {X = 0.692, Y = 0.691, Z = 0.141, W = 0.14}),
+                new TranslateRotateSpecification(new DataTypes.UnitVector3(0.7, 0.8, 0.9), new DataTypes.UnitQuaternion() {X = 0.692, Y = 0.691, Z = 0.141, W = 0.14})
             };
 
             var transformList = new List<FrameTransformIndexPair>()
@@ -219,9 +219,9 @@ namespace Ethar.GeoPose.UnitTests
             var frameList = new List<BaseFrameSpecification>()
             {
                 new LtpEnuSpecification(new DataTypes.TangentPointPosition() {Latitude = 48, Longitude = -122, HeightInMeters = 5}),
-                new TranslateRotateSpecification(new DataTypes.UnitVector3(0.1f, 0.2f, 0.3f), new DataTypes.UnitQuaternion() {X = 0.692f, Y = 0.691f, Z = 0.141f, W = 0.14f}),
-                new TranslateRotateSpecification(new DataTypes.UnitVector3(0.4f, 0.5f, 0.6f), new DataTypes.UnitQuaternion() {X = 0.692f, Y = 0.691f, Z = 0.141f, W = 0.14f}),
-                new TranslateRotateSpecification(new DataTypes.UnitVector3(0.7f, 0.8f, 0.9f), new DataTypes.UnitQuaternion() {X = 0.692f, Y = 0.691f, Z = 0.141f, W = 0.14f})
+                new TranslateRotateSpecification(new DataTypes.UnitVector3(0.1, 0.2, 0.3), new DataTypes.UnitQuaternion() {X = 0.692, Y = 0.691, Z = 0.141, W = 0.14}),
+                new TranslateRotateSpecification(new DataTypes.UnitVector3(0.4, 0.5, 0.6), new DataTypes.UnitQuaternion() {X = 0.692, Y = 0.691, Z = 0.141, W = 0.14}),
+                new TranslateRotateSpecification(new DataTypes.UnitVector3(0.7, 0.8, 0.9), new DataTypes.UnitQuaternion() {X = 0.692, Y = 0.691, Z = 0.141, W = 0.14})
             };
 
             var transformList = new List<FrameTransformIndexPair>()

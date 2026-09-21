@@ -20,7 +20,7 @@ namespace Ethar.GeoPose.DataTypes
         /// <param name="latitude">The latitude in decimal degrees. Valid range is from -90 to 90.</param>
         /// <param name="longitude">The longitude in decimal degrees. Valid range is from -180 to 180.</param>
         /// <param name="heightInMeters">The height in meters.</param>
-        public TangentPointPosition(float latitude, float longitude, float heightInMeters)
+        public TangentPointPosition(double latitude, double longitude, double heightInMeters)
         {
             this.Latitude = latitude;
             this.Longitude = longitude;
@@ -31,19 +31,19 @@ namespace Ethar.GeoPose.DataTypes
         /// Gets or sets the latitude in decimal degrees.
         /// </summary>
         [JsonProperty("lat")]
-        public float Latitude { get; set; }
+        public double Latitude { get; set; }
 
         /// <summary>
         /// Gets or sets the longitude in decimal degrees.
         /// </summary>
         [JsonProperty("lon")]
-        public float Longitude { get; set; }
+        public double Longitude { get; set; }
 
         /// <summary>
         /// Gets or sets the height in meters.
         /// </summary>
         [JsonProperty("h")]
-        public float HeightInMeters { get; set; }
+        public double HeightInMeters { get; set; }
 
         /// <summary>
         /// Performs an equality comparison on two objects of type <see cref="TangentPointPosition"/>.
