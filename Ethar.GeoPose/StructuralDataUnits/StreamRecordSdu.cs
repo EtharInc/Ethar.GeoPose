@@ -21,12 +21,12 @@ namespace Ethar.GeoPose.StructuralDataUnits
         /// <summary>
         /// Initializes a new instance of the <see cref="StreamRecordSdu"/> struct.
         /// </summary>
-        /// <param name="streamHeader">The stream header.</param>
+        /// <param name="header">The stream header.</param>
         /// <param name="streamElements">The stream elements.</param>
-        public StreamRecordSdu(StreamHeaderSdu streamHeader, IEnumerable<StreamElementSdu> streamElements)
+        public StreamRecordSdu(StreamHeaderSdu header, IEnumerable<StreamElementSdu> streamElements)
         {
             this.StreamElements = streamElements;
-            this.StreamHeader = streamHeader;
+            this.StreamHeader = header;
         }
 
         /// <summary>

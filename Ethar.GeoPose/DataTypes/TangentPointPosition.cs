@@ -5,13 +5,24 @@
 namespace Ethar.GeoPose.DataTypes
 {
     using System;
+    using Ethar.GeoPose.JsonConversion;
     using Newtonsoft.Json;
 
     /// <summary>
     /// A construct that represents a location represented by latitude and longitude in decimal degrees and a height in meters.
-    ///
-    /// Requirements derived from figure 13 in section 7.2.4 of version 1.0.0 of the GeoPose spec http://www.opengis.net/doc/DIS/geopose/1.0.
     /// </summary>
+    /// <remarks>
+    /// <para>
+    /// The position is on the WGS 84 ellipsoid (EPSG:4979). Latitude is in [-90, 90] and longitude in [-180, 180] decimal degrees.
+    /// <see cref="HeightInMeters"/> is the height above the WGS 84 ellipsoid (OGC GeoPose 1.0 requirement /req/tangent-point/height),
+    /// positive above and negative below. It is not a height above mean sea level; device altitudes reported above sea level must be
+    /// corrected by the local geoid separation, which is tens of meters in most of the world.
+    /// </para>
+    /// <para>
+    /// Convert to and from ECEF and Local Tangent Plane ENU with <see cref="Ethar.GeoPose.Geodesy.GeodeticConverter"/>.
+    /// Requirements derived from figure 13 in section 7.2.4 of version 1.0 of the GeoPose standard https://docs.ogc.org/is/21-056r11/21-056r11.html.
+    /// </para>
+    /// </remarks>
     public struct TangentPointPosition : IEquatable<TangentPointPosition>
     {
         /// <summary>
@@ -90,7 +101,7 @@ namespace Ethar.GeoPose.DataTypes
         /// <inheritdoc/>
         public override string ToString()
         {
-            return $"Latitude:{this.Latitude}, Longitude:{this.Longitude}, HeightInMeters:{this.HeightInMeters}";
+            return $"Latitude:{InvariantNumber.Format(this.Latitude)}, Longitude:{InvariantNumber.Format(this.Longitude)}, HeightInMeters:{InvariantNumber.Format(this.HeightInMeters)}";
         }
     }
 }

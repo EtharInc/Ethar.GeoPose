@@ -5,11 +5,26 @@
 namespace Ethar.GeoPose.DataTypes
 {
     using System;
+    using Ethar.GeoPose.JsonConversion;
     using Newtonsoft.Json;
 
     /// <summary>
     /// A data type that represents a quaternion for serialization.
     /// </summary>
+    /// <remarks>
+    /// <para>
+    /// OGC GeoPose 1.0 (21-056r11) requirement /req/basic-quaternion/quaternion: a rotation-only transformation of a reference frame
+    /// aligned East-North-Up, as a unit quaternion whose components' squares sum to one. The standard lists the components as w, x, y, z;
+    /// the JSON encoding and this type carry them as x, y, z, w.
+    /// </para>
+    /// <para>
+    /// The quaternion rotates a vector expressed in the inner (posed) frame into the ENU frame, <c>v_enu = q · v_inner · q*</c>,
+    /// in the Hamilton convention used by <see cref="Ethar.GeoPose.Conventions.OrientationConversions"/>. The standard does not name an
+    /// active or passive convention; this is the reading the library implements and tests. Use
+    /// <see cref="Ethar.GeoPose.Conventions.OrientationConversions.IsUnit"/> to validate incoming data and
+    /// <see cref="Ethar.GeoPose.Conventions.LeftHandedYUpConversions"/> to map to a left-handed, Y-up engine frame.
+    /// </para>
+    /// </remarks>
     public struct UnitQuaternion : IEquatable<UnitQuaternion>
     {
         /// <summary>
@@ -119,7 +134,7 @@ namespace Ethar.GeoPose.DataTypes
         /// <inheritdoc/>
         public override string ToString()
         {
-            return $"X:{this.X}, Y:{this.Y}, Z:{this.Z}, W:{this.W}";
+            return $"X:{InvariantNumber.Format(this.X)}, Y:{InvariantNumber.Format(this.Y)}, Z:{InvariantNumber.Format(this.Z)}, W:{InvariantNumber.Format(this.W)}";
         }
     }
 }

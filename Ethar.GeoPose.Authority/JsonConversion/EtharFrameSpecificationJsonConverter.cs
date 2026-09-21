@@ -1,223 +1,191 @@
-﻿// <copyright file="EtharFrameSpecificationJsonConverter.cs" company="Ethar">
+// <copyright file="EtharFrameSpecificationJsonConverter.cs" company="Ethar">
 // Copyright (c) Ethar. All rights reserved.
 // </copyright>
 
 namespace Ethar.GeoPose.Authority.JsonConversion
 {
+    using System.Collections.Specialized;
     using Ethar.GeoPose.Authority.FrameSpecifications;
     using Ethar.GeoPose.DataTypes;
     using Ethar.GeoPose.Extensions;
+    using Ethar.GeoPose.JsonConversion;
     using Ethar.GeoPose.Validation;
-    using Newtonsoft.Json;
     using Newtonsoft.Json.Linq;
 
     /// <summary>
-    /// A utility class that converts JObjects to frame specifications.
+    /// Converts the Ethar authority's frame specifications to and from their JSON representation.
     /// </summary>
+    /// <remarks>
+    /// All numbers are read and written with the invariant culture. On input the OGC parameter name <c>height</c> is accepted as an
+    /// alias of <c>heightInMeters</c>; on output the Ethar names are always written.
+    /// </remarks>
     internal class EtharFrameSpecificationJsonConverter
     {
         /// <summary>
-        /// Converts json to a <see cref="LtpEnuSpecification"/>.
+        /// Converts a JSON object to an LTP-ENU frame specification.
         /// </summary>
-        /// <param name="jObject">The json to convert.</param>
-        /// <returns>A <see cref="LtpEnuSpecification"/>.</returns>
+        /// <param name="jObject">The JSON object.</param>
+        /// <returns>The frame specification, or null if the parameters could not be validated.</returns>
         internal static LtpEnuSpecification ConvertJsonToLtpEnuFrameSpecification(JObject jObject)
         {
             if (ValidationUtilities.ValidateJsonObjectParameters<LtpEnuSpecification>(jObject, out var queryString))
             {
-                var lat = double.Parse(queryString.GetParameter("latitude"));
-                var lon = double.Parse(queryString.GetParameter("longitude"));
-                var height = double.Parse(queryString.GetParameter("heightInMeters"));
-
-                return new LtpEnuSpecification(new TangentPointPosition() { Latitude = lat, Longitude = lon, HeightInMeters = height });
+                return new LtpEnuSpecification(ReadPosition(queryString));
             }
 
             return null;
         }
 
         /// <summary>
-        /// Converts a <see cref="LtpEnuSpecification"/> to json.
+        /// Converts an LTP-ENU frame specification to a JSON object.
         /// </summary>
-        /// <param name="spec">The <see cref="LtpEnuSpecification"/> to convert.</param>
-        /// <returns>A json representation of the <see cref="LtpEnuSpecification"/>.</returns>
+        /// <param name="spec">The frame specification.</param>
+        /// <returns>The JSON object.</returns>
         internal static JObject ConvertLtpEnuFrameSpecificationToJson(LtpEnuSpecification spec)
         {
-            var paramString = spec.Position.BuildParamString();
-
-            var jObj = new JObject
-            {
-                { "authority", spec.Authority },
-                { "id", spec.Id },
-                { "parameters", paramString },
-            };
-
-            return jObj;
+            return BuildJson(spec.Authority, spec.Id, spec.Position.BuildParamString());
         }
 
         /// <summary>
-        /// Converts json to a <see cref="LtpNedSpecification"/>.
+        /// Converts a JSON object to an LTP-NED frame specification.
         /// </summary>
-        /// <param name="jObject">The json to convert.</param>
-        /// <returns>A <see cref="LtpNedSpecification"/>.</returns>
+        /// <param name="jObject">The JSON object.</param>
+        /// <returns>The frame specification, or null if the parameters could not be validated.</returns>
         internal static LtpNedSpecification ConvertJsonToLtpNedFrameSpecification(JObject jObject)
         {
             if (ValidationUtilities.ValidateJsonObjectParameters<LtpNedSpecification>(jObject, out var queryString))
             {
-                var lat = double.Parse(queryString.GetParameter("latitude"));
-                var lon = double.Parse(queryString.GetParameter("longitude"));
-                var height = double.Parse(queryString.GetParameter("heightInMeters"));
-
-                return new LtpNedSpecification(new TangentPointPosition() { Latitude = lat, Longitude = lon, HeightInMeters = height });
+                return new LtpNedSpecification(ReadPosition(queryString));
             }
 
             return null;
         }
 
         /// <summary>
-        /// Converts a <see cref="LtpNedSpecification"/> to json.
+        /// Converts an LTP-NED frame specification to a JSON object.
         /// </summary>
-        /// <param name="spec">The <see cref="LtpNedSpecification"/> to convert.</param>
-        /// <returns>A json representation of the <see cref="LtpNedSpecification"/>.</returns>
+        /// <param name="spec">The frame specification.</param>
+        /// <returns>The JSON object.</returns>
         internal static JObject ConvertLtpNedFrameSpecificationToJson(LtpNedSpecification spec)
         {
-            var paramString = spec.Position.BuildParamString();
-
-            var jObj = new JObject
-            {
-                { "authority", spec.Authority },
-                { "id", spec.Id },
-                { "parameters", paramString },
-            };
-
-            return jObj;
+            return BuildJson(spec.Authority, spec.Id, spec.Position.BuildParamString());
         }
 
         /// <summary>
-        /// Converts json to a <see cref="YawPitchRollOrientedLtpEnuSpecification"/>.
+        /// Converts a JSON object to a yaw, pitch, roll oriented LTP-ENU frame specification.
         /// </summary>
-        /// <param name="jObject">The json to convert.</param>
-        /// <returns>A <see cref="YawPitchRollOrientedLtpEnuSpecification"/>.</returns>
+        /// <param name="jObject">The JSON object.</param>
+        /// <returns>The frame specification, or null if the parameters could not be validated.</returns>
         internal static YawPitchRollOrientedLtpEnuSpecification ConvertJsonToYprOrientedLtpEnuFrameSpecification(JObject jObject)
         {
             if (ValidationUtilities.ValidateJsonObjectParameters<YawPitchRollOrientedLtpEnuSpecification>(jObject, out var queryString))
             {
-                var lat = double.Parse(queryString.GetParameter("latitude"));
-                var lon = double.Parse(queryString.GetParameter("longitude"));
-                var height = double.Parse(queryString.GetParameter("heightInMeters"));
-                var yaw = double.Parse(queryString.GetParameter("orientation.yaw"));
-                var pitch = double.Parse(queryString.GetParameter("orientation.pitch"));
-                var roll = double.Parse(queryString.GetParameter("orientation.roll"));
-
-                return new YawPitchRollOrientedLtpEnuSpecification(new TangentPointPosition() { Latitude = lat, Longitude = lon, HeightInMeters = height }, new YawPitchRollAngles() { Yaw = yaw, Pitch = pitch, Roll = roll });
+                var orientation = new YawPitchRollAngles(
+                    ReadNumber(queryString, "orientation.yaw"),
+                    ReadNumber(queryString, "orientation.pitch"),
+                    ReadNumber(queryString, "orientation.roll"));
+                return new YawPitchRollOrientedLtpEnuSpecification(ReadPosition(queryString), orientation);
             }
 
             return null;
         }
 
         /// <summary>
-        /// Converts a <see cref="YawPitchRollOrientedLtpEnuSpecification"/> to json.
+        /// Converts a yaw, pitch, roll oriented LTP-ENU frame specification to a JSON object.
         /// </summary>
-        /// <param name="spec">The <see cref="YawPitchRollOrientedLtpEnuSpecification"/> to convert.</param>
-        /// <returns>A json representation of the <see cref="YawPitchRollOrientedLtpEnuSpecification"/>.</returns>
+        /// <param name="spec">The frame specification.</param>
+        /// <returns>The JSON object.</returns>
         internal static JObject ConvertYprOrientedLtpEnuFrameSpecificationToJson(YawPitchRollOrientedLtpEnuSpecification spec)
         {
-            var positionParamString = spec.Position.BuildParamString();
-            var orientationParamString = spec.Orientation.BuildOrientationParamString();
-
-            var jObj = new JObject
-            {
-                { "authority", spec.Authority },
-                { "id", spec.Id },
-                { "parameters", string.Concat(positionParamString, "&", orientationParamString) },
-            };
-
-            return jObj;
+            return BuildJson(spec.Authority, spec.Id, string.Concat(spec.Position.BuildParamString(), "&", spec.Orientation.BuildOrientationParamString()));
         }
 
         /// <summary>
-        /// Converts json to a <see cref="QuaternionOrientedLtpEnuSpecification"/>.
+        /// Converts a JSON object to a quaternion oriented LTP-ENU frame specification.
         /// </summary>
-        /// <param name="jObject">The json to convert.</param>
-        /// <returns>A <see cref="QuaternionOrientedLtpEnuSpecification"/>.</returns>
+        /// <param name="jObject">The JSON object.</param>
+        /// <returns>The frame specification, or null if the parameters could not be validated.</returns>
         internal static QuaternionOrientedLtpEnuSpecification ConvertJsonToQuaternionOrientedLtpEnuFrameSpecification(JObject jObject)
         {
             if (ValidationUtilities.ValidateJsonObjectParameters<QuaternionOrientedLtpEnuSpecification>(jObject, out var queryString))
             {
-                var lat = double.Parse(queryString.GetParameter("latitude"));
-                var lon = double.Parse(queryString.GetParameter("longitude"));
-                var height = double.Parse(queryString.GetParameter("heightInMeters"));
-                var x = double.Parse(queryString.GetParameter("orientation.x"));
-                var y = double.Parse(queryString.GetParameter("orientation.y"));
-                var z = double.Parse(queryString.GetParameter("orientation.z"));
-                var w = double.Parse(queryString.GetParameter("orientation.w"));
-
-                return new QuaternionOrientedLtpEnuSpecification(new TangentPointPosition() { Latitude = lat, Longitude = lon, HeightInMeters = height }, new UnitQuaternion() { X = x, Y = y, Z = z, W = w });
+                var orientation = new UnitQuaternion(
+                    ReadNumber(queryString, "orientation.x"),
+                    ReadNumber(queryString, "orientation.y"),
+                    ReadNumber(queryString, "orientation.z"),
+                    ReadNumber(queryString, "orientation.w"));
+                return new QuaternionOrientedLtpEnuSpecification(ReadPosition(queryString), orientation);
             }
 
             return null;
         }
 
         /// <summary>
-        /// Converts a <see cref="QuaternionOrientedLtpEnuSpecification"/> to json.
+        /// Converts a quaternion oriented LTP-ENU frame specification to a JSON object.
         /// </summary>
-        /// <param name="spec">The <see cref="QuaternionOrientedLtpEnuSpecification"/> to convert.</param>
-        /// <returns>A json representation of the <see cref="QuaternionOrientedLtpEnuSpecification"/>.</returns>
+        /// <param name="spec">The frame specification.</param>
+        /// <returns>The JSON object.</returns>
         internal static JObject ConvertQuaternionOrientedLtpEnuFrameSpecificationToJson(QuaternionOrientedLtpEnuSpecification spec)
         {
-            var positionParamString = spec.Position.BuildParamString();
-            var orientationParamString = spec.Orientation.BuildOrientationParamString();
-
-            var jObj = new JObject
-            {
-                { "authority", spec.Authority },
-                { "id", spec.Id },
-                { "parameters", string.Concat(positionParamString, "&", orientationParamString) },
-            };
-
-            return jObj;
+            return BuildJson(spec.Authority, spec.Id, string.Concat(spec.Position.BuildParamString(), "&", spec.Orientation.BuildOrientationParamString()));
         }
 
         /// <summary>
-        /// Converts json to a <see cref="TranslateRotateSpecification"/>.
+        /// Converts a JSON object to a translate-rotate frame specification.
         /// </summary>
-        /// <param name="jObject">The json to convert.</param>
-        /// <returns>A <see cref="TranslateRotateSpecification"/>.</returns>
+        /// <param name="jObject">The JSON object.</param>
+        /// <returns>The frame specification, or null if the parameters could not be validated.</returns>
         internal static TranslateRotateSpecification ConvertJsonToTranslateRotateFrameSpecification(JObject jObject)
         {
             if (ValidationUtilities.ValidateJsonObjectParameters<TranslateRotateSpecification>(jObject, out var queryString))
             {
-                var translationX = JsonConvert.DeserializeObject<double>(queryString.GetParameter("translation.x"));
-                var translationY = JsonConvert.DeserializeObject<double>(queryString.GetParameter("translation.y"));
-                var translationZ = JsonConvert.DeserializeObject<double>(queryString.GetParameter("translation.z"));
-                var rotationX = JsonConvert.DeserializeObject<double>(queryString.GetParameter("rotation.x"));
-                var rotationY = JsonConvert.DeserializeObject<double>(queryString.GetParameter("rotation.y"));
-                var rotationZ = JsonConvert.DeserializeObject<double>(queryString.GetParameter("rotation.z"));
-                var rotationW = JsonConvert.DeserializeObject<double>(queryString.GetParameter("rotation.w"));
-
-                return new TranslateRotateSpecification(new UnitVector3() { X = translationX, Y = translationY, Z = translationZ }, new UnitQuaternion() { X = rotationX, Y = rotationY, Z = rotationZ, W = rotationW });
+                var translation = new UnitVector3(
+                    ReadNumber(queryString, "translation.x"),
+                    ReadNumber(queryString, "translation.y"),
+                    ReadNumber(queryString, "translation.z"));
+                var rotation = new UnitQuaternion(
+                    ReadNumber(queryString, "rotation.x"),
+                    ReadNumber(queryString, "rotation.y"),
+                    ReadNumber(queryString, "rotation.z"),
+                    ReadNumber(queryString, "rotation.w"));
+                return new TranslateRotateSpecification(translation, rotation);
             }
 
             return null;
         }
 
         /// <summary>
-        /// Converts a <see cref="TranslateRotateSpecification"/> to json.
+        /// Converts a translate-rotate frame specification to a JSON object.
         /// </summary>
-        /// <param name="spec">The <see cref="TranslateRotateSpecification"/> to convert.</param>
-        /// <returns>A json representation of the <see cref="TranslateRotateSpecification"/>.</returns>
+        /// <param name="spec">The frame specification.</param>
+        /// <returns>The JSON object.</returns>
         internal static JObject ConvertTranslateRotateFrameSpecificationToJson(TranslateRotateSpecification spec)
         {
-            var positionParamString = spec.Translation.BuildTranslationParamString();
-            var orientationParamString = spec.Rotation.BuildRotationParamString();
+            return BuildJson(spec.Authority, spec.Id, string.Concat(spec.Translation.BuildTranslationParamString(), "&", spec.Rotation.BuildRotationParamString()));
+        }
 
-            var jObj = new JObject
+        private static JObject BuildJson(string authority, string id, string parameters)
+        {
+            return new JObject
             {
-                { "authority", spec.Authority },
-                { "id", spec.Id },
-                { "parameters", string.Concat(positionParamString, "&", orientationParamString) },
+                { "authority", authority },
+                { "id", id },
+                { "parameters", parameters },
             };
+        }
 
-            return jObj;
+        private static TangentPointPosition ReadPosition(NameValueCollection queryString)
+        {
+            var heightText = queryString["heightInMeters"] ?? queryString["height"];
+            return new TangentPointPosition(
+                ReadNumber(queryString, "latitude"),
+                ReadNumber(queryString, "longitude"),
+                InvariantNumber.Parse(heightText ?? queryString.GetParameter("heightInMeters"), "heightInMeters"));
+        }
+
+        private static double ReadNumber(NameValueCollection queryString, string parameterName)
+        {
+            return InvariantNumber.Parse(queryString.GetParameter(parameterName), parameterName);
         }
     }
 }

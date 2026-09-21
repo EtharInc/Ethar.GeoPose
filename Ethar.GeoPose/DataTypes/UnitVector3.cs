@@ -5,6 +5,7 @@
 namespace Ethar.GeoPose.DataTypes
 {
     using System;
+    using Ethar.GeoPose.JsonConversion;
     using Newtonsoft.Json;
 
     /// <summary>
@@ -165,7 +166,7 @@ namespace Ethar.GeoPose.DataTypes
         /// <inheritdoc/>
         public override string ToString()
         {
-            return $"X:{this.X}, Y:{this.Y}, Z:{this.Z}";
+            return $"X:{InvariantNumber.Format(this.X)}, Y:{InvariantNumber.Format(this.Y)}, Z:{InvariantNumber.Format(this.Z)}";
         }
     }
 }

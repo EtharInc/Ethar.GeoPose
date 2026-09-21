@@ -22,4 +22,9 @@
     <ProjectReference Include="..\Ethar.GeoPose\Ethar.GeoPose.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <!-- Official OGC GeoPose 1.0 example instances from https://schemas.opengis.net/geopose/1.0/instances/ -->
+    <None Update="Fixtures\**\*.json" CopyToOutputDirectory="PreserveNewest" />
+  </ItemGroup>
+
 </Project>

@@ -8,14 +8,14 @@
     </picture>
 </p>
 
-[![CI](https://github.com/etharinc/Ethar.GeoPose/actions/workflows/main-release.yml/badge.svg?branch=main)](https://github.com/etharinc/MQTTnet/actions/workflows/main-release.yml)
+[![CI](https://github.com/etharinc/Ethar.GeoPose/actions/workflows/main-release.yml/badge.svg?branch=main)](https://github.com/etharinc/Ethar.GeoPose/actions/workflows/main-release.yml)
 [![NuGet Badge](https://buildstats.info/nuget/Ethar.GeoPose)](https://www.nuget.org/packages/Ethar.GeoPose)
 ![Size](https://img.shields.io/github/repo-size/etharinc/ethar.geopose)
 [![License: Apache 2.0](https://img.shields.io/badge/License-APACHE2.0-green.svg)](https://raw.githubusercontent.com/etharinc/Ethar.GeoPose/main/LICENSE)
 
 # GeoPose Library by [Ethar, Inc.](https://www.ethar.com/)
 
-The [GeoPose standard](https://docs.ogc.org/dis/21-056r10/21-056r10.html) enables the easy integration of digital elements on and in relation to the surface of the planet.
+The [GeoPose standard](https://docs.ogc.org/is/21-056r11/21-056r11.html) enables the easy integration of digital elements on and in relation to the surface of the planet.
 
 Ethar.GeoPose is a C# library that implements GeoPose, allowing you to assign precise 3D position and orientation of objects (virtual or real) in the real world.
 
@@ -24,6 +24,7 @@ Ethar.GeoPose is a C# library that implements GeoPose, allowing you to assign pr
 - [Introduction](#introduction)
 - [Who is Ethar](#who-is-ethar)
 - [Features](#ethar-geopose-implementation-features)
+- [What is new in 2.0](#what-is-new-in-20)
 - [Installation](#installation)
 - [Usage](#usage)
 - [Contributing](#contributing)
@@ -46,7 +47,7 @@ Along the way we have built some useful tooling, that we want to share with the 
 
 ## Ethar GeoPose Implementation Features
 
-- Provides an "out of the box" implementation of the [OGC GeoPose specification](https://docs.ogc.org/dis/21-056r10/21-056r10.html).
+- Provides an "out of the box" implementation of the [OGC GeoPose specification](https://docs.ogc.org/is/21-056r11/21-056r11.html).
 - Extensions and implementation helpers for various implementations, including C# and Unity.
 - Two Code Examples (that demonstrate the transmission of GeoPose data, and creating an authority to transposition GeoPose data).
 - Ethar Core Authority implementation (Which implements the most common frame specifications).
@@ -55,6 +56,16 @@ Along the way we have built some useful tooling, that we want to share with the 
 > Full documentation on the implementation specification and helper docs, including common guides for C# and Unity can be found at:
 >
 > [https://etharinc.github.io/Ethar.GeoPose.Docs](https://etharinc.github.io/Ethar.GeoPose.Docs)
+
+## What is new in 2.0
+
+Version 2.0 is a breaking release. See the [migration guide](https://etharinc.github.io/Ethar.GeoPose.Docs/articles/migration-v2.html) and the [conventions page](https://etharinc.github.io/Ethar.GeoPose.Docs/articles/conventions.html) on the documentation site.
+
+- **Double precision.** Every coordinate, angle and quaternion component is now a `double`. Single precision lost about 0.4 m of latitude and truncated the OGC example quaternions.
+- **Geodesy in the core.** `Ethar.GeoPose.Geodesy` converts between WGS 84 geodetic positions, ECEF and Local Tangent Plane ENU in double precision, with great circle distance and bearing, and no engine dependency.
+- **Conventions in the core.** `Ethar.GeoPose.Conventions` implements the standard's yaw, pitch, roll definition (rotations of an East-North-Up frame about its local z, y, x axes, in degrees), converts to and from unit quaternions and compass bearings, and maps poses into a left-handed, Y-up engine frame such as Unity with one documented heading offset.
+- **OGC authority.** `OgcGeoPoseAuthority` implements the `/geopose/1.0` authority and parameter grammar used by the OGC example instances (`longitude=…&latitude=…&height=…`, `translation=[x, y, z]&rotation=[w, x, y, z]`, ids `LTP-ENU`, `/Extrinsic/LTP-ENU`, `/Intrinsic/Translate-Rotate`, `RotateTranslate`, transition models `none` and `interpolate`). Every official instance file round-trips through the library. Call `GeoPoseAuthorities.RegisterDefaults()` to register it alongside the Ethar authority.
+- **Culture-invariant parameters.** Frame specification parameter strings are written and parsed with the invariant culture. Version 1 used the thread culture, so devices set to a comma-decimal locale wrote `latitude=48,85` and read `48.85` as 4885.
 
 ## Installation
 
@@ -70,15 +81,15 @@ The Ethar GeoPose library and the corresponding Ethar Authority implementation h
 
 ```xml
 <ItemGroup>
-  <PackageReference Include="Ethar.GeoPose" Version="1.0.0" />
-  <PackageReference Include="Ethar.GeoPose.Authority" Version="1.0.0" />
+  <PackageReference Include="Ethar.GeoPose" Version="2.0.0" />
+  <PackageReference Include="Ethar.GeoPose.Authority" Version="2.0.0" />
 </ItemGroup>
 ```
 
 ### Install via OpenUPM
 
 ```text
-    openupm add com.ethar.GeoPose
+    openupm add com.ethar.geopose
 ```
 
 ### Unity UPM Git package source
@@ -110,11 +121,11 @@ The examples provided in the package show basic working patterns in alignment wi
 - Example_BasicSerialization.cs - Shows basic data type serialization techniques and consumption of GeoPose data from online sources.
 - Example_AuthorityImplementation.cs - A basic example of a working authority implementing two standard Frame Specifications and the authorities management of them.
 
-> For a more detailed Authority implementation, check the Ethar GeoPose Authority package via [NPM](https://www.npmjs.com/package/ethar.GeoPose.authority), OpenUPM or on [GitHub](https://github.com/EtharInc/Ethar.GeoPose/tree/main/Ethar.GeoPose.Authority).
+> For a more detailed Authority implementation, check the Ethar GeoPose Authority package via [NuGet](https://www.nuget.org/packages/Ethar.GeoPose.Authority), OpenUPM or on [GitHub](https://github.com/EtharInc/Ethar.GeoPose/tree/main/Ethar.GeoPose.Authority).
 
 ## Concepts
 
-In summary, the following concepts are crucial to understanding the [GeoPose specification](https://docs.ogc.org/dis/21-056r10/21-056r10.html) defined by the OGC, namely:
+In summary, the following concepts are crucial to understanding the [GeoPose specification](https://docs.ogc.org/is/21-056r11/21-056r11.html) defined by the OGC, namely:
 
 - [A Pose, or fixed position for an object.](#pose)
 - [The Orientation or direction of a posed object.](#orientation)
@@ -134,20 +145,20 @@ To define the actual direction in which a GeoPosed object is placed, a direction
 
 ### Structural Data Units
 
-The base definition of a GeoPose construct is its ```Structural Data Unit``` definition, which outlines the serialized data that is shared between entities to communicate GeoPosed data.  By default, there are 8 Structural Data Units defined within the [GeoPose standard](https://docs.ogc.org/dis/21-056r10/21-056r10.html#toc45), which are:
+The base definition of a GeoPose construct is its ```Structural Data Unit``` definition, which outlines the serialized data that is shared between entities to communicate GeoPosed data.  By default, there are 8 Structural Data Units defined within the [GeoPose standard](https://docs.ogc.org/is/21-056r11/21-056r11.html#toc45), which are:
 
 - Basic YawPitchRoll - Basic positioning using WGS84 coordinates for position and Euler angles for orientation.
 - Basic Quaternion - Basic positioning using WGS84 coordinates for position and a Quaternion for orientation.
 - Advanced - An advanced concept utilizing a [Frame Specification](#frame-specifications) that defines a reference frame for an object.
 - Graph - An SDU that contains a directed acyclic graph representation of the transformational relationships between reference frames defined by [Frame Specifications](#frame-specifications).
 - Chain - An SDU that represents a linear sequence of poses linked by full 6DoF transformations, with the first frame in the sequence being extrinsic.
-- Regular Series - An ordered set of operations to perform on a GeoPosed object, complete with timed events.
-- Irregular Series - An unordered set of operations for use on a GeoPosed Object.
+- Regular Series - A time series of poses at a constant interval (`interPoseDuration`) from an outer frame, with a header, trailer and transition model.
+- Irregular Series - A time series of poses each carrying its own `validTime`, otherwise the same as a Regular Series.
 - Stream - Another advanced use case whereby complex operations can be structured, such as animation.
 
 Structural Data Units consist of base GeoPose Data Types and can contain one or more [Frame Specifications](#frame-specifications) for extending a GeoPosed Object.  Which type of SDU you use will largely depend on your use case, and there is always the option of creating your own (at the cost of interoperability).
 
-> See the [GeoPose standard](https://docs.ogc.org/dis/21-056r10/21-056r10.html#toc45) section on Structural Data Units for more information.
+> See the [GeoPose standard](https://docs.ogc.org/is/21-056r11/21-056r11.html#toc45) section on Structural Data Units for more information.
 
 ### Frame Specifications
 
@@ -157,7 +168,7 @@ At its most simplistic level, Frame Specifications are references used to co-loc
 
 Unlike SDU's however, Frame Specifications require an authority who is responsible for orchestrating the content of the specification and ultimately, controls how the data is assembled and disassembled for transport. (Different organizations may implement different authorities for managing how they interpret and expose GeoPosed data.)
 
-> See the [GeoPose standard](https://docs.ogc.org/dis/21-056r10/21-056r10.html#term-frame-specification) section on Frame Specifications for more information.
+> See the [GeoPose standard](https://docs.ogc.org/is/21-056r11/21-056r11.html#term-frame-specification) section on Frame Specifications for more information.
 
 ### GeoPose Authorities
 
@@ -168,11 +179,11 @@ An ```Authority``` in the GeoPose standard is the entity responsible for the und
 
 The interface defines a single property and several methods required by an Authority for operation, namely:
 
-- Authority Name - The unique name/identifier for the authority in the form of ```"/GeoPose/1.0"```
+- Authority Name - The unique name/identifier for the authority. Ethar's authority is ```"/Ethar.GeoPose/1.0"```; the OGC example instances use ```"/geopose/1.0"```, which the package also implements (see `OgcGeoPoseAuthority`).
 - ConvertJsonToFrameSpec - Method to take in a GeoPose Frame Specification JSON string and output a Frame Specification definition.
 - ConvertFrameSpecToJson - Method to take a Frame Specification object and turn it into serialized GeoPose Frame Specification JSON string.
-- ConvertJsonToTransitionModel - Method to take a [Transition Model](https://docs.ogc.org/dis/21-056r10/21-056r10.html#toc17) JSON string and output a Transition Model definition.
-- ConvertTransitionModelToJson - Method to serialize a [Transition model](https://docs.ogc.org/dis/21-056r10/21-056r10.html#toc17) into a specific GeoPose Transition Model JSON string
+- ConvertJsonToTransitionModel - Method to take a [Transition Model](https://docs.ogc.org/is/21-056r11/21-056r11.html#toc17) JSON string and output a Transition Model definition.
+- ConvertTransitionModelToJson - Method to serialize a [Transition model](https://docs.ogc.org/is/21-056r11/21-056r11.html#toc17) into a specific GeoPose Transition Model JSON string
 
 > Additionally, it is recommended to also implement a ```FrameSpecificationValidator``` as part of any Authority implementation, to validate any Frame Specifications and handle any irregularities with incoming data.
 
@@ -185,11 +196,11 @@ public static ExampleExtrinsicFrameSpec ConvertJObjectToExampleExtrinsicFrameSpe
 {
     // Validated the incoming json object string and checks that it has the required values and also
     // checks if this is the authority mentioned in the incoming data that handles the frame specification.
-    if (ValidationUtilities.ValidateJsonObjectParameters(jObject, Constants.AuthorityName, out var queryString))
+    if (ValidationUtilities.ValidateJsonObjectParameters<ExampleExtrinsicFrameSpec>(jObject, out var queryString))
     {
-        // Retrieves the required data from the json to construct the Frame Specification.
-        var lat = float.Parse(queryString.Get("latitude"));
-        var lon = float.Parse(queryString.Get("longitude"));
+        // Retrieves the required data from the json, culture-invariant, to construct the Frame Specification.
+        var lat = InvariantNumber.Parse(queryString.GetParameter("latitude"), "latitude");
+        var lon = InvariantNumber.Parse(queryString.GetParameter("longitude"), "longitude");
 
         // Returns a new instance of the Frame Specification with the data populated.
         return new ExampleExtrinsicFrameSpec { Latitude = lat, Longitude = lon };
@@ -220,8 +231,8 @@ The utility defines a single exposed property and several methods to safely acce
 
 - Authorities - Read only list of registered authorities.
 - RegisterAuthority - Used to register an Authority instance as active.
-- UnregisterAuthority - Used to remove an Authority from active use and dispose of it.
-- GetAuthority - Safe method for retrieving an Authority by its Name, returns null if not found.
+- UnregisterAuthority - Used to remove an Authority from active use.
+- GetAuthority - Retrieves an Authority by its Name; throws `AuthorityNotSupportedException` if it is not registered.
 
 Use of the AuthorityProvider to manage access to Authorities is recommended when handling incoming GeoPose data to ensure quick and safe access.
 
@@ -242,6 +253,24 @@ Ethar.GeoPose is made possible by the excellent work of the Ethar Team:
 <tr><th align="left">Colin Steinmann</th><td><a href="https://github.com/metaColin">GitHub/metaColin</a></td><td><a href="https://www.linkedin.com/in/colinsteinmann/">LinkedIn/colinsteinmann</a></td></tr>
 
 </tbody></table>
+
+### Building and testing locally
+
+The core library, the Ethar authority and both test projects are plain .NET projects with no Unity dependency, so everything can be built and tested from the command line without a Unity installation:
+
+```text
+dotnet build Ethar.GeoPose.sln -c Release
+dotnet test  Ethar.GeoPose.sln
+```
+
+`dotnet test` runs both `Ethar.GeoPose.UnitTests` and `Ethar.GeoPose.Authority.UnitTests` on the current LTS runtime. The suites include:
+
+- round trips of all twenty official OGC example instances (`Ethar.GeoPose.UnitTests/Fixtures/Ogc`);
+- the orientation conventions under every axis order, intrinsic and extrinsic, in degrees and radians, checked against the OGC GeoPoseSandbox sequence and the OGC example data;
+- numeric precision from integer, single and double inputs through JSON, parameter strings and geodesy;
+- culture invariance: every parameter string, JSON payload and conversion run under nineteen locales, including the comma-decimal ones that broke version 1, with hazard tests proving the runtime would otherwise misparse.
+
+The tests that call the public `service.geopose.io` endpoint are compiled out unless the `APITEST` symbol is defined. The same test sources ship in the UPM package under `Samples~/Tests` for the Unity Test Runner; nothing in them requires Unity.
 
 ## Terms of Use
 
