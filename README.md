@@ -51,6 +51,7 @@ Along the way we have built some useful tooling, that we want to share with the 
 - Extensions and implementation helpers for various implementations, including C# and Unity.
 - Two Code Examples (that demonstrate the transmission of GeoPose data, and creating an authority to transposition GeoPose data).
 - Ethar Core Authority implementation (Which implements the most common frame specifications).
+- Ethar.GeoPose.H3: conversion between GeoPose positions and Uber H3 cell indexes, search of registered GeoPoses by cell, and an H3 cell frame specification for Advanced GeoPoses. A dependency-free C# port of the H3 v4.5.0 cell indexing subset, verified against Uber's fixtures. See the [package readme](Ethar.GeoPose.H3/readme.md).
 - Full Unit Testing of GeoPose concepts and elements.
 
 > Full documentation on the implementation specification and helper docs, including common guides for C# and Unity can be found at:
@@ -83,8 +84,11 @@ The Ethar GeoPose library and the corresponding Ethar Authority implementation h
 <ItemGroup>
   <PackageReference Include="Ethar.GeoPose" Version="2.0.0" />
   <PackageReference Include="Ethar.GeoPose.Authority" Version="2.0.0" />
+  <PackageReference Include="Ethar.GeoPose.H3" Version="2.0.0" />
 </ItemGroup>
 ```
+
+`Ethar.GeoPose.H3` is optional. Add it when you need H3 cell indexes.
 
 ### Install via OpenUPM
 
@@ -263,9 +267,10 @@ dotnet build Ethar.GeoPose.sln -c Release
 dotnet test  Ethar.GeoPose.sln
 ```
 
-`dotnet test` runs both `Ethar.GeoPose.UnitTests` and `Ethar.GeoPose.Authority.UnitTests` on the current LTS runtime. The suites include:
+`dotnet test` runs `Ethar.GeoPose.UnitTests`, `Ethar.GeoPose.Authority.UnitTests` and `Ethar.GeoPose.H3.UnitTests` on the current LTS runtime. The suites include:
 
 - round trips of all twenty official OGC example instances (`Ethar.GeoPose.UnitTests/Fixtures/Ogc`);
+- the H3 port against Uber's own fixture files (`Ethar.GeoPose.H3.UnitTests/Fixtures/H3`): every cell at resolutions 0 to 4 with its centre, every cell at resolutions 0 to 2 with its boundary, and 55,000 random points with their containing cells, plus the known values from Uber's test suite;
 - the orientation conventions under every axis order, intrinsic and extrinsic, in degrees and radians, checked against the OGC GeoPoseSandbox sequence and the OGC example data;
 - numeric precision from integer, single and double inputs through JSON, parameter strings and geodesy;
 - culture invariance: every parameter string, JSON payload and conversion run under nineteen locales, including the comma-decimal ones that broke version 1, with hazard tests proving the runtime would otherwise misparse.

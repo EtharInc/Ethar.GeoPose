@@ -19,7 +19,7 @@ else
 fi
 
 lower_version=$(printf '%s' "$version" | tr '[:upper:]' '[:lower:]')
-for id in Ethar.GeoPose Ethar.GeoPose.Authority; do
+for id in Ethar.GeoPose Ethar.GeoPose.Authority Ethar.GeoPose.H3; do
   lower_id=$(printf '%s' "$id" | tr '[:upper:]' '[:lower:]')
   url="https://api.nuget.org/v3-flatcontainer/$lower_id/$lower_version/$lower_id.nuspec"
   code=$(curl -s -o /dev/null -w '%{http_code}' "$url")

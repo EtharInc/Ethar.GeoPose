@@ -13,6 +13,10 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Ethar.GeoPose.Authority", "
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Ethar.GeoPose.Examples", "Ethar.GeoPose.Examples\Ethar.GeoPose.Examples.csproj", "{83B92AB0-1E28-43C0-AC2A-03B8FF4B0A5D}"
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Ethar.GeoPose.H3", "Ethar.GeoPose.H3\Ethar.GeoPose.H3.csproj", "{C7C1EA68-3728-4221-A4A6-6A7C1BCC1082}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Ethar.GeoPose.H3.UnitTests", "Ethar.GeoPose.H3.UnitTests\Ethar.GeoPose.H3.UnitTests.csproj", "{7DA70EF7-3177-4C80-830A-3394B406CBF1}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -39,6 +43,14 @@ Global
 		{83B92AB0-1E28-43C0-AC2A-03B8FF4B0A5D}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{83B92AB0-1E28-43C0-AC2A-03B8FF4B0A5D}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{83B92AB0-1E28-43C0-AC2A-03B8FF4B0A5D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C7C1EA68-3728-4221-A4A6-6A7C1BCC1082}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C7C1EA68-3728-4221-A4A6-6A7C1BCC1082}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C7C1EA68-3728-4221-A4A6-6A7C1BCC1082}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C7C1EA68-3728-4221-A4A6-6A7C1BCC1082}.Release|Any CPU.Build.0 = Release|Any CPU
+		{7DA70EF7-3177-4C80-830A-3394B406CBF1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7DA70EF7-3177-4C80-830A-3394B406CBF1}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7DA70EF7-3177-4C80-830A-3394B406CBF1}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7DA70EF7-3177-4C80-830A-3394B406CBF1}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

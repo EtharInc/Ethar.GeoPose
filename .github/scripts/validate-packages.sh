@@ -5,7 +5,7 @@ version="${1:?version required}"
 dir="${2:?packages dir required}"
 fail=0
 
-for id in Ethar.GeoPose Ethar.GeoPose.Authority; do
+for id in Ethar.GeoPose Ethar.GeoPose.Authority Ethar.GeoPose.H3; do
   pkg="$dir/$id.$version.nupkg"
   sym="$dir/$id.$version.snupkg"
   if [ ! -f "$pkg" ]; then
@@ -35,7 +35,7 @@ for id in Ethar.GeoPose Ethar.GeoPose.Authority; do
     echo "::warning::$pkg has no release notes. Fill in .github/ReleaseNotes.md before releasing."
   fi
 
-  if [ "$id" = "Ethar.GeoPose.Authority" ]; then
+  if [ "$id" != "Ethar.GeoPose" ]; then
     deps=$(grep -oE 'id="Ethar.GeoPose" version="[^"]+"' <<< "$nuspec" | sort -u)
     if [ "$(wc -l <<< "$deps")" -ne 1 ] || ! grep -q "version=\"$version\"" <<< "$deps"; then
       echo "::error::$pkg must depend on exactly Ethar.GeoPose $version, found: $deps"
