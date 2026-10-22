@@ -13,17 +13,19 @@ mkdir -p \
   "$out/Samples~/Tests/Editor/Authority" \
   "$out/Samples~/Tests/Editor/H3/Fixtures/H3"
 
-cp Ethar.GeoPose/bin/Release/net48/Ethar.GeoPose.dll  "$out/Runtime/Plugins/Ethar.GeoPose/"
-cp Ethar.GeoPose/bin/Release/net48/Ethar.GeoPose.pdb  "$out/Runtime/Plugins/Ethar.GeoPose/"
-cp Ethar.GeoPose/bin/Release/net48/Ethar.GeoPose.xml  "$out/Runtime/Plugins/Ethar.GeoPose/"
-cp Ethar.GeoPose.Authority/bin/Release/net48/Ethar.GeoPose.Authority.dll "$out/Runtime/Plugins/Ethar.GeoPose.Authority/"
-cp Ethar.GeoPose.Authority/bin/Release/net48/Ethar.GeoPose.Authority.pdb "$out/Runtime/Plugins/Ethar.GeoPose.Authority/"
-cp Ethar.GeoPose.Authority/bin/Release/net48/Ethar.GeoPose.Authority.xml "$out/Runtime/Plugins/Ethar.GeoPose.Authority/"
+# Unity ships the netstandard2.1 builds. .NET Standard 2.1 is Unity's default API compatibility level, and .NET Framework
+# builds get only limited support at that level.
+cp Ethar.GeoPose/bin/Release/netstandard2.1/Ethar.GeoPose.dll  "$out/Runtime/Plugins/Ethar.GeoPose/"
+cp Ethar.GeoPose/bin/Release/netstandard2.1/Ethar.GeoPose.pdb  "$out/Runtime/Plugins/Ethar.GeoPose/"
+cp Ethar.GeoPose/bin/Release/netstandard2.1/Ethar.GeoPose.xml  "$out/Runtime/Plugins/Ethar.GeoPose/"
+cp Ethar.GeoPose.Authority/bin/Release/netstandard2.1/Ethar.GeoPose.Authority.dll "$out/Runtime/Plugins/Ethar.GeoPose.Authority/"
+cp Ethar.GeoPose.Authority/bin/Release/netstandard2.1/Ethar.GeoPose.Authority.pdb "$out/Runtime/Plugins/Ethar.GeoPose.Authority/"
+cp Ethar.GeoPose.Authority/bin/Release/netstandard2.1/Ethar.GeoPose.Authority.xml "$out/Runtime/Plugins/Ethar.GeoPose.Authority/"
 
 # Ethar.GeoPose.H3 depends on Ethar.GeoPose only. LICENSE and NOTICE ship with the plugin because the assembly contains code ported from Uber H3 under Apache-2.0.
-cp Ethar.GeoPose.H3/bin/Release/net48/Ethar.GeoPose.H3.dll "$out/Runtime/Plugins/Ethar.GeoPose.H3/"
-cp Ethar.GeoPose.H3/bin/Release/net48/Ethar.GeoPose.H3.pdb "$out/Runtime/Plugins/Ethar.GeoPose.H3/"
-cp Ethar.GeoPose.H3/bin/Release/net48/Ethar.GeoPose.H3.xml "$out/Runtime/Plugins/Ethar.GeoPose.H3/"
+cp Ethar.GeoPose.H3/bin/Release/netstandard2.1/Ethar.GeoPose.H3.dll "$out/Runtime/Plugins/Ethar.GeoPose.H3/"
+cp Ethar.GeoPose.H3/bin/Release/netstandard2.1/Ethar.GeoPose.H3.pdb "$out/Runtime/Plugins/Ethar.GeoPose.H3/"
+cp Ethar.GeoPose.H3/bin/Release/netstandard2.1/Ethar.GeoPose.H3.xml "$out/Runtime/Plugins/Ethar.GeoPose.H3/"
 cp Ethar.GeoPose.H3/LICENSE "$out/Runtime/Plugins/Ethar.GeoPose.H3/"
 cp Ethar.GeoPose.H3/NOTICE  "$out/Runtime/Plugins/Ethar.GeoPose.H3/"
 

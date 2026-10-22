@@ -155,7 +155,7 @@ namespace Ethar.GeoPose.Examples
     internal class ExampleExtrinsicFrameSpec : BaseFrameSpecification
     {
         public ExampleExtrinsicFrameSpec()
-            : base("ExampleExtrinsicFrameSpecification", Constants.AuthorityName)
+            : base("ExampleExtrinsicFrameSpec", Constants.AuthorityName)
         {
         }
 
@@ -178,7 +178,7 @@ namespace Ethar.GeoPose.Examples
     internal class ExampleIntrinsicFrameSpec : BaseFrameSpecification
     {
         public ExampleIntrinsicFrameSpec()
-            : base("ExampleIntrinsicFrameSpecification", Constants.AuthorityName)
+            : base("ExampleIntrinsicFrameSpec", Constants.AuthorityName)
         {
         }
 

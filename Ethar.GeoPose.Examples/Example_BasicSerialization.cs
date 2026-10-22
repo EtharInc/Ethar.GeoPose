@@ -26,15 +26,15 @@ namespace Ethar.GeoPose.Examples
             var response = await client.PostAsync("YourEndpoint", content);
         }
 
-        internal static async Task<BasicYawPitchRollSdu> DeSerialiseGeoPose()
+        internal static async Task<BasicYawPitchRollSdu> DeSerialiseGeoPose(HttpClient client = null)
         {
-            var client = new HttpClient();
+            client = client ?? new HttpClient();
 
             var lat = 1;
             var lon = 2;
             var height = 3;
 
-            var response = await client.GetAsync($"https://service.geopose.io/solar/solarpose/Ypr?longitude={lon}&latitude={lat}&height={height}");
+            var response = await client.GetAsync($"https://geopose.io/solarpose/YPR?longitude={lon}&latitude={lat}&height={height}");
             var json = await response.Content.ReadAsStringAsync();
             var sdu = JsonConvert.DeserializeObject<BasicYawPitchRollSdu>(json);
             return sdu;

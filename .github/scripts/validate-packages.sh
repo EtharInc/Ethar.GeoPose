@@ -17,7 +17,7 @@ for id in Ethar.GeoPose Ethar.GeoPose.Authority Ethar.GeoPose.H3; do
   [ -f "$sym" ] || echo "::warning::Missing symbols package $sym"
 
   listing=$(unzip -Z1 "$pkg")
-  for want in "$id.nuspec" readme.md nuget.png LICENSE "lib/netstandard2.0/$id.dll" "lib/net48/$id.dll"; do
+  for want in "$id.nuspec" readme.md nuget.png LICENSE "lib/netstandard2.0/$id.dll" "lib/netstandard2.1/$id.dll" "lib/net48/$id.dll" "lib/net8.0/$id.dll" "lib/net10.0/$id.dll"; do
     if ! grep -qx "$want" <<< "$listing"; then
       echo "::error::$pkg is missing $want"
       fail=1

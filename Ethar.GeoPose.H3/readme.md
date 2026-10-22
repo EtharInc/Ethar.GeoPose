@@ -4,7 +4,7 @@ Converts between GeoPose positions and H3 cell indexes, and searches GeoPoses by
 
 H3 is Uber's hexagonal hierarchical geospatial index. It divides the Earth into hexagonal cells at 16 resolutions, from about 1,280 km edges at resolution 0 to about 0.5 m edges at resolution 15, and names each cell with a 64-bit integer written as 15 hexadecimal characters. This package is a C# translation of the cell indexing subset of the Uber H3 v4.5.0 reference implementation, verified against Uber's own fixture files, so it produces the same cell indexes, centres and boundaries as the C library.
 
-The assembly targets net452 through net7.0 and netstandard2.0 and 2.1, uses no unsafe code and runs under Unity 2022.3 IL2CPP.
+The assembly targets net462, net48, netstandard2.0, netstandard2.1, net8.0 and net10.0, uses no unsafe code and runs under Unity 2022.3 IL2CPP.
 
 The usage guide and API reference are on the documentation site: [H3 cell indexing](https://etharinc.github.io/Ethar.GeoPose.Docs/articles/h3.html) and [H3 Api](https://etharinc.github.io/Ethar.GeoPose.Docs/h3api/index.html).
 

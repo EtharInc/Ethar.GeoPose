@@ -6,12 +6,27 @@
 //
 // See https://etharinc.github.io/Ethar.GeoPose.Docs/ for more information
 
+using System.Net.Security;
+using System.Security.Cryptography.X509Certificates;
 using Ethar.GeoPose.Examples;
+
+// The TLS certificate of geopose.io, which hosts the SolarPose service, expired on 1 January 2026. Until it is renewed, this
+// program accepts that one failure for that one host. The host name and the chain of trust are still checked. Remove this once
+// the certificate is renewed.
+using var solarPoseClient = new HttpClient(new HttpClientHandler
+{
+    ServerCertificateCustomValidationCallback = (request, certificate, chain, errors) =>
+        errors == SslPolicyErrors.None ||
+        (request.RequestUri?.Host == "geopose.io" &&
+         errors == SslPolicyErrors.RemoteCertificateChainErrors &&
+         chain is { ChainStatus.Length: > 0 } &&
+         chain.ChainStatus.All(status => status.Status == X509ChainStatusFlags.NotTimeValid)),
+});
 
 Console.WriteLine("-----Start-----");
 
 Console.WriteLine("Getting GeoPose data and deserializing");
-var result = await Example_BasicSerialization.DeSerialiseGeoPose();
+var result = await Example_BasicSerialization.DeSerialiseGeoPose(solarPoseClient);
 Console.WriteLine($"Geopose data - position {result.Position} - angles {result.Angles}");
 
 Console.WriteLine("----------");
