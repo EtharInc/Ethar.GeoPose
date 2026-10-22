@@ -1,0 +1,42 @@
+name: Get the package version from Directory.Build.props
+
+on:
+  workflow_call:
+    outputs:
+      packageversion:
+        description: The version, without a leading v (for example 1.0.1 or 2.0.0-pre.1)
+        value: ${{ jobs.get_package_version.outputs.packageversion }}
+      is-prerelease:
+        description: "true when the version carries a pre-release suffix"
+        value: ${{ jobs.get_package_version.outputs.isprerelease }}
+
+jobs:
+  get_package_version:
+    name: Read package version
+    runs-on: ubuntu-latest
+    outputs:
+      packageversion: ${{ steps.getVersion.outputs.packageversion }}
+      isprerelease: ${{ steps.getVersion.outputs.isprerelease }}
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          persist-credentials: false
+
+      - id: getVersion
+        name: Read version
+        shell: bash
+        run: |
+          version=$(sed -n -E 's:.*<Version>([^<]+)</Version>.*:\1:p' Directory.Build.props | head -1 | tr -d '\r')
+          if [ -z "$version" ]; then
+            echo "::error::Directory.Build.props has no <Version> element"
+            exit 1
+          fi
+          if ! [[ "$version" =~ ^[0-9]+\.[0-9]+\.[0-9]+(-[0-9A-Za-z.-]+)?$ ]]; then
+            echo "::error::'$version' is not a valid package version (expected major.minor.patch with an optional -pre suffix)"
+            exit 1
+          fi
+          isprerelease=false
+          case "$version" in *-*) isprerelease=true ;; esac
+          echo "Detected package version $version (pre-release: $isprerelease)"
+          echo "packageversion=$version" >> "$GITHUB_OUTPUT"
+          echo "isprerelease=$isprerelease" >> "$GITHUB_OUTPUT"

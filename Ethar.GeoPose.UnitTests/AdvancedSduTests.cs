@@ -8,8 +8,8 @@ namespace Ethar.GeoPose.UnitTests
     internal class AdvancedSduTests : UnitTestBase
     {
         [Test]
-        [TestCase(16534234327, "\"/Ethar.GeoPose/1.0\"", "\"LTP-ENU\"", "\"longitude=-122.0000000&latitude=48.0000000&heightInMeters=5.000\"", 0.207f, 0.218f, 0.655f, -0.692f)]
-        public void CanCorrectlyDeserializeAdvancedSduWithLtpEnuSpecification(long validTime, string authority, string id, string parameters, float x, float y, float z, float w)
+        [TestCase(16534234327, "\"/Ethar.GeoPose/1.0\"", "\"LTP-ENU\"", "\"longitude=-122.0000000&latitude=48.0000000&heightInMeters=5.000\"", 0.207, 0.218, 0.655, -0.692)]
+        public void CanCorrectlyDeserializeAdvancedSduWithLtpEnuSpecification(long validTime, string authority, string id, string parameters, double x, double y, double z, double w)
         {
             var json =
                 "{" +
@@ -45,8 +45,8 @@ namespace Ethar.GeoPose.UnitTests
         }
 
         [Test]
-        [TestCase(16534234327, "\"/Ethar.GeoPose/1.0\"", "\"LTP-NED\"", "\"longitude=-122.0000000&latitude=48.0000000&heightInMeters=5.000\"", 0.207f, 0.218f, 0.655f, -0.692f)]
-        public void CanCorrectlyDeserializeAdvancedSduWithLtpNedSpecification(long validTime, string authority, string id, string parameters, float x, float y, float z, float w)
+        [TestCase(16534234327, "\"/Ethar.GeoPose/1.0\"", "\"LTP-NED\"", "\"longitude=-122.0000000&latitude=48.0000000&heightInMeters=5.000\"", 0.207, 0.218, 0.655, -0.692)]
+        public void CanCorrectlyDeserializeAdvancedSduWithLtpNedSpecification(long validTime, string authority, string id, string parameters, double x, double y, double z, double w)
         {
             var json =
                 "{" +
@@ -82,8 +82,8 @@ namespace Ethar.GeoPose.UnitTests
         }
 
         [Test]
-        [TestCase(16534234327, "\"/Ethar.GeoPose/1.0\"", "\"YPR-LTP-ENU\"", "\"longitude=-122.0000000&latitude=48.0000000&heightInMeters=5.000&orientation.yaw=10&orientation.pitch=11&orientation.roll=12\"", 0.207f, 0.218f, 0.655f, -0.692f)]
-        public void CanCorrectlyDeserializeAdvancedSduWithYprOrientedLtpEnuSpecification(long validTime, string authority, string id, string parameters, float x, float y, float z, float w)
+        [TestCase(16534234327, "\"/Ethar.GeoPose/1.0\"", "\"YPR-LTP-ENU\"", "\"longitude=-122.0000000&latitude=48.0000000&heightInMeters=5.000&orientation.yaw=10&orientation.pitch=11&orientation.roll=12\"", 0.207, 0.218, 0.655, -0.692)]
+        public void CanCorrectlyDeserializeAdvancedSduWithYprOrientedLtpEnuSpecification(long validTime, string authority, string id, string parameters, double x, double y, double z, double w)
         {
             var json =
                 "{" +
@@ -122,8 +122,8 @@ namespace Ethar.GeoPose.UnitTests
         }
 
         [Test]
-        [TestCase(16534234327, "\"/Ethar.GeoPose/1.0\"", "\"Quaternion-LTP-ENU\"", "\"longitude=-122.0000000&latitude=48.0000000&heightInMeters=5.000&orientation.x=0.5&orientation.y=0.25&orientation.z=0.25&orientation.w=-0.5\"", 0.207f, 0.218f, 0.655f, -0.692f)]
-        public void CanCorrectlyDeserializeAdvancedSduWithQuaternionOrientedLtpEnuSpecification(long validTime, string authority, string id, string parameters, float x, float y, float z, float w)
+        [TestCase(16534234327, "\"/Ethar.GeoPose/1.0\"", "\"Quaternion-LTP-ENU\"", "\"longitude=-122.0000000&latitude=48.0000000&heightInMeters=5.000&orientation.x=0.5&orientation.y=0.25&orientation.z=0.25&orientation.w=-0.5\"", 0.207, 0.218, 0.655, -0.692)]
+        public void CanCorrectlyDeserializeAdvancedSduWithQuaternionOrientedLtpEnuSpecification(long validTime, string authority, string id, string parameters, double x, double y, double z, double w)
         {
             var json =
                 "{" +
@@ -163,8 +163,8 @@ namespace Ethar.GeoPose.UnitTests
         }
 
         [Test]
-        [TestCase(16534234327, "\"/Ethar.GeoPose/1.0\"", "\"Translate-Rotate\"", "\"translation.x=0.1&translation.y=0.2&translation.z=0.3&rotation.x=0.692&rotation.y=0.691&rotation.z=0.141&rotation.w=0.14\"", 0.207f, 0.218f, 0.655f, -0.692f)]
-        public void CanCorrectlyDeserializeAdvancedSduWithTranslateRotateSpecification(long validTime, string authority, string id, string parameters, float x, float y, float z, float w)
+        [TestCase(16534234327, "\"/Ethar.GeoPose/1.0\"", "\"Translate-Rotate\"", "\"translation.x=0.1&translation.y=0.2&translation.z=0.3&rotation.x=0.692&rotation.y=0.691&rotation.z=0.141&rotation.w=0.14\"", 0.207, 0.218, 0.655, -0.692)]
+        public void CanCorrectlyDeserializeAdvancedSduWithTranslateRotateSpecification(long validTime, string authority, string id, string parameters, double x, double y, double z, double w)
         {
             var json =
                 "{" +
@@ -194,18 +194,18 @@ namespace Ethar.GeoPose.UnitTests
             Assert.That(sdu.FrameSpecification is TranslateRotateSpecification);
 
             var translateRotateSpec = sdu.FrameSpecification as TranslateRotateSpecification;
-            Assert.That(translateRotateSpec.Translation.X, Is.EqualTo(0.1f));
-            Assert.That(translateRotateSpec.Translation.Y, Is.EqualTo(0.2f));
-            Assert.That(translateRotateSpec.Translation.Z, Is.EqualTo(0.3f));
-            Assert.That(translateRotateSpec.Rotation.X, Is.EqualTo(0.692f));
-            Assert.That(translateRotateSpec.Rotation.Y, Is.EqualTo(0.691f));
-            Assert.That(translateRotateSpec.Rotation.Z, Is.EqualTo(0.141f));
-            Assert.That(translateRotateSpec.Rotation.W, Is.EqualTo(0.14f));
+            Assert.That(translateRotateSpec.Translation.X, Is.EqualTo(0.1));
+            Assert.That(translateRotateSpec.Translation.Y, Is.EqualTo(0.2));
+            Assert.That(translateRotateSpec.Translation.Z, Is.EqualTo(0.3));
+            Assert.That(translateRotateSpec.Rotation.X, Is.EqualTo(0.692));
+            Assert.That(translateRotateSpec.Rotation.Y, Is.EqualTo(0.691));
+            Assert.That(translateRotateSpec.Rotation.Z, Is.EqualTo(0.141));
+            Assert.That(translateRotateSpec.Rotation.W, Is.EqualTo(0.14));
         }
 
         [Test]
-        [TestCase(16534234327, "\"/Ethar.GeoPose/1.0\"", "\"Translate-Rotate\"", "\"translation.x=0.1&translation.y=0.2&translation.z=0.3&rotation.x=0.692&rotation.y=0.691&rotation.z=0.141&rotation.w=0.14\"", 0.207f, 0.218f, 0.655f, -0.692f)]
-        public void CanConvertAdvancedSDUToString(long validTime, string authority, string id, string parameters, float x, float y, float z, float w)
+        [TestCase(16534234327, "\"/Ethar.GeoPose/1.0\"", "\"Translate-Rotate\"", "\"translation.x=0.1&translation.y=0.2&translation.z=0.3&rotation.x=0.692&rotation.y=0.691&rotation.z=0.141&rotation.w=0.14\"", 0.207, 0.218, 0.655, -0.692)]
+        public void CanConvertAdvancedSDUToString(long validTime, string authority, string id, string parameters, double x, double y, double z, double w)
         {
             var json =
                 "{" +
@@ -232,8 +232,8 @@ namespace Ethar.GeoPose.UnitTests
         }
 
         [Test]
-        [TestCase(16534234327, 0.207f, 0.218f, 0.655f, -0.692f)]
-        public void CanConvertAdvancedSDUToStringWithNoFrameSpecification(long validTime, float x, float y, float z, float w)
+        [TestCase(16534234327, 0.207, 0.218, 0.655, -0.692)]
+        public void CanConvertAdvancedSDUToStringWithNoFrameSpecification(long validTime, double x, double y, double z, double w)
         {
             var sdu = new AdvancedSdu(validTime,new DataTypes.UnitQuaternion(x, y, z, w),null);
             var result = sdu.ToString();

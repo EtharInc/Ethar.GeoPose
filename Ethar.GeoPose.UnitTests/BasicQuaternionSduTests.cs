@@ -6,8 +6,8 @@ namespace Ethar.GeoPose.UnitTests
 {
     internal class BasicQuaternionSduTests : UnitTestBase
     {
-        [TestCase(45, 45, 5, 0.207f, 0.218f, 0.655f, -0.692f)]
-        public void CanCorrectlyDeserializeBasicQuaternionSdu(float lat, float lon, float h, float x, float y, float z, float w)
+        [TestCase(45, 45, 5, 0.207, 0.218, 0.655, -0.692)]
+        public void CanCorrectlyDeserializeBasicQuaternionSdu(double lat, double lon, double h, double x, double y, double z, double w)
         {
             var json =
                 "{" +
@@ -36,8 +36,8 @@ namespace Ethar.GeoPose.UnitTests
             Assert.That(sdu.Quaternion.W, Is.EqualTo(w));
         }
 
-        [TestCase(45, 45, 5, 0.207f, 0.218f, 0.655f, -0.692f)]
-        public void CanCorrectlySerializeBasicQuaternionSdu(float lat, float lon, float h, float x, float y, float z, float w)
+        [TestCase(45, 45, 5, 0.207, 0.218, 0.655, -0.692)]
+        public void CanCorrectlySerializeBasicQuaternionSdu(double lat, double lon, double h, double x, double y, double z, double w)
         {
             var sdu = new BasicQuaternionSdu(new DataTypes.TangentPointPosition() { HeightInMeters = h, Latitude = lat, Longitude = lon }, new DataTypes.UnitQuaternion() { X = x, Y = y, Z = z, W = w });
 
@@ -64,7 +64,7 @@ namespace Ethar.GeoPose.UnitTests
         }
 
         [TestCase(45, 45, 5, 12, 16, 8)]
-        public void CanCorrectlyMakeARoundTripConversion(float lat, float lon, float h, float yaw, float pitch, float roll)
+        public void CanCorrectlyMakeARoundTripConversion(double lat, double lon, double h, double yaw, double pitch, double roll)
         {
             var sdu = new BasicYawPitchRollSdu(new DataTypes.YawPitchRollAngles() { Yaw = yaw, Pitch = pitch, Roll = roll }, new DataTypes.TangentPointPosition() { HeightInMeters = h, Latitude = lat, Longitude = lon });
 
@@ -75,8 +75,8 @@ namespace Ethar.GeoPose.UnitTests
             Assert.That(sdu, Is.EqualTo(converted));
         }
 
-        [TestCase(45, 45, 5, 0.207f, 0.218f, 0.655f, -0.692f)]
-        public void CanConvertBasicQuaternionSduToString(float lat, float lon, float h, float x, float y, float z, float w)
+        [TestCase(45, 45, 5, 0.207, 0.218, 0.655, -0.692)]
+        public void CanConvertBasicQuaternionSduToString(double lat, double lon, double h, double x, double y, double z, double w)
         {
             var sdu = new BasicQuaternionSdu(new DataTypes.TangentPointPosition() { HeightInMeters = h, Latitude = lat, Longitude = lon }, new DataTypes.UnitQuaternion() { X = x, Y = y, Z = z, W = w });
             var result = sdu.ToString();

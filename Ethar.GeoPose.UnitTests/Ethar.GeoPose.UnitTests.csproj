@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>net6.0</TargetFramework>
+    <TargetFramework>net10.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>disable</Nullable>
 
@@ -20,6 +20,11 @@
   <ItemGroup>
     <ProjectReference Include="..\Ethar.GeoPose.Authority\Ethar.GeoPose.Authority.csproj" />
     <ProjectReference Include="..\Ethar.GeoPose\Ethar.GeoPose.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <!-- Official OGC GeoPose 1.0 example instances from https://schemas.opengis.net/geopose/1.0/instances/ -->
+    <None Update="Fixtures\**\*.json" CopyToOutputDirectory="PreserveNewest" />
   </ItemGroup>
 
 </Project>

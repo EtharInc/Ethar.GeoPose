@@ -93,14 +93,17 @@ namespace Ethar.GeoPose.Validation
             string[] querySegments = queryString.Split('&');
             foreach (string segment in querySegments)
             {
-                string[] parts = segment.Split('=');
-                if (parts.Length > 0)
+                if (string.IsNullOrWhiteSpace(segment))
                 {
-                    string key = parts[0].Trim(new char[] { '?', ' ' });
-                    string val = parts[1].Trim();
-
-                    queryParameters.Add(key, val);
+                    continue;
                 }
+
+                // Split on the first '=' only; array values such as translation=[0.0, 0.0, 0.0] must stay intact.
+                var separator = segment.IndexOf('=');
+                string key = (separator < 0 ? segment : segment.Substring(0, separator)).Trim(new char[] { '?', ' ' });
+                string val = separator < 0 ? string.Empty : segment.Substring(separator + 1).Trim();
+
+                queryParameters.Add(key, val);
             }
 
             return queryParameters;

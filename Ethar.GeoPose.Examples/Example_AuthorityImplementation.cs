@@ -155,12 +155,12 @@ namespace Ethar.GeoPose.Examples
     internal class ExampleExtrinsicFrameSpec : BaseFrameSpecification
     {
         public ExampleExtrinsicFrameSpec()
-            : base("ExampleExtrinsicFrameSpecification", Constants.AuthorityName)
+            : base("ExampleExtrinsicFrameSpec", Constants.AuthorityName)
         {
         }
 
-        public float Latitude { get; set; }
-        public float Longitude { get; set; }
+        public double Latitude { get; set; }
+        public double Longitude { get; set; }
     }
 
     /// <summary>
@@ -178,7 +178,7 @@ namespace Ethar.GeoPose.Examples
     internal class ExampleIntrinsicFrameSpec : BaseFrameSpecification
     {
         public ExampleIntrinsicFrameSpec()
-            : base("ExampleIntrinsicFrameSpecification", Constants.AuthorityName)
+            : base("ExampleIntrinsicFrameSpec", Constants.AuthorityName)
         {
         }
 
@@ -195,8 +195,8 @@ namespace Ethar.GeoPose.Examples
         {
             if (ValidationUtilities.ValidateJsonObjectParameters<ExampleExtrinsicFrameSpec>(jObject, out var queryString))
             {
-                var lat = float.Parse(queryString.GetParameter("latitude"));
-                var lon = float.Parse(queryString.GetParameter("longitude"));
+                var lat = double.Parse(queryString.GetParameter("latitude"));
+                var lon = double.Parse(queryString.GetParameter("longitude"));
 
                 return new ExampleExtrinsicFrameSpec { Latitude = lat, Longitude = lon };
             }
@@ -222,9 +222,9 @@ namespace Ethar.GeoPose.Examples
         {
             if (ValidationUtilities.ValidateJsonObjectParameters<ExampleIntrinsicFrameSpec>(jObject, out var queryString))
             {
-                var x = float.Parse(queryString.GetParameter("translation.x"));
-                var y = float.Parse(queryString.GetParameter("translation.y"));
-                var z = float.Parse(queryString.GetParameter("translation.z"));
+                var x = double.Parse(queryString.GetParameter("translation.x"));
+                var y = double.Parse(queryString.GetParameter("translation.y"));
+                var z = double.Parse(queryString.GetParameter("translation.z"));
                 var vector = new UnitVector3(x, y, z);
 
                 return new ExampleIntrinsicFrameSpec { Translation = vector };

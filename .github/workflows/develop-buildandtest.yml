@@ -1,41 +1,65 @@
 name: Development dotnet build and test
 
-on: 
+on:
   push:
-    branches-ignore:
+    branches:
+      - development
+  pull_request:
+    branches:
       - main
-      - upm
+      - development
+  workflow_dispatch:
+
+concurrency:
+  group: build-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
 
 jobs:
   build:
-
+    name: Build, test and pack
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
-      - name: Setup dotnet
-        uses: actions/setup-dotnet@v3
+      - uses: actions/checkout@v7
         with:
-          dotnet-version: | 
-            5.x
-            6.x
-            7.x
-      - uses: actions/cache@v3
+          persist-credentials: false
+
+      - name: Setup dotnet
+        uses: actions/setup-dotnet@v6
+        with:
+          dotnet-version: |
+            10.x
+
+      - uses: actions/cache@v6
         with:
           path: ~/.nuget/packages
-          # Look to see if there is a cache hit for the corresponding requirements file
-          key: ${{ runner.os }}-nuget-${{ hashFiles('**/packages.lock.json') }}
+          key: ${{ runner.os }}-nuget-${{ hashFiles('**/*.csproj', 'Directory.Build.props') }}
           restore-keys: |
-            ${{ runner.os }}-nuget          
-      - name: Install dependencies
+            ${{ runner.os }}-nuget-
+
+      - name: Restore
         run: dotnet restore
+
       - name: Build
-        run: dotnet build --configuration Release
-      - name: Test with dotnet
-        run: dotnet test --logger trx --results-directory "TestResults-dotnet-6"
-      - name: Upload dotnet test results
-        uses: actions/upload-artifact@v3
-        with:
-          name: dotnet-results-dotnet-6
-          path: TestResults-dotnet-6
-        # Use always() to always run this step to publish test results when there are test failures
+        run: dotnet build --configuration Release --no-restore
+
+      - name: Test
+        run: dotnet test --configuration Release --no-build --logger trx --results-directory TestResults
+
+      - name: Upload test results
+        uses: actions/upload-artifact@v7
         if: ${{ always() }}
+        with:
+          name: test-results
+          path: TestResults
+
+      - name: Pack
+        run: dotnet pack --configuration Release --no-build --output artifacts/packages
+
+      - name: Upload packages
+        uses: actions/upload-artifact@v7
+        with:
+          name: nuget-packages
+          path: artifacts/packages

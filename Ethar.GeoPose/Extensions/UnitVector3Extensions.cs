@@ -1,22 +1,25 @@
-﻿// <copyright file="UnitVector3Extensions.cs" company="Ethar">
+// <copyright file="UnitVector3Extensions.cs" company="Ethar">
 // Copyright (c) Ethar. All rights reserved.
 // </copyright>
 
 namespace Ethar.GeoPose.Extensions
 {
     using Ethar.GeoPose.DataTypes;
+    using Ethar.GeoPose.JsonConversion;
 
     /// <summary>
-    /// Extensions for the <see cref="UnitVector3"/> data type.
+    /// Extensions for <see cref="UnitVector3"/>.
     /// </summary>
     public static class UnitVector3Extensions
     {
         /// <summary>
-        /// Builds a parameter string for the <see cref="UnitVector3"/>.
+        /// Builds the Ethar authority translation parameter string, culture-invariant: <c>translation.x=…&amp;translation.y=…&amp;translation.z=…</c>.
         /// </summary>
-        /// <param name="vector">The <see cref="UnitVector3"/> to generate a parameter string for.</param>
-        /// <returns>A string representation of the <see cref="UnitVector3"/>.</returns>
-        /// <remarks>Convenience method used to generate parameter strings for frame specifications in the /Ethar.GeoPose/1.0 authority.</remarks>
-        public static string BuildTranslationParamString(this UnitVector3 vector) => $"translation.x={vector.X}&translation.y={vector.Y}&translation.z={vector.Z}";
+        /// <param name="vector">The vector.</param>
+        /// <returns>The parameter string.</returns>
+        public static string BuildTranslationParamString(this UnitVector3 vector)
+        {
+            return $"translation.x={InvariantNumber.Format(vector.X)}&translation.y={InvariantNumber.Format(vector.Y)}&translation.z={InvariantNumber.Format(vector.Z)}";
+        }
     }
 }
