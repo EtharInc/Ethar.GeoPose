@@ -2,7 +2,7 @@
   "name": "com.ethar.geopose",
   "displayName": "Ethar GeoPose implementation",
   "version": "1.0.0",
-  "unity": "2020.3",
+  "unity": "2022.3",
   "description": "GeoPose specification V1.0 Unity implementation by Ethar.",
   "dependencies": {
     "com.unity.nuget.newtonsoft-json": "3.0.2"
