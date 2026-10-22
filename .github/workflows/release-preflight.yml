@@ -100,7 +100,7 @@ jobs:
             echo ""
             echo "- Directory.Build.props version: \`$VERSION\` (pre-release: $PRERELEASE)"
             echo "- Tags on release: \`v$VERSION\` on main and \`upm-v$VERSION\` on upm"
-            echo "- NuGet packages: Ethar.GeoPose $VERSION, Ethar.GeoPose.Authority $VERSION"
+            echo "- NuGet packages: Ethar.GeoPose $VERSION, Ethar.GeoPose.Authority $VERSION, Ethar.GeoPose.H3 $VERSION"
             echo "- Packages validated, version confirmed free on nuget.org and as a tag"
             echo ""
             echo "Nothing was published. After merging to main, run the Release workflow with dry-run enabled first."

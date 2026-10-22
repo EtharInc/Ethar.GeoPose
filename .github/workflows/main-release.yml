@@ -94,6 +94,7 @@ jobs:
         run: |
           zip -r -q "artifacts/Ethar.GeoPose.$VERSION.zip" Ethar.GeoPose/bin/Release
           zip -r -q "artifacts/Ethar.GeoPose.Authority.$VERSION.zip" Ethar.GeoPose.Authority/bin/Release
+          zip -r -q "artifacts/Ethar.GeoPose.H3.$VERSION.zip" Ethar.GeoPose.H3/bin/Release
           ls -l artifacts
 
       - name: Upload release files
@@ -119,7 +120,7 @@ jobs:
             echo ""
             echo "- Version: \`$VERSION\` (pre-release: $PRERELEASE) from Directory.Build.props"
             echo "- Would tag: \`v$VERSION\` on main and \`upm-v$VERSION\` on upm"
-            echo "- Would publish to nuget.org: Ethar.GeoPose $VERSION, Ethar.GeoPose.Authority $VERSION"
+            echo "- Would publish to nuget.org: Ethar.GeoPose $VERSION, Ethar.GeoPose.Authority $VERSION, Ethar.GeoPose.H3 $VERSION"
             echo "- Would commit to upm: net48 assemblies, samples, tests and package.json version $VERSION"
             echo "- Packages and upm payload are attached as the \`release-files-v$VERSION\` artifact"
           } >> "$GITHUB_STEP_SUMMARY"
@@ -196,7 +197,7 @@ jobs:
         env:
           NUGET_TOKEN: ${{ secrets.NUGET_TOKEN }}
         run: |
-          for id in Ethar.GeoPose Ethar.GeoPose.Authority; do
+          for id in Ethar.GeoPose Ethar.GeoPose.Authority Ethar.GeoPose.H3; do
             echo "Pushing $id $VERSION"
             dotnet nuget push "artifacts/packages/$id.$VERSION.nupkg" \
               --api-key "$NUGET_TOKEN" \
@@ -210,7 +211,7 @@ jobs:
             echo ""
             echo "- GitHub release: https://github.com/$GITHUB_REPOSITORY/releases/tag/v$VERSION"
             echo "- upm tag: \`upm-v$VERSION\`"
-            echo "- nuget.org: https://www.nuget.org/packages/Ethar.GeoPose/$VERSION and https://www.nuget.org/packages/Ethar.GeoPose.Authority/$VERSION (indexing takes a few minutes)"
+            echo "- nuget.org: https://www.nuget.org/packages/Ethar.GeoPose/$VERSION, https://www.nuget.org/packages/Ethar.GeoPose.Authority/$VERSION and https://www.nuget.org/packages/Ethar.GeoPose.H3/$VERSION (indexing takes a few minutes)"
           } >> "$GITHUB_STEP_SUMMARY"
 
   refresh-development:
