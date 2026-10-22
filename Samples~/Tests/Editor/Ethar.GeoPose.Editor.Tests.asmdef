@@ -15,6 +15,7 @@
         "nunit.framework.dll",
         "Newtonsoft.Json.dll",
         "Ethar.GeoPose.Authority.dll",
+        "Ethar.GeoPose.H3.dll",
         "Ethar.GeoPose.dll"
     ],
     "autoReferenced": false,
