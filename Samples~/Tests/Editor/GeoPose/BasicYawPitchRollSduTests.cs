@@ -1,6 +1,13 @@
 ﻿using Ethar.GeoPose.StructuralDataUnits;
 using Newtonsoft.Json;
 using NUnit.Framework;
+#if !UNITY_EDITOR && APITEST
+using System.Linq;
+using System.Net.Http;
+using System.Net.Security;
+using System.Security.Cryptography.X509Certificates;
+using System.Threading.Tasks;
+#endif
 
 namespace Ethar.GeoPose.UnitTests
 {
@@ -10,19 +17,36 @@ namespace Ethar.GeoPose.UnitTests
 #if !UNITY_EDITOR && APITEST
         [TestCase(45, 45, 10)]
         [TestCase(0, 90, 100)]
-        [TestCase(45, 45, 10.12f)]
+        [TestCase(45, 45, 10.12)]
         [TestCase(-15, -45, -10)]
-        public async Task CanCorrectlyParseBasicYawPitchRollSdu(float lat, float lon, float height)
+        public async Task CanCorrectlyParseBasicYawPitchRollSdu(double lat, double lon, double height)
         {
-            var sdu = await this.Client.ReadAsJsonAsync<BasicYawPitchRollSdu>($"{ApiEndpoints.BasicYprGet}?longitude={lon}&latitude={lat}&heightInMeters={height}");
+            using var client = CreateGeoPoseServiceClient();
+            var sdu = await client.ReadAsJsonAsync<BasicYawPitchRollSdu>($"{ApiEndpoints.BasicYprGet}?longitude={lon}&latitude={lat}&height={height}");
             Assert.That(sdu.Position.Longitude, Is.EqualTo(lon));
             Assert.That(sdu.Position.Latitude, Is.EqualTo(lat));
             Assert.That(sdu.Position.HeightInMeters, Is.EqualTo(height));
         }
+
+        // The TLS certificate of geopose.io, which hosts the SolarPose service, expired on 1 January 2026. Until it is renewed, this
+        // test accepts that one failure for that one host. The host name and the chain of trust are still checked. Remove this once
+        // the certificate is renewed.
+        private static HttpClient CreateGeoPoseServiceClient()
+        {
+            return new HttpClient(new HttpClientHandler
+            {
+                ServerCertificateCustomValidationCallback = (request, certificate, chain, errors) =>
+                    errors == SslPolicyErrors.None ||
+                    (request.RequestUri?.Host == "geopose.io" &&
+                     errors == SslPolicyErrors.RemoteCertificateChainErrors &&
+                     chain is { ChainStatus.Length: > 0 } &&
+                     chain.ChainStatus.All(status => status.Status == X509ChainStatusFlags.NotTimeValid)),
+            });
+        }
 #endif
 
-        [TestCase(45f, 45f, 5f, 12, 16, 8)]
-        public void CanCorrectlyDeserializeBasicYawPitchRollSdu(float lat, float lon, float h, float yaw, float pitch, float roll)
+        [TestCase(45, 45, 5, 12, 16, 8)]
+        public void CanCorrectlyDeserializeBasicYawPitchRollSdu(double lat, double lon, double h, double yaw, double pitch, double roll)
         {
             var json =
                 "{" +
@@ -50,8 +74,8 @@ namespace Ethar.GeoPose.UnitTests
             Assert.That(sdu.Angles.Roll, Is.EqualTo(roll));
         }
 
-        [TestCase(45.0f, 45.0f, 5, 12, 16, 8)]
-        public void CanCorrectlySerializeBasicYawPitchRollSdu(float lat, float lon, float h, float yaw, float pitch, float roll)
+        [TestCase(45.0, 45.0, 5, 12, 16, 8)]
+        public void CanCorrectlySerializeBasicYawPitchRollSdu(double lat, double lon, double h, double yaw, double pitch, double roll)
         {
             var sdu = new BasicYawPitchRollSdu(new DataTypes.YawPitchRollAngles() { Yaw = yaw, Pitch = pitch, Roll = roll }, new DataTypes.TangentPointPosition() { HeightInMeters = h, Latitude = lat, Longitude = lon });
 
@@ -77,7 +101,7 @@ namespace Ethar.GeoPose.UnitTests
         }
 
         [TestCase(45, 45, 5, 12, 16, 8)]
-        public void CanCorrectlyMakeARoundTripConversion(float lat, float lon, float h, float yaw, float pitch, float roll)
+        public void CanCorrectlyMakeARoundTripConversion(double lat, double lon, double h, double yaw, double pitch, double roll)
         {
             var sdu = new BasicYawPitchRollSdu(new DataTypes.YawPitchRollAngles() { Yaw = yaw, Pitch = pitch, Roll = roll }, new DataTypes.TangentPointPosition() { HeightInMeters = h, Latitude = lat, Longitude = lon });
 
@@ -88,8 +112,8 @@ namespace Ethar.GeoPose.UnitTests
             Assert.That(sdu, Is.EqualTo(converted));
         }
 
-        [TestCase(45f, 45f, 5f, 12, 16, 8)]
-        public void CanConvertBasicYawPitchRollSduToString(float lat, float lon, float h, float yaw, float pitch, float roll)
+        [TestCase(45, 45, 5, 12, 16, 8)]
+        public void CanConvertBasicYawPitchRollSduToString(double lat, double lon, double h, double yaw, double pitch, double roll)
         {
             var sdu = new BasicYawPitchRollSdu(new DataTypes.YawPitchRollAngles() { Yaw = yaw, Pitch = pitch, Roll = roll }, new DataTypes.TangentPointPosition() { HeightInMeters = h, Latitude = lat, Longitude = lon });
             var result = sdu.ToString();

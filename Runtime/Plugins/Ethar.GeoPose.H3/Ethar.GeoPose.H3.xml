@@ -1,0 +1,2553 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>Ethar.GeoPose.H3</name>
+    </assembly>
+    <members>
+        <member name="T:Ethar.GeoPose.H3.Authority.EtharGeoPoseH3Authority">
+            <summary>
+            The GeoPose authority that reads and writes the <see cref="T:Ethar.GeoPose.H3.Authority.H3CellSpecification"/> frame. Register it with <see cref="M:Ethar.GeoPose.H3.Authority.EtharGeoPoseH3Authority.Register"/> before serializing an Advanced GeoPose that uses the frame.
+            </summary>
+            <remarks>
+            The authority defines frame specifications only. Transition models belong to the main Ethar authority, so the transition model conversions throw.
+            </remarks>
+        </member>
+        <member name="P:Ethar.GeoPose.H3.Authority.EtharGeoPoseH3Authority.AuthorityName">
+            <inheritdoc/>
+        </member>
+        <member name="M:Ethar.GeoPose.H3.Authority.EtharGeoPoseH3Authority.Register">
+            <summary>
+            Registers the authority with the <see cref="T:Ethar.GeoPose.Authority.AuthorityProvider"/>.
+            </summary>
+        </member>
+        <member name="M:Ethar.GeoPose.H3.Authority.EtharGeoPoseH3Authority.Unregister">
+            <summary>
+            Removes the authority from the <see cref="T:Ethar.GeoPose.Authority.AuthorityProvider"/>.
+            </summary>
+        </member>
+        <member name="M:Ethar.GeoPose.H3.Authority.EtharGeoPoseH3Authority.ConvertFrameSpecToJson(Ethar.GeoPose.Interfaces.IFrameSpecification)">
+            <inheritdoc/>
+        </member>
+        <member name="M:Ethar.GeoPose.H3.Authority.EtharGeoPoseH3Authority.ConvertJsonToFrameSpec(Newtonsoft.Json.Linq.JObject)">
+            <inheritdoc/>
+        </member>
+        <member name="M:Ethar.GeoPose.H3.Authority.EtharGeoPoseH3Authority.ConvertJsonToTransitionModel(Newtonsoft.Json.Linq.JObject)">
+            <inheritdoc/>
+        </member>
+        <member name="M:Ethar.GeoPose.H3.Authority.EtharGeoPoseH3Authority.ConvertTransitionModelToJson(Ethar.GeoPose.TransitionModels.TransitionModel)">
+            <inheritdoc/>
+        </member>
+        <member name="M:Ethar.GeoPose.H3.Authority.EtharGeoPoseH3Authority.IsFrameSpecificationExtrinsic(Ethar.GeoPose.Interfaces.IFrameSpecification)">
+            <inheritdoc/>
+        </member>
+        <member name="T:Ethar.GeoPose.H3.Authority.H3AuthorityConstants">
+            <summary>
+            Names used by the H3 frame specification authority.
+            </summary>
+        </member>
+        <member name="F:Ethar.GeoPose.H3.Authority.H3AuthorityConstants.AuthorityName">
+            <summary>
+            The authority name written into the <c>authority</c> field of a frame specification.
+            </summary>
+        </member>
+        <member name="F:Ethar.GeoPose.H3.Authority.H3AuthorityConstants.H3CellSpecificationId">
+            <summary>
+            The frame specification id of a frame anchored at the centre of an H3 cell.
+            </summary>
+        </member>
+        <member name="F:Ethar.GeoPose.H3.Authority.H3AuthorityConstants.CellParameter">
+            <summary>
+            The parameter that carries the 15 character hexadecimal cell index.
+            </summary>
+        </member>
+        <member name="F:Ethar.GeoPose.H3.Authority.H3AuthorityConstants.HeightParameter">
+            <summary>
+            The parameter that carries the height of the frame origin above the WGS84 ellipsoid in metres.
+            </summary>
+        </member>
+        <member name="T:Ethar.GeoPose.H3.Authority.H3CellSpecification">
+            <summary>
+            A frame specification whose origin is the centre of an H3 cell at a given height, with the local tangent plane east-north-up axes of the Ethar LTP-ENU frame.
+            </summary>
+            <remarks>
+            This lets an Advanced GeoPose name a cell as its frame: <c>{"authority":"/Ethar.GeoPose.H3/1.0","id":"H3-CELL","parameters":"cell=8928308280fffff&amp;heightInMeters=35.5"}</c>.
+            The cell carries the horizontal position, so the parameters are the cell index and the height only. <see cref="P:Ethar.GeoPose.H3.Authority.H3CellSpecification.Position"/> resolves the origin when a numeric position is needed.
+            </remarks>
+        </member>
+        <member name="M:Ethar.GeoPose.H3.Authority.H3CellSpecification.#ctor">
+            <summary>
+            Initializes a new instance of the <see cref="T:Ethar.GeoPose.H3.Authority.H3CellSpecification"/> class with no cell. Used by JSON validation, which needs a default instance to read the id and authority.
+            </summary>
+        </member>
+        <member name="M:Ethar.GeoPose.H3.Authority.H3CellSpecification.#ctor(Ethar.GeoPose.H3.H3Index,System.Double)">
+            <summary>
+            Initializes a new instance of the <see cref="T:Ethar.GeoPose.H3.Authority.H3CellSpecification"/> class.
+            </summary>
+            <param name="cell">The cell whose centre is the frame origin.</param>
+            <param name="heightInMeters">The height of the origin above the WGS84 ellipsoid.</param>
+        </member>
+        <member name="P:Ethar.GeoPose.H3.Authority.H3CellSpecification.Cell">
+            <summary>
+            Gets the cell whose centre is the frame origin.
+            </summary>
+        </member>
+        <member name="P:Ethar.GeoPose.H3.Authority.H3CellSpecification.HeightInMeters">
+            <summary>
+            Gets the height of the origin above the WGS84 ellipsoid in metres.
+            </summary>
+        </member>
+        <member name="P:Ethar.GeoPose.H3.Authority.H3CellSpecification.Position">
+            <summary>
+            Gets the frame origin as a GeoPose position: the cell centre at <see cref="P:Ethar.GeoPose.H3.Authority.H3CellSpecification.HeightInMeters"/>.
+            </summary>
+        </member>
+        <member name="M:Ethar.GeoPose.H3.Authority.H3CellSpecification.BuildParameters">
+            <summary>
+            Builds the culture invariant parameter string, for example <c>cell=8928308280fffff&amp;heightInMeters=35.5</c>.
+            </summary>
+            <returns>The parameters.</returns>
+        </member>
+        <member name="M:Ethar.GeoPose.H3.Authority.H3CellSpecification.Equals(Ethar.GeoPose.H3.Authority.H3CellSpecification)">
+            <inheritdoc/>
+        </member>
+        <member name="M:Ethar.GeoPose.H3.Authority.H3CellSpecification.Equals(System.Object)">
+            <inheritdoc/>
+        </member>
+        <member name="M:Ethar.GeoPose.H3.Authority.H3CellSpecification.GetHashCode">
+            <inheritdoc/>
+        </member>
+        <member name="M:Ethar.GeoPose.H3.Authority.H3CellSpecification.ToString">
+            <inheritdoc/>
+        </member>
+        <member name="T:Ethar.GeoPose.H3.BaseCellData">
+            <summary>
+            Information on a single base cell. Ported from the C struct <c>BaseCellData</c>.
+            </summary>
+        </member>
+        <member name="M:Ethar.GeoPose.H3.BaseCellData.#ctor(Ethar.GeoPose.H3.FaceIjk,System.Boolean,System.Int32,System.Int32)">
+            <summary>
+            Initializes a new instance of the <see cref="T:Ethar.GeoPose.H3.BaseCellData"/> struct.
+            </summary>
+            <param name="homeFijk">The home face and normalized ijk coordinates on that face.</param>
+            <param name="isPentagon">Whether the base cell is a pentagon.</param>
+            <param name="cwOffsetPent0">The first clockwise offset face if a pentagon, otherwise 0. -1 when a pentagon has none.</param>
+            <param name="cwOffsetPent1">The second clockwise offset face if a pentagon, otherwise 0. -1 when a pentagon has none.</param>
+        </member>
+        <member name="P:Ethar.GeoPose.H3.BaseCellData.HomeFijk">
+            <summary>
+            Gets the home face and normalized ijk coordinates on that face.
+            </summary>
+        </member>
+        <member name="P:Ethar.GeoPose.H3.BaseCellData.IsPentagon">
+            <summary>
+            Gets a value indicating whether this base cell is a pentagon.
+            </summary>
+        </member>
+        <member name="P:Ethar.GeoPose.H3.BaseCellData.CwOffsetPent">
+            <summary>
+            Gets the two clockwise offset faces if this base cell is a pentagon. Do not modify the array.
+            </summary>
+        </member>
+        <member name="T:Ethar.GeoPose.H3.BaseCellRotation">
+            <summary>
+            Base cell at a given ijk and the rotations required into its system. Ported from the C struct <c>BaseCellRotation</c>.
+            </summary>
+        </member>
+        <member name="M:Ethar.GeoPose.H3.BaseCellRotation.#ctor(System.Int32,System.Int32)">
+            <summary>
+            Initializes a new instance of the <see cref="T:Ethar.GeoPose.H3.BaseCellRotation"/> struct.
+            </summary>
+            <param name="baseCell">The base cell number.</param>
+            <param name="ccwRot60">The number of counter-clockwise 60 degree rotations relative to the current face.</param>
+        </member>
+        <member name="P:Ethar.GeoPose.H3.BaseCellRotation.BaseCell">
+            <summary>
+            Gets the base cell number.
+            </summary>
+        </member>
+        <member name="P:Ethar.GeoPose.H3.BaseCellRotation.CcwRot60">
+            <summary>
+            Gets the number of counter-clockwise 60 degree rotations relative to the current face.
+            </summary>
+        </member>
+        <member name="T:Ethar.GeoPose.H3.BaseCells">
+            <summary>
+            Base cell access functions over the tables in <see cref="T:Ethar.GeoPose.H3.Tables.BaseCellTables"/>. Ported from baseCells.c; the C function names are given on each member.
+            </summary>
+        </member>
+        <member name="F:Ethar.GeoPose.H3.BaseCells.InvalidBaseCell">
+            <summary>
+            Marker for a missing neighbouring base cell. C name <c>INVALID_BASE_CELL</c>.
+            </summary>
+        </member>
+        <member name="F:Ethar.GeoPose.H3.BaseCells.MaxFaceCoord">
+            <summary>
+            Maximum input for any component to the face-to-base-cell lookup functions. C name <c>MAX_FACE_COORD</c>.
+            </summary>
+        </member>
+        <member name="F:Ethar.GeoPose.H3.BaseCells.InvalidRotations">
+            <summary>
+            Invalid number of rotations. C name <c>INVALID_ROTATIONS</c>.
+            </summary>
+        </member>
+        <member name="M:Ethar.GeoPose.H3.BaseCells.IsBaseCellPentagon(System.Int32)">
+            <summary>
+            Returns whether or not the indicated base cell is a pentagon. C name <c>_isBaseCellPentagon</c>.
+            </summary>
+            <param name="baseCell">The base cell number.</param>
+            <returns>True if the base cell is one of the 12 pentagons, false otherwise or when the number is out of range.</returns>
+        </member>
+        <member name="M:Ethar.GeoPose.H3.BaseCells.IsBaseCellPolarPentagon(System.Int32)">
+            <summary>
+            Returns whether the indicated base cell is a pentagon where all neighbors are oriented towards it. C name <c>_isBaseCellPolarPentagon</c>.
+            </summary>
+            <param name="baseCell">The base cell number.</param>
+            <returns>True for base cells 4 and 117.</returns>
+        </member>
+        <member name="M:Ethar.GeoPose.H3.BaseCells.FaceIjkToBaseCell(Ethar.GeoPose.H3.FaceIjk)">
+            <summary>
+            Find the base cell given a FaceIJK. Valid ijk+ lookup coordinates are from (0, 0, 0) to (2, 2, 2). C name <c>_faceIjkToBaseCell</c>.
+            </summary>
+            <param name="h">The face number and a resolution 0 ijk+ coordinate in that face's face-centered ijk coordinate system.</param>
+            <returns>The base cell located at that coordinate.</returns>
+        </member>
+        <member name="M:Ethar.GeoPose.H3.BaseCells.FaceIjkToBaseCellCcwRot60(Ethar.GeoPose.H3.FaceIjk)">
+            <summary>
+            Find the base cell rotation given a FaceIJK. Valid ijk+ lookup coordinates are from (0, 0, 0) to (2, 2, 2). C name <c>_faceIjkToBaseCellCCWrot60</c>.
+            </summary>
+            <param name="h">The face number and a resolution 0 ijk+ coordinate in that face's face-centered ijk coordinate system.</param>
+            <returns>The number of 60 degree counter-clockwise rotations to rotate into the coordinate system of the base cell at that coordinate.</returns>
+        </member>
+        <member name="M:Ethar.GeoPose.H3.BaseCells.BaseCellToFaceIjk(System.Int32)">
+            <summary>
+            Find the FaceIJK given a base cell. C name <c>_baseCellToFaceIjk</c>.
+            </summary>
+            <param name="baseCell">The base cell number.</param>
+            <returns>The home face and ijk coordinates of the base cell.</returns>
+        </member>
+        <member name="M:Ethar.GeoPose.H3.BaseCells.BaseCellToCcwRot60(System.Int32,System.Int32)">
+            <summary>
+            Given a base cell and the face it appears on, return the number of 60 degree counter-clockwise rotations for that base cell's coordinate system. C name <c>_baseCellToCCWrot60</c>.
+            </summary>
+            <param name="baseCell">The base cell number.</param>
+            <param name="face">The face number.</param>
+            <returns>The number of rotations, or <see cref="F:Ethar.GeoPose.H3.BaseCells.InvalidRotations"/> if the base cell is not found on the given face.</returns>
+            <remarks>
+            The C source tests <c>face &gt; NUM_ICOSA_FACES</c>, which lets face 20 through to an out of range read. The port rejects it.
+            </remarks>
+        </member>
+        <member name="M:Ethar.GeoPose.H3.BaseCells.BaseCellIsCwOffset(System.Int32,System.Int32)">
+            <summary>
+            Return whether or not the tested face is a clockwise offset face. C name <c>_baseCellIsCwOffset</c>.
+            </summary>
+            <param name="baseCell">The base cell number.</param>
+            <param name="testFace">The face to test.</param>
+            <returns>True if the face is one of the base cell's two clockwise offset faces.</returns>
+        </member>
+        <member name="M:Ethar.GeoPose.H3.BaseCells.GetBaseCellNeighbor(System.Int32,Ethar.GeoPose.H3.Direction)">
+            <summary>
+            Return the neighboring base cell in the given direction. C name <c>_getBaseCellNeighbor</c>.
+            </summary>
+            <param name="baseCell">The origin base cell number.</param>
+            <param name="dir">The direction.</param>
+            <returns>The neighbouring base cell, or <see cref="F:Ethar.GeoPose.H3.BaseCells.InvalidBaseCell"/> if there is none in that direction.</returns>
+        </member>
+        <member name="M:Ethar.GeoPose.H3.BaseCells.GetBaseCellDirection(System.Int32,System.Int32)">
+            <summary>
+            Return the direction from the origin base cell to the neighbor. C name <c>_getBaseCellDirection</c>.
+            </summary>
+            <param name="originBaseCell">The origin base cell number.</param>
+            <param name="neighboringBaseCell">The neighbouring base cell number.</param>
+            <returns>The direction, or <see cref="F:Ethar.GeoPose.H3.Direction.Invalid"/> if the base cells are not neighbors.</returns>
+        </member>
+        <member name="T:Ethar.GeoPose.H3.CellBoundary">
+            <summary>
+            Cell boundary in latitude and longitude radians, vertices in counter-clockwise order. Ported from the C struct <c>CellBoundary</c>.
+            </summary>
+            <remarks>
+            A hexagon has 6 vertices and a pentagon 5, but a cell that straddles an icosahedron edge gains one extra vertex per crossing, so the count can reach <see cref="F:Ethar.GeoPose.H3.CellBoundary.MaxVerts"/>.
+            </remarks>
+        </member>
+        <member name="F:Ethar.GeoPose.H3.CellBoundary.MaxVerts">
+            <summary>
+            Maximum number of cell boundary vertices. The worst case is a pentagon: 5 original vertices plus 5 edge crossings. C name <c>MAX_CELL_BNDRY_VERTS</c>.
+            </summary>
+        </member>
+        <member name="P:Ethar.GeoPose.H3.CellBoundary.Count">
+            <summary>
+            Gets the number of vertices. C name <c>numVerts</c>.
+            </summary>
+        </member>
+        <member name="P:Ethar.GeoPose.H3.CellBoundary.Item(System.Int32)">
+            <summary>
+            Gets the vertex at the given position.
+            </summary>
+            <param name="index">The vertex position, 0 to <see cref="P:Ethar.GeoPose.H3.CellBoundary.Count"/> - 1.</param>
+            <returns>The vertex in radians.</returns>
+        </member>
+        <member name="M:Ethar.GeoPose.H3.CellBoundary.ToArray">
+            <summary>
+            Copies the vertices to a new array.
+            </summary>
+            <returns>The vertices in counter-clockwise order.</returns>
+        </member>
+        <member name="M:Ethar.GeoPose.H3.CellBoundary.Clear">
+            <summary>
+            Removes all vertices.
+            </summary>
+        </member>
+        <member name="M:Ethar.GeoPose.H3.CellBoundary.Add(Ethar.GeoPose.H3.LatLng)">
+            <summary>
+            Appends a vertex.
+            </summary>
+            <param name="vertex">The vertex in radians.</param>
+        </member>
+        <member name="T:Ethar.GeoPose.H3.CoordIjk">
+            <summary>
+            IJK hexagon coordinates. Each axis is spaced 120 degrees apart. Ported from the C struct <c>CoordIJK</c> and the inline functions of coordijk.h.
+            </summary>
+            <remarks>
+            The struct is mutable so that the ported maths can update a coordinate in place, as the C code does through a pointer.
+            The local IJ and cube coordinate conversions from coordijk.h are not ported because local IJ is out of scope.
+            </remarks>
+        </member>
+        <member name="M:Ethar.GeoPose.H3.CoordIjk.#ctor(System.Int32,System.Int32,System.Int32)">
+            <summary>
+            Initializes a new instance of the <see cref="T:Ethar.GeoPose.H3.CoordIjk"/> struct.
+            </summary>
+            <param name="i">The i component.</param>
+            <param name="j">The j component.</param>
+            <param name="k">The k component.</param>
+        </member>
+        <member name="P:Ethar.GeoPose.H3.CoordIjk.I">
+            <summary>
+            Gets or sets the i component.
+            </summary>
+        </member>
+        <member name="P:Ethar.GeoPose.H3.CoordIjk.J">
+            <summary>
+            Gets or sets the j component.
+            </summary>
+        </member>
+        <member name="P:Ethar.GeoPose.H3.CoordIjk.K">
+            <summary>
+            Gets or sets the k component.
+            </summary>
+        </member>
+        <member name="M:Ethar.GeoPose.H3.CoordIjk.IjkMatches(Ethar.GeoPose.H3.CoordIjk,Ethar.GeoPose.H3.CoordIjk)">
+            <summary>
+            Returns whether or not two ijk coordinates contain exactly the same component values. C name <c>_ijkMatches</c>.
+            </summary>
+            <param name="c1">The first set of ijk coordinates.</param>
+            <param name="c2">The second set of ijk coordinates.</param>
+            <returns>True if the two addresses match.</returns>
+        </member>
+        <member name="M:Ethar.GeoPose.H3.CoordIjk.IjkAdd(Ethar.GeoPose.H3.CoordIjk,Ethar.GeoPose.H3.CoordIjk)">
+            <summary>
+            Add two ijk coordinates. C name <c>_ijkAdd</c>.
+            </summary>
+            <param name="h1">The first set of ijk coordinates.</param>
+            <param name="h2">The second set of ijk coordinates.</param>
+            <returns>The sum of the two sets of ijk coordinates.</returns>
+        </member>
+        <member name="M:Ethar.GeoPose.H3.CoordIjk.IjkSub(Ethar.GeoPose.H3.CoordIjk,Ethar.GeoPose.H3.CoordIjk)">
+            <summary>
+            Subtract two ijk coordinates. C name <c>_ijkSub</c>.
+            </summary>
+            <param name="h1">The first set of ijk coordinates.</param>
+            <param name="h2">The second set of ijk coordinates.</param>
+            <returns>The difference of the two sets of ijk coordinates (h1 - h2).</returns>
+        </member>
+        <member name="M:Ethar.GeoPose.H3.CoordIjk.IjkScale(Ethar.GeoPose.H3.CoordIjk@,System.Int32)">
+            <summary>
+            Uniformly scale ijk coordinates by a scalar. Works in place. C name <c>_ijkScale</c>.
+            </summary>
+            <param name="c">The ijk coordinates to scale.</param>
+            <param name="factor">The scaling factor.</param>
+        </member>
+        <member name="M:Ethar.GeoPose.H3.CoordIjk.IjkNormalize(Ethar.GeoPose.H3.CoordIjk@)">
+            <summary>
+            Normalizes ijk coordinates by setting the components to the smallest possible values. Works in place. C name <c>_ijkNormalize</c>.
+            </summary>
+            <param name="c">The ijk coordinates to normalize.</param>
+            <remarks>
+            This function does not protect against signed integer overflow. The caller must ensure that none of the pairwise differences of the components overflow.
+            </remarks>
+        </member>
+        <member name="M:Ethar.GeoPose.H3.CoordIjk.IjkToHex2d(Ethar.GeoPose.H3.CoordIjk)">
+            <summary>
+            Find the center point in 2D cartesian coordinates of a hex. C name <c>_ijkToHex2d</c>.
+            </summary>
+            <param name="h">The ijk coordinates of the hex.</param>
+            <returns>The 2D cartesian coordinates of the hex center point.</returns>
+        </member>
+        <member name="M:Ethar.GeoPose.H3.CoordIjk.Hex2dToCoordIjk(Ethar.GeoPose.H3.Vec2d)">
+            <summary>
+            Determine the containing hex in ijk+ coordinates for a 2D cartesian coordinate vector (from DGGRID). C name <c>_hex2dToCoordIJK</c>.
+            </summary>
+            <param name="v">The 2D cartesian coordinate vector.</param>
+            <returns>The ijk+ coordinates of the containing hex.</returns>
+        </member>
+        <member name="M:Ethar.GeoPose.H3.CoordIjk.UnitIjkToDigit(Ethar.GeoPose.H3.CoordIjk)">
+            <summary>
+            Determines the H3 digit corresponding to a unit vector or the zero vector in ijk coordinates. C name <c>_unitIjkToDigit</c>.
+            </summary>
+            <param name="ijk">The ijk coordinates; must be a unit vector or zero vector.</param>
+            <returns>The H3 digit (0-6) corresponding to the ijk unit vector or zero vector, or <see cref="F:Ethar.GeoPose.H3.Direction.Invalid"/> on failure.</returns>
+        </member>
+        <member name="M:Ethar.GeoPose.H3.CoordIjk.UpAp7(Ethar.GeoPose.H3.CoordIjk@)">
+            <summary>
+            Find the normalized ijk coordinates of the indexing parent of a cell in a counter-clockwise aperture 7 grid. Works in place. C name <c>_upAp7</c>.
+            </summary>
+            <param name="ijk">The ijk coordinates.</param>
+        </member>
+        <member name="M:Ethar.GeoPose.H3.CoordIjk.UpAp7r(Ethar.GeoPose.H3.CoordIjk@)">
+            <summary>
+            Find the normalized ijk coordinates of the indexing parent of a cell in a clockwise aperture 7 grid. Works in place. C name <c>_upAp7r</c>.
+            </summary>
+            <param name="ijk">The ijk coordinates.</param>
+        </member>
+        <member name="M:Ethar.GeoPose.H3.CoordIjk.DownAp7(Ethar.GeoPose.H3.CoordIjk@)">
+            <summary>
+            Find the normalized ijk coordinates of the hex centered on the indicated hex at the next finer aperture 7 counter-clockwise resolution. Works in place. C name <c>_downAp7</c>.
+            </summary>
+            <param name="ijk">The ijk coordinates.</param>
+        </member>
+        <member name="M:Ethar.GeoPose.H3.CoordIjk.DownAp7r(Ethar.GeoPose.H3.CoordIjk@)">
+            <summary>
+            Find the normalized ijk coordinates of the hex centered on the indicated hex at the next finer aperture 7 clockwise resolution. Works in place. C name <c>_downAp7r</c>.
+            </summary>
+            <param name="ijk">The ijk coordinates.</param>
+        </member>
+        <member name="M:Ethar.GeoPose.H3.CoordIjk.DownAp3(Ethar.GeoPose.H3.CoordIjk@)">
+            <summary>
+            Find the normalized ijk coordinates of the hex centered on the indicated hex at the next finer aperture 3 counter-clockwise resolution. Works in place. C name <c>_downAp3</c>.
+            </summary>
+            <param name="ijk">The ijk coordinates.</param>
+        </member>
+        <member name="M:Ethar.GeoPose.H3.CoordIjk.DownAp3r(Ethar.GeoPose.H3.CoordIjk@)">
+            <summary>
+            Find the normalized ijk coordinates of the hex centered on the indicated hex at the next finer aperture 3 clockwise resolution. Works in place. C name <c>_downAp3r</c>.
+            </summary>
+            <param name="ijk">The ijk coordinates.</param>
+        </member>
+        <member name="M:Ethar.GeoPose.H3.CoordIjk.Neighbor(Ethar.GeoPose.H3.CoordIjk@,Ethar.GeoPose.H3.Direction)">
+            <summary>
+            Find the normalized ijk coordinates of the hex in the specified digit direction from the specified ijk coordinates. Works in place. C name <c>_neighbor</c>.
+            </summary>
+            <param name="ijk">The ijk coordinates.</param>
+            <param name="digit">The digit direction from the original ijk coordinates.</param>
+        </member>
+        <member name="M:Ethar.GeoPose.H3.CoordIjk.IjkRotate60ccw(Ethar.GeoPose.H3.CoordIjk@)">
+            <summary>
+            Rotates ijk coordinates 60 degrees counter-clockwise. Works in place. C name <c>_ijkRotate60ccw</c>.
+            </summary>
+            <param name="ijk">The ijk coordinates.</param>
+        </member>
+        <member name="M:Ethar.GeoPose.H3.CoordIjk.IjkRotate60cw(Ethar.GeoPose.H3.CoordIjk@)">
+            <summary>
+            Rotates ijk coordinates 60 degrees clockwise. Works in place. C name <c>_ijkRotate60cw</c>.
+            </summary>
+            <param name="ijk">The ijk coordinates.</param>
+        </member>
+        <member name="M:Ethar.GeoPose.H3.CoordIjk.Rotate60ccw(Ethar.GeoPose.H3.Direction)">
+            <summary>
+            Rotates an indexing digit 60 degrees counter-clockwise. C name <c>_rotate60ccw</c>.
+            </summary>
+            <param name="digit">Indexing digit (between 1 and 6 inclusive).</param>
+            <returns>The rotated digit. Other digits are returned unchanged.</returns>
+        </member>
+        <member name="M:Ethar.GeoPose.H3.CoordIjk.Rotate60cw(Ethar.GeoPose.H3.Direction)">
+            <summary>
+            Rotates an indexing digit 60 degrees clockwise. C name <c>_rotate60cw</c>.
+            </summary>
+            <param name="digit">Indexing digit (between 1 and 6 inclusive).</param>
+            <returns>The rotated digit. Other digits are returned unchanged.</returns>
+        </member>
+        <member name="M:Ethar.GeoPose.H3.CoordIjk.IjkDistance(Ethar.GeoPose.H3.CoordIjk,Ethar.GeoPose.H3.CoordIjk)">
+            <summary>
+            Finds the distance between the two coordinates. C name <c>ijkDistance</c>.
+            </summary>
+            <param name="c1">The first set of ijk coordinates.</param>
+            <param name="c2">The second set of ijk coordinates.</param>
+            <returns>The grid distance.</returns>
+        </member>
+        <member name="M:Ethar.GeoPose.H3.CoordIjk.ToString">
+            <inheritdoc/>
+        </member>
+        <member name="M:Ethar.GeoPose.H3.CoordIjk.Combine(Ethar.GeoPose.H3.CoordIjk@,Ethar.GeoPose.H3.CoordIjk,Ethar.GeoPose.H3.CoordIjk,Ethar.GeoPose.H3.CoordIjk)">
+            <summary>
+            Replaces <paramref name="ijk"/> with the normalized sum of the three basis vectors scaled by its components. This is the shared body of the aperture and rotation functions.
+            </summary>
+            <param name="ijk">The ijk coordinates, updated in place.</param>
+            <param name="iVec">The image of the i unit vector.</param>
+            <param name="jVec">The image of the j unit vector.</param>
+            <param name="kVec">The image of the k unit vector.</param>
+        </member>
+        <member name="M:Ethar.GeoPose.H3.CoordIjk.Lround(System.Double)">
+            <summary>
+            Rounds to the nearest integer with halves away from zero, as the C <c>lround</c> does. <see cref="M:System.Math.Round(System.Double)"/> would round halves to even.
+            </summary>
+            <param name="value">The value to round.</param>
+            <returns>The rounded integer.</returns>
+        </member>
+        <member name="T:Ethar.GeoPose.H3.Direction">
+            <summary>
+            H3 digit representing an ijk+ axes direction. Values fit in the lowest 3 bits of an integer. Ported from the C enum <c>Direction</c>.
+            </summary>
+        </member>
+        <member name="F:Ethar.GeoPose.H3.Direction.Center">
+            <summary>
+            H3 digit in the centre. C name <c>CENTER_DIGIT</c>.
+            </summary>
+        </member>
+        <member name="F:Ethar.GeoPose.H3.Direction.KAxes">
+            <summary>
+            H3 digit in the k-axes direction. C name <c>K_AXES_DIGIT</c>.
+            </summary>
+        </member>
+        <member name="F:Ethar.GeoPose.H3.Direction.JAxes">
+            <summary>
+            H3 digit in the j-axes direction. C name <c>J_AXES_DIGIT</c>.
+            </summary>
+        </member>
+        <member name="F:Ethar.GeoPose.H3.Direction.JkAxes">
+            <summary>
+            H3 digit in the j == k direction. C name <c>JK_AXES_DIGIT</c>.
+            </summary>
+        </member>
+        <member name="F:Ethar.GeoPose.H3.Direction.IAxes">
+            <summary>
+            H3 digit in the i-axes direction. C name <c>I_AXES_DIGIT</c>.
+            </summary>
+        </member>
+        <member name="F:Ethar.GeoPose.H3.Direction.IkAxes">
+            <summary>
+            H3 digit in the i == k direction. C name <c>IK_AXES_DIGIT</c>.
+            </summary>
+        </member>
+        <member name="F:Ethar.GeoPose.H3.Direction.IjAxes">
+            <summary>
+            H3 digit in the i == j direction. C name <c>IJ_AXES_DIGIT</c>.
+            </summary>
+        </member>
+        <member name="F:Ethar.GeoPose.H3.Direction.Invalid">
+            <summary>
+            H3 digit in the invalid direction. C name <c>INVALID_DIGIT</c>.
+            </summary>
+        </member>
+        <member name="F:Ethar.GeoPose.H3.Direction.NumDigits">
+            <summary>
+            Valid digits are less than this value. Same value as <see cref="F:Ethar.GeoPose.H3.Direction.Invalid"/>. C name <c>NUM_DIGITS</c>.
+            </summary>
+        </member>
+        <member name="F:Ethar.GeoPose.H3.Direction.PentagonSkipped">
+            <summary>
+            Child digit which is skipped for pentagons. C name <c>PENTAGON_SKIPPED_DIGIT</c>.
+            </summary>
+        </member>
+        <member name="T:Ethar.GeoPose.H3.FaceIjk">
+            <summary>
+            Face number and ijk coordinates on that face-centred coordinate system, with the icosahedron projection functions of faceijk.c. Ported from the C struct <c>FaceIJK</c>.
+            </summary>
+            <remarks>
+            The struct is mutable with public fields so that the ported maths can update the coordinate in place, as the C code does through a pointer.
+            </remarks>
+        </member>
+        <member name="F:Ethar.GeoPose.H3.FaceIjk.IJ">
+            <summary>
+            IJ quadrant faceNeighbors table direction. C name <c>IJ</c>.
+            </summary>
+        </member>
+        <member name="F:Ethar.GeoPose.H3.FaceIjk.KI">
+            <summary>
+            KI quadrant faceNeighbors table direction. C name <c>KI</c>.
+            </summary>
+        </member>
+        <member name="F:Ethar.GeoPose.H3.FaceIjk.JK">
+            <summary>
+            JK quadrant faceNeighbors table direction. C name <c>JK</c>.
+            </summary>
+        </member>
+        <member name="F:Ethar.GeoPose.H3.FaceIjk.InvalidFace">
+            <summary>
+            Invalid face index. C name <c>INVALID_FACE</c>.
+            </summary>
+        </member>
+        <member name="F:Ethar.GeoPose.H3.FaceIjk.Face">
+            <summary>
+            The face number.
+            </summary>
+        </member>
+        <member name="F:Ethar.GeoPose.H3.FaceIjk.Coord">
+            <summary>
+            The ijk coordinates on that face.
+            </summary>
+        </member>
+        <member name="F:Ethar.GeoPose.H3.FaceIjk.VertsCII">
+            <summary>
+            The vertexes of an origin-centered cell in a Class II resolution on a substrate grid with aperture sequence 33r. The aperture 3 gets us the vertices, and the 3r gets us back to Class II. Vertices listed ccw from the i-axes. C name <c>vertsCII</c> in <c>_faceIjkToVerts</c>.
+            </summary>
+        </member>
+        <member name="F:Ethar.GeoPose.H3.FaceIjk.VertsCIII">
+            <summary>
+            The vertexes of an origin-centered cell in a Class III resolution on a substrate grid with aperture sequence 33r7r. The aperture 3 gets us the vertices, and the 3r7r gets us to Class II. Vertices listed ccw from the i-axes. C name <c>vertsCIII</c> in <c>_faceIjkToVerts</c>.
+            </summary>
+        </member>
+        <member name="M:Ethar.GeoPose.H3.FaceIjk.#ctor(System.Int32,Ethar.GeoPose.H3.CoordIjk)">
+            <summary>
+            Initializes a new instance of the <see cref="T:Ethar.GeoPose.H3.FaceIjk"/> struct.
+            </summary>
+            <param name="face">The face number.</param>
+            <param name="coord">The ijk coordinates on that face.</param>
+        </member>
+        <member name="M:Ethar.GeoPose.H3.FaceIjk.Vec3ToFaceIjk(Ethar.GeoPose.H3.Vec3d,System.Int32)">
+            <summary>
+            Encodes a unit sphere coordinate to the FaceIJK address of the containing cell at the specified resolution. C name <c>_vec3ToFaceIjk</c>.
+            </summary>
+            <param name="p">The coordinates to encode, on the unit sphere.</param>
+            <param name="res">The desired H3 resolution for the encoding.</param>
+            <returns>The FaceIJK address of the containing cell at resolution res.</returns>
+        </member>
+        <member name="M:Ethar.GeoPose.H3.FaceIjk.FaceIjkToVec3(Ethar.GeoPose.H3.FaceIjk,System.Int32)">
+            <summary>
+            Determines the center point in 3D coordinates of a cell given by a FaceIJK address at a specified resolution. C name <c>_faceIjkToVec3</c>.
+            </summary>
+            <param name="h">The FaceIJK address of the cell.</param>
+            <param name="res">The H3 resolution of the cell.</param>
+            <returns>The 3D coordinates of the cell center point.</returns>
+        </member>
+        <member name="M:Ethar.GeoPose.H3.FaceIjk.FaceIjkPentToCellBoundary(Ethar.GeoPose.H3.FaceIjk,System.Int32,System.Int32,System.Int32,Ethar.GeoPose.H3.CellBoundary)">
+            <summary>
+            Generates the cell boundary in spherical coordinates for a pentagonal cell given by a FaceIJK address at a specified resolution. C name <c>_faceIjkPentToCellBoundary</c>.
+            </summary>
+            <param name="h">The FaceIJK address of the pentagonal cell.</param>
+            <param name="res">The H3 resolution of the cell.</param>
+            <param name="start">The first topological vertex to return.</param>
+            <param name="length">The number of topological vertexes to return.</param>
+            <param name="g">Output: the spherical coordinates of the cell boundary.</param>
+        </member>
+        <member name="M:Ethar.GeoPose.H3.FaceIjk.FaceIjkPentToVerts(Ethar.GeoPose.H3.FaceIjk@,System.Int32@,Ethar.GeoPose.H3.FaceIjk[])">
+            <summary>
+            Get the vertices of a pentagon cell as substrate FaceIJK addresses. C name <c>_faceIjkPentToVerts</c>.
+            </summary>
+            <param name="fijk">The FaceIJK address of the cell, moved into the substrate grid.</param>
+            <param name="res">In/out: the H3 resolution of the cell, adjusted for substrate.</param>
+            <param name="fijkVerts">Output: array of at least 5 elements for the vertices.</param>
+        </member>
+        <member name="M:Ethar.GeoPose.H3.FaceIjk.FaceIjkToCellBoundary(Ethar.GeoPose.H3.FaceIjk,System.Int32,System.Int32,System.Int32,Ethar.GeoPose.H3.CellBoundary)">
+            <summary>
+            Generates the cell boundary in spherical coordinates for a cell given by a FaceIJK address at a specified resolution. C name <c>_faceIjkToCellBoundary</c>.
+            </summary>
+            <param name="h">The FaceIJK address of the cell.</param>
+            <param name="res">The H3 resolution of the cell.</param>
+            <param name="start">The first topological vertex to return.</param>
+            <param name="length">The number of topological vertexes to return.</param>
+            <param name="g">Output: the spherical coordinates of the cell boundary.</param>
+        </member>
+        <member name="M:Ethar.GeoPose.H3.FaceIjk.FaceIjkToVerts(Ethar.GeoPose.H3.FaceIjk@,System.Int32@,Ethar.GeoPose.H3.FaceIjk[])">
+            <summary>
+            Get the vertices of a cell as substrate FaceIJK addresses. C name <c>_faceIjkToVerts</c>.
+            </summary>
+            <param name="fijk">The FaceIJK address of the cell, moved into the substrate grid.</param>
+            <param name="res">In/out: the H3 resolution of the cell, adjusted for substrate.</param>
+            <param name="fijkVerts">Output: array of at least 6 elements for the vertices.</param>
+        </member>
+        <member name="M:Ethar.GeoPose.H3.FaceIjk.AdjustOverageClassII(Ethar.GeoPose.H3.FaceIjk@,System.Int32,System.Boolean,System.Boolean)">
+            <summary>
+            Adjusts a FaceIJK address in place so that the resulting cell address is relative to the correct icosahedral face. C name <c>_adjustOverageClassII</c>.
+            </summary>
+            <param name="fijk">The FaceIJK address of the cell.</param>
+            <param name="res">The H3 resolution of the cell.</param>
+            <param name="pentLeading4">Whether or not the cell is a pentagon with a leading digit 4.</param>
+            <param name="substrate">Whether or not the cell is in a substrate grid.</param>
+            <returns><see cref="F:Ethar.GeoPose.H3.Overage.NoOverage"/> if on the original face, <see cref="F:Ethar.GeoPose.H3.Overage.FaceEdge"/> if on a face edge (only occurs on substrate grids), or <see cref="F:Ethar.GeoPose.H3.Overage.NewFace"/> if overage on a new face interior.</returns>
+        </member>
+        <member name="M:Ethar.GeoPose.H3.FaceIjk.AdjustPentVertOverage(Ethar.GeoPose.H3.FaceIjk@,System.Int32)">
+            <summary>
+            Adjusts a FaceIJK address for a pentagon vertex in a substrate grid in place so that the resulting cell address is relative to the correct icosahedral face. C name <c>_adjustPentVertOverage</c>.
+            </summary>
+            <param name="fijk">The FaceIJK address of the cell.</param>
+            <param name="res">The H3 resolution of the cell.</param>
+            <returns>The final overage state.</returns>
+        </member>
+        <member name="M:Ethar.GeoPose.H3.FaceIjk.Hex2dToVec3(Ethar.GeoPose.H3.Vec2d,System.Int32,System.Int32,System.Boolean)">
+            <summary>
+            Determines the 3D coordinates of a cell given by 2D hex coordinates on a particular icosahedral face. C name <c>_hex2dToVec3</c>.
+            </summary>
+            <param name="v">The 2D hex coordinates of the cell.</param>
+            <param name="face">The icosahedral face upon which the 2D hex coordinate system is centered.</param>
+            <param name="res">The H3 resolution of the cell.</param>
+            <param name="substrate">Indicates whether or not this grid is actually a substrate grid relative to the specified resolution.</param>
+            <returns>The 3D coordinates of the cell center point.</returns>
+        </member>
+        <member name="M:Ethar.GeoPose.H3.FaceIjk.Vec3ToHex2d(Ethar.GeoPose.H3.Vec3d,System.Int32,System.Int32@,Ethar.GeoPose.H3.Vec2d@)">
+            <summary>
+            Encodes a coordinate on the sphere to the corresponding icosahedral face and containing 2D hex coordinates relative to that face center. C name <c>_vec3ToHex2d</c>.
+            </summary>
+            <param name="p">The coordinates to encode, on the unit sphere.</param>
+            <param name="res">The desired H3 resolution for the encoding.</param>
+            <param name="face">Output: the icosahedral face containing the coordinates.</param>
+            <param name="v">Output: the 2D hex coordinates of the cell containing the point.</param>
+        </member>
+        <member name="M:Ethar.GeoPose.H3.FaceIjk.Vec3TangentBasis(Ethar.GeoPose.H3.Vec3d,Ethar.GeoPose.H3.Vec3d@,Ethar.GeoPose.H3.Vec3d@)">
+            <summary>
+            Compute the local north and east directions on the tangent plane at a point on the unit sphere. Will not work if p is at a pole, but icosahedron face centers are never at the poles. C name <c>_vec3TangentBasis</c>.
+            </summary>
+            <param name="p">Unit vector on the sphere.</param>
+            <param name="north">Output: local north direction on the tangent plane.</param>
+            <param name="east">Output: local east direction on the tangent plane.</param>
+        </member>
+        <member name="M:Ethar.GeoPose.H3.FaceIjk.Vec3AzimuthRads(Ethar.GeoPose.H3.Vec3d,Ethar.GeoPose.H3.Vec3d)">
+            <summary>
+            Calculates the azimuth from p1 to p2. C name <c>_vec3AzimuthRads</c>.
+            </summary>
+            <param name="p1">The first vector.</param>
+            <param name="p2">The second vector.</param>
+            <returns>The azimuth in radians.</returns>
+        </member>
+        <member name="M:Ethar.GeoPose.H3.FaceIjk.Vec3ToClosestFace(Ethar.GeoPose.H3.Vec3d,System.Int32@,System.Double@)">
+            <summary>
+            Encodes a coordinate on the sphere to the corresponding icosahedral face and the squared euclidean distance to that face center. C name <c>_vec3ToClosestFace</c>.
+            </summary>
+            <param name="v">The coordinates to encode, on the unit sphere.</param>
+            <param name="face">Output: the icosahedral face containing the coordinates.</param>
+            <param name="sqd">Output: the squared euclidean distance to its face center.</param>
+        </member>
+        <member name="M:Ethar.GeoPose.H3.FaceIjk.ToString">
+            <inheritdoc/>
+        </member>
+        <member name="M:Ethar.GeoPose.H3.FaceIjk.ToVerts(Ethar.GeoPose.H3.FaceIjk@,System.Int32@,Ethar.GeoPose.H3.FaceIjk[],System.Int32)">
+            <summary>
+            Shared body of <c>_faceIjkToVerts</c> and <c>_faceIjkPentToVerts</c>, which differ only in the number of vertices.
+            </summary>
+            <param name="fijk">The FaceIJK address of the cell, moved into the substrate grid.</param>
+            <param name="res">In/out: the H3 resolution of the cell, adjusted for substrate.</param>
+            <param name="fijkVerts">Output: array for the vertices.</param>
+            <param name="numVerts">6 for a hexagon, 5 for a pentagon.</param>
+        </member>
+        <member name="T:Ethar.GeoPose.H3.FaceOrientIjk">
+            <summary>
+            Information to transform into an adjacent face IJK system. Ported from the C struct <c>FaceOrientIJK</c>.
+            </summary>
+        </member>
+        <member name="M:Ethar.GeoPose.H3.FaceOrientIjk.#ctor(System.Int32,Ethar.GeoPose.H3.CoordIjk,System.Int32)">
+            <summary>
+            Initializes a new instance of the <see cref="T:Ethar.GeoPose.H3.FaceOrientIjk"/> struct.
+            </summary>
+            <param name="face">The face number.</param>
+            <param name="translate">The resolution 0 translation relative to the primary face.</param>
+            <param name="ccwRot60">The number of 60 degree counter-clockwise rotations relative to the primary face.</param>
+        </member>
+        <member name="P:Ethar.GeoPose.H3.FaceOrientIjk.Face">
+            <summary>
+            Gets the face number.
+            </summary>
+        </member>
+        <member name="P:Ethar.GeoPose.H3.FaceOrientIjk.Translate">
+            <summary>
+            Gets the resolution 0 translation relative to the primary face.
+            </summary>
+        </member>
+        <member name="P:Ethar.GeoPose.H3.FaceOrientIjk.CcwRot60">
+            <summary>
+            Gets the number of 60 degree counter-clockwise rotations relative to the primary face.
+            </summary>
+        </member>
+        <member name="T:Ethar.GeoPose.H3.H3">
+            <summary>
+            The H3 engine. Public members carry the H3 v4 function names in PascalCase and take the same arguments, so the H3 documentation applies directly.
+            Angles are radians throughout, exactly as in H3. Use the extension methods in <c>Ethar.GeoPose.Extensions</c> for GeoPose positions in degrees.
+            </summary>
+            <summary>
+            Parent, children and center child, from h3Index.c and the child iterator of iterators.c.
+            </summary>
+            <summary>
+            Position to cell, cell to position and cell to boundary, from h3Index.c.
+            </summary>
+            <summary>
+            Angle conversion, great circle distance and the per-resolution metrics from latLng.c.
+            </summary>
+        </member>
+        <member name="F:Ethar.GeoPose.H3.H3.H3Null">
+            <summary>
+            Invalid index used to indicate an error or missing data. Analogous to NaN in floating point. C name <c>H3_NULL</c>.
+            </summary>
+        </member>
+        <member name="F:Ethar.GeoPose.H3.H3.NumBits">
+            <summary>
+            The number of bits in an H3 index. C name <c>H3_NUM_BITS</c>.
+            </summary>
+        </member>
+        <member name="F:Ethar.GeoPose.H3.H3.MaxOffset">
+            <summary>
+            The bit offset of the max resolution digit in an H3 index. C name <c>H3_MAX_OFFSET</c>.
+            </summary>
+        </member>
+        <member name="F:Ethar.GeoPose.H3.H3.ModeOffset">
+            <summary>
+            The bit offset of the mode in an H3 index. C name <c>H3_MODE_OFFSET</c>.
+            </summary>
+        </member>
+        <member name="F:Ethar.GeoPose.H3.H3.BcOffset">
+            <summary>
+            The bit offset of the base cell in an H3 index. C name <c>H3_BC_OFFSET</c>.
+            </summary>
+        </member>
+        <member name="F:Ethar.GeoPose.H3.H3.ResOffset">
+            <summary>
+            The bit offset of the resolution in an H3 index. C name <c>H3_RES_OFFSET</c>.
+            </summary>
+        </member>
+        <member name="F:Ethar.GeoPose.H3.H3.ReservedOffset">
+            <summary>
+            The bit offset of the reserved bits in an H3 index. C name <c>H3_RESERVED_OFFSET</c>.
+            </summary>
+        </member>
+        <member name="F:Ethar.GeoPose.H3.H3.PerDigitOffset">
+            <summary>
+            The number of bits in a single H3 resolution digit. C name <c>H3_PER_DIGIT_OFFSET</c>.
+            </summary>
+        </member>
+        <member name="F:Ethar.GeoPose.H3.H3.HighBitMask">
+            <summary>
+            1 in the highest bit, 0's everywhere else. C name <c>H3_HIGH_BIT_MASK</c>.
+            </summary>
+        </member>
+        <member name="F:Ethar.GeoPose.H3.H3.HighBitMaskNegative">
+            <summary>
+            0 in the highest bit, 1's everywhere else. C name <c>H3_HIGH_BIT_MASK_NEGATIVE</c>.
+            </summary>
+        </member>
+        <member name="F:Ethar.GeoPose.H3.H3.ModeMask">
+            <summary>
+            1's in the 4 mode bits, 0's everywhere else. C name <c>H3_MODE_MASK</c>.
+            </summary>
+        </member>
+        <member name="F:Ethar.GeoPose.H3.H3.ModeMaskNegative">
+            <summary>
+            0's in the 4 mode bits, 1's everywhere else. C name <c>H3_MODE_MASK_NEGATIVE</c>.
+            </summary>
+        </member>
+        <member name="F:Ethar.GeoPose.H3.H3.BcMask">
+            <summary>
+            1's in the 7 base cell bits, 0's everywhere else. C name <c>H3_BC_MASK</c>.
+            </summary>
+        </member>
+        <member name="F:Ethar.GeoPose.H3.H3.BcMaskNegative">
+            <summary>
+            0's in the 7 base cell bits, 1's everywhere else. C name <c>H3_BC_MASK_NEGATIVE</c>.
+            </summary>
+        </member>
+        <member name="F:Ethar.GeoPose.H3.H3.ResMask">
+            <summary>
+            1's in the 4 resolution bits, 0's everywhere else. C name <c>H3_RES_MASK</c>.
+            </summary>
+        </member>
+        <member name="F:Ethar.GeoPose.H3.H3.ResMaskNegative">
+            <summary>
+            0's in the 4 resolution bits, 1's everywhere else. C name <c>H3_RES_MASK_NEGATIVE</c>.
+            </summary>
+        </member>
+        <member name="F:Ethar.GeoPose.H3.H3.ReservedMask">
+            <summary>
+            1's in the 3 reserved bits, 0's everywhere else. C name <c>H3_RESERVED_MASK</c>.
+            </summary>
+        </member>
+        <member name="F:Ethar.GeoPose.H3.H3.ReservedMaskNegative">
+            <summary>
+            0's in the 3 reserved bits, 1's everywhere else. C name <c>H3_RESERVED_MASK_NEGATIVE</c>.
+            </summary>
+        </member>
+        <member name="F:Ethar.GeoPose.H3.H3.DigitMask">
+            <summary>
+            1's in the 3 bits of the res 15 digit, 0's everywhere else. C name <c>H3_DIGIT_MASK</c>.
+            </summary>
+        </member>
+        <member name="F:Ethar.GeoPose.H3.H3.DigitMaskNegative">
+            <summary>
+            0's in the 3 bits of the res 15 digit, 1's everywhere else. C name <c>H3_DIGIT_MASK_NEGATIVE</c>.
+            </summary>
+        </member>
+        <member name="F:Ethar.GeoPose.H3.H3.H3Init">
+            <summary>
+            H3 index with mode 0, res 0, base cell 0, and 7 for all index digits. Used to initialize the creation of an H3 cell index, which expects all direction digits to be 7 beyond the cell's resolution. C name <c>H3_INIT</c>.
+            </summary>
+        </member>
+        <member name="M:Ethar.GeoPose.H3.H3.GetResolution(System.UInt64)">
+            <summary>
+            Returns the H3 resolution of an H3 index. C name <c>getResolution</c>.
+            </summary>
+            <param name="h">The H3 index.</param>
+            <returns>The resolution of the H3 index argument.</returns>
+        </member>
+        <member name="M:Ethar.GeoPose.H3.H3.GetBaseCellNumber(System.UInt64)">
+            <summary>
+            Returns the H3 base cell "number" of an H3 cell (hexagon or pentagon). C name <c>getBaseCellNumber</c>.
+            </summary>
+            <param name="h">The H3 cell.</param>
+            <returns>The base cell "number" of the H3 cell argument.</returns>
+        </member>
+        <member name="M:Ethar.GeoPose.H3.H3.GetIndexDigit(System.UInt64,System.Int32,System.Int32@)">
+            <summary>
+            Returns the index digit at <paramref name="res"/>, which starts with 1 for resolution 1, up to and including resolution 15. C name <c>getIndexDigit</c>.
+            </summary>
+            <param name="h">The H3 index (e.g. cell).</param>
+            <param name="res">Which indexing digit to retrieve, starting with 1. It may exceed the actual resolution of the index, in which case the stored digit is returned. For valid cells this is 7.</param>
+            <param name="digit">Receives the value of the indexing digit.</param>
+            <returns><see cref="F:Ethar.GeoPose.H3.H3ErrorCode.Success"/>, or <see cref="F:Ethar.GeoPose.H3.H3ErrorCode.ResDomain"/> if <paramref name="res"/> is not between 1 and 15.</returns>
+        </member>
+        <member name="M:Ethar.GeoPose.H3.H3.StringToH3(System.String,System.UInt64@)">
+            <summary>
+            Converts a string representation of an H3 index into an H3 index. C name <c>stringToH3</c>.
+            </summary>
+            <param name="str">The hexadecimal string representation of an H3 index. Upper and lower case are accepted and surrounding whitespace is ignored. Unlike the C library, which uses <c>sscanf</c>, a <c>0x</c> prefix, a sign or trailing text are rejected.</param>
+            <param name="output">The H3 index corresponding to the string argument, or <see cref="F:Ethar.GeoPose.H3.H3.H3Null"/> on failure.</param>
+            <returns><see cref="F:Ethar.GeoPose.H3.H3ErrorCode.Success"/>, or <see cref="F:Ethar.GeoPose.H3.H3ErrorCode.Failed"/> if the text is not a hexadecimal number that fits in 64 bits.</returns>
+        </member>
+        <member name="M:Ethar.GeoPose.H3.H3.H3ToString(System.UInt64)">
+            <summary>
+            Converts an H3 index into its lowercase hexadecimal string representation, without leading zeros, exactly as the C library does. Every valid cell index is 15 characters long. C name <c>h3ToString</c>.
+            </summary>
+            <param name="h">The H3 index to convert.</param>
+            <returns>The string representation of the H3 index.</returns>
+        </member>
+        <member name="M:Ethar.GeoPose.H3.H3.IsValidCell(System.UInt64)">
+            <summary>
+            Returns whether or not an H3 index is a valid cell (hexagon or pentagon). C name <c>isValidCell</c>.
+            </summary>
+            <param name="h">The H3 index to validate.</param>
+            <returns>True if the H3 index is valid, false if it is not.</returns>
+        </member>
+        <member name="M:Ethar.GeoPose.H3.H3.IsPentagon(System.UInt64)">
+            <summary>
+            Determines whether or not the given H3 index is a pentagon. C name <c>isPentagon</c>.
+            </summary>
+            <param name="h">The H3 index to check.</param>
+            <returns>True if it is a pentagon, otherwise false.</returns>
+        </member>
+        <member name="M:Ethar.GeoPose.H3.H3.IsResClassIII(System.UInt64)">
+            <summary>
+            Determines whether the given H3 index is in a Class III resolution (rotated versus the icosahedron and subject to shape distortion adding extra points on icosahedron edges, making them not true hexagons). C name <c>isResClassIII</c>.
+            </summary>
+            <param name="h">The H3 index to check.</param>
+            <returns>True if the resolution is class III, otherwise false.</returns>
+        </member>
+        <member name="M:Ethar.GeoPose.H3.H3.PentagonCount">
+            <summary>
+            Returns the number of pentagons, which is the same at any resolution. C name <c>pentagonCount</c>.
+            </summary>
+            <returns>The count of pentagon indexes, 12.</returns>
+        </member>
+        <member name="M:Ethar.GeoPose.H3.H3.GetPentagons(System.Int32,System.UInt64[])">
+            <summary>
+            Generates all pentagons at the specified resolution. C name <c>getPentagons</c>.
+            </summary>
+            <param name="res">The resolution to produce pentagons at.</param>
+            <param name="output">Output array. Must have at least <see cref="M:Ethar.GeoPose.H3.H3.PentagonCount"/> elements.</param>
+            <returns><see cref="F:Ethar.GeoPose.H3.H3ErrorCode.Success"/>, <see cref="F:Ethar.GeoPose.H3.H3ErrorCode.ResDomain"/> for a resolution outside 0 to 15, or <see cref="F:Ethar.GeoPose.H3.H3ErrorCode.MemoryBounds"/> if the array is missing or too small.</returns>
+        </member>
+        <member name="M:Ethar.GeoPose.H3.H3.Res0CellCount">
+            <summary>
+            Returns the number of resolution 0 cells. C name <c>res0CellCount</c>.
+            </summary>
+            <returns>The count of resolution 0 cells, 122.</returns>
+        </member>
+        <member name="M:Ethar.GeoPose.H3.H3.GetRes0Cells(System.UInt64[])">
+            <summary>
+            Generates all base cells. C name <c>getRes0Cells</c>.
+            </summary>
+            <param name="output">Output array. Must have at least <see cref="M:Ethar.GeoPose.H3.H3.Res0CellCount"/> elements.</param>
+            <returns><see cref="F:Ethar.GeoPose.H3.H3ErrorCode.Success"/>, or <see cref="F:Ethar.GeoPose.H3.H3ErrorCode.MemoryBounds"/> if the array is missing or too small.</returns>
+        </member>
+        <member name="M:Ethar.GeoPose.H3.H3.GetHighBit(System.UInt64)">
+            <summary>
+            Gets the highest bit of the H3 index. C name <c>H3_GET_HIGH_BIT</c>.
+            </summary>
+            <param name="h">The H3 index.</param>
+            <returns>The high bit, 0 or 1.</returns>
+        </member>
+        <member name="M:Ethar.GeoPose.H3.H3.SetHighBit(System.UInt64,System.Int32)">
+            <summary>
+            Sets the highest bit of the H3 index. C name <c>H3_SET_HIGH_BIT</c>.
+            </summary>
+            <param name="h">The H3 index.</param>
+            <param name="v">The bit value, 0 or 1.</param>
+            <returns>The updated index.</returns>
+        </member>
+        <member name="M:Ethar.GeoPose.H3.H3.GetMode(System.UInt64)">
+            <summary>
+            Gets the integer mode of the H3 index. C name <c>H3_GET_MODE</c>.
+            </summary>
+            <param name="h">The H3 index.</param>
+            <returns>The mode, 0 to 15.</returns>
+        </member>
+        <member name="M:Ethar.GeoPose.H3.H3.SetMode(System.UInt64,System.Int32)">
+            <summary>
+            Sets the integer mode of the H3 index. C name <c>H3_SET_MODE</c>.
+            </summary>
+            <param name="h">The H3 index.</param>
+            <param name="v">The mode, 0 to 15.</param>
+            <returns>The updated index.</returns>
+        </member>
+        <member name="M:Ethar.GeoPose.H3.H3.SetBaseCell(System.UInt64,System.Int32)">
+            <summary>
+            Sets the integer base cell of the H3 index. C name <c>H3_SET_BASE_CELL</c>.
+            </summary>
+            <param name="h">The H3 index.</param>
+            <param name="bc">The base cell, 0 to 127.</param>
+            <returns>The updated index.</returns>
+        </member>
+        <member name="M:Ethar.GeoPose.H3.H3.SetResolution(System.UInt64,System.Int32)">
+            <summary>
+            Sets the integer resolution of the H3 index. C name <c>H3_SET_RESOLUTION</c>.
+            </summary>
+            <param name="h">The H3 index.</param>
+            <param name="res">The resolution, 0 to 15.</param>
+            <returns>The updated index.</returns>
+        </member>
+        <member name="M:Ethar.GeoPose.H3.H3.GetIndexDigit(System.UInt64,System.Int32)">
+            <summary>
+            Gets the resolution <paramref name="res"/> integer digit (0-7) of the H3 index. C name <c>H3_GET_INDEX_DIGIT</c>.
+            </summary>
+            <param name="h">The H3 index.</param>
+            <param name="res">The resolution of the digit, 1 to 15.</param>
+            <returns>The digit.</returns>
+        </member>
+        <member name="M:Ethar.GeoPose.H3.H3.SetIndexDigit(System.UInt64,System.Int32,Ethar.GeoPose.H3.Direction)">
+            <summary>
+            Sets the resolution <paramref name="res"/> digit of the H3 index to the integer digit (0-7). C name <c>H3_SET_INDEX_DIGIT</c>.
+            </summary>
+            <param name="h">The H3 index.</param>
+            <param name="res">The resolution of the digit, 1 to 15.</param>
+            <param name="digit">The digit.</param>
+            <returns>The updated index.</returns>
+        </member>
+        <member name="M:Ethar.GeoPose.H3.H3.GetReservedBits(System.UInt64)">
+            <summary>
+            Gets the value in the reserved space. Should always be zero for valid indexes. C name <c>H3_GET_RESERVED_BITS</c>.
+            </summary>
+            <param name="h">The H3 index.</param>
+            <returns>The reserved bits, 0 to 7.</returns>
+        </member>
+        <member name="M:Ethar.GeoPose.H3.H3.SetReservedBits(System.UInt64,System.Int32)">
+            <summary>
+            Sets a value in the reserved space. Setting to non-zero may produce invalid indexes. C name <c>H3_SET_RESERVED_BITS</c>.
+            </summary>
+            <param name="h">The H3 index.</param>
+            <param name="v">The reserved bits, 0 to 7.</param>
+            <returns>The updated index.</returns>
+        </member>
+        <member name="M:Ethar.GeoPose.H3.H3.SetH3Index(System.Int32,System.Int32,Ethar.GeoPose.H3.Direction)">
+            <summary>
+            Initializes an H3 cell index. C name <c>setH3Index</c>.
+            </summary>
+            <param name="res">The H3 resolution to initialize the index to.</param>
+            <param name="baseCell">The H3 base cell to initialize the index to.</param>
+            <param name="initDigit">The H3 digit (0-7) to initialize all of the index digits to.</param>
+            <returns>The initialized index.</returns>
+        </member>
+        <member name="M:Ethar.GeoPose.H3.H3.IsResolutionClassIII(System.Int32)">
+            <summary>
+            Returns whether or not a resolution is a Class III grid. Odd resolutions are Class III and even resolutions are Class II. C name <c>isResolutionClassIII</c>.
+            </summary>
+            <param name="res">The H3 resolution.</param>
+            <returns>True if the resolution is a Class III grid, false if it is Class II.</returns>
+        </member>
+        <member name="M:Ethar.GeoPose.H3.H3.LeadingNonZeroDigit(System.UInt64)">
+            <summary>
+            Returns the highest resolution non-zero digit in an H3 index. C name <c>_h3LeadingNonZeroDigit</c>.
+            </summary>
+            <param name="h">The H3 index.</param>
+            <returns>The highest resolution non-zero digit, or <see cref="F:Ethar.GeoPose.H3.Direction.Center"/> if all digits are zero.</returns>
+        </member>
+        <member name="M:Ethar.GeoPose.H3.H3.RotatePent60ccw(System.UInt64)">
+            <summary>
+            Rotate an H3 index 60 degrees counter-clockwise about a pentagonal center. C name <c>_h3RotatePent60ccw</c>.
+            </summary>
+            <param name="h">The H3 index.</param>
+            <returns>The rotated index.</returns>
+        </member>
+        <member name="M:Ethar.GeoPose.H3.H3.RotatePent60cw(System.UInt64)">
+            <summary>
+            Rotate an H3 index 60 degrees clockwise about a pentagonal center. C name <c>_h3RotatePent60cw</c>.
+            </summary>
+            <param name="h">The H3 index.</param>
+            <returns>The rotated index.</returns>
+        </member>
+        <member name="M:Ethar.GeoPose.H3.H3.Rotate60ccw(System.UInt64)">
+            <summary>
+            Rotate an H3 index 60 degrees counter-clockwise. C name <c>_h3Rotate60ccw</c>.
+            </summary>
+            <param name="h">The H3 index.</param>
+            <returns>The rotated index.</returns>
+        </member>
+        <member name="M:Ethar.GeoPose.H3.H3.Rotate60cw(System.UInt64)">
+            <summary>
+            Rotate an H3 index 60 degrees clockwise. C name <c>_h3Rotate60cw</c>.
+            </summary>
+            <param name="h">The H3 index.</param>
+            <returns>The rotated index.</returns>
+        </member>
+        <member name="M:Ethar.GeoPose.H3.H3.HasGoodTopBits(System.UInt64)">
+            <summary>
+            The top 8 bits of any cell should be a specific constant: the 1 high bit 0, the 4 mode bits 0001 (H3_CELL_MODE) and the 3 reserved bits 000. In total the top 8 bits should be 0_0001_000. C name <c>_hasGoodTopBits</c>.
+            </summary>
+            <param name="h">The H3 index.</param>
+            <returns>True if the top bits are those of a cell.</returns>
+        </member>
+        <member name="M:Ethar.GeoPose.H3.H3.HasAny7UpToRes(System.UInt64,System.Int32)">
+            <summary>
+            Check that no digit from 1 to <paramref name="res"/> is 7 (INVALID_DIGIT). C name <c>_hasAny7UptoRes</c>.
+            </summary>
+            <param name="h">The H3 index.</param>
+            <param name="res">The resolution.</param>
+            <returns>True if any digit up to the resolution is 7.</returns>
+            <remarks>
+            The bit trick identifies the lowest 7 without a loop. A 7 causes a carry when computing <c>~d - MLO</c> that survives the mask; digits 0 to 6 do not.
+            A carry out of a 7 can misidentify a 6 in the next digit up, but by then the lowest 7 has already been found, so the result is still correct.
+            See https://github.com/uber/h3/pull/496#discussion_r795851046 for the full derivation.
+            </remarks>
+        </member>
+        <member name="M:Ethar.GeoPose.H3.H3.HasAll7AfterRes(System.UInt64,System.Int32)">
+            <summary>
+            Check that all unused digits after <paramref name="res"/> are set to 7 (INVALID_DIGIT). Bit shifts avoid looping through digits. C name <c>_hasAll7AfterRes</c>.
+            </summary>
+            <param name="h">The H3 index.</param>
+            <param name="res">The resolution.</param>
+            <returns>True if every digit after the resolution is 7.</returns>
+        </member>
+        <member name="M:Ethar.GeoPose.H3.H3.FirstOneIndex(System.UInt64)">
+            <summary>
+            Get the index of the first nonzero bit of an H3 index. The C library uses compiler intrinsics where available; this is its portable fallback. C name <c>_firstOneIndex</c>.
+            </summary>
+            <param name="h">The H3 index, which must be non-zero in its lower 45 bits.</param>
+            <returns>The bit position of the highest set bit.</returns>
+        </member>
+        <member name="M:Ethar.GeoPose.H3.H3.HasDeletedSubsequence(System.UInt64,System.Int32)">
+            <summary>
+            One final validation just for cells whose base cell (res 0) is a pentagon. Pentagon cells start with a sequence of 0's (CENTER_DIGIT's). The first nonzero digit can't be a 1 (the "deleted subsequence", PENTAGON_SKIPPED_DIGIT or K_AXES_DIGIT).
+            In the lower 45 = 15*3 bits the position of the first 1 bit must not be divisible by 3. C name <c>_hasDeletedSubsequence</c>.
+            </summary>
+            <param name="h">The H3 index.</param>
+            <param name="baseCell">The base cell number, already known to be in range.</param>
+            <returns>True if the index is under a pentagon and its first nonzero digit is 1.</returns>
+        </member>
+        <member name="M:Ethar.GeoPose.H3.H3.CellToParent(System.UInt64,System.Int32,System.UInt64@)">
+            <summary>
+            Produces the parent index for a given H3 index. C name <c>cellToParent</c>.
+            </summary>
+            <param name="h">The H3 index to find the parent of.</param>
+            <param name="parentRes">The resolution to switch to (parent, grandparent, etc).</param>
+            <param name="output">The H3 index of the parent, or <see cref="F:Ethar.GeoPose.H3.H3.H3Null"/> on failure.</param>
+            <returns><see cref="F:Ethar.GeoPose.H3.H3ErrorCode.Success"/>, <see cref="F:Ethar.GeoPose.H3.H3ErrorCode.ResDomain"/> for a resolution outside 0 to 15, or <see cref="F:Ethar.GeoPose.H3.H3ErrorCode.ResMismatch"/> if the parent resolution is finer than the cell.</returns>
+        </member>
+        <member name="M:Ethar.GeoPose.H3.H3.CellToChildrenSize(System.UInt64,System.Int32,System.Int64@)">
+            <summary>
+            Returns the exact number of children for a cell at a given child resolution. C name <c>cellToChildrenSize</c>.
+            </summary>
+            <param name="h">The H3 index to find the number of children of.</param>
+            <param name="childRes">The child resolution.</param>
+            <param name="output">The exact number of children, handling hexagons and pentagons correctly.</param>
+            <returns><see cref="F:Ethar.GeoPose.H3.H3ErrorCode.Success"/>, or <see cref="F:Ethar.GeoPose.H3.H3ErrorCode.ResDomain"/> if the child resolution is coarser than the cell or above 15.</returns>
+        </member>
+        <member name="M:Ethar.GeoPose.H3.H3.CellToChildren(System.UInt64,System.Int32,System.UInt64[])">
+            <summary>
+            Generates all of the children of a cell at the specified resolution. C name <c>cellToChildren</c>.
+            </summary>
+            <param name="h">The H3 index to find the children of.</param>
+            <param name="childRes">The child resolution to produce.</param>
+            <param name="children">The array to store the resulting indexes in. Use <see cref="M:Ethar.GeoPose.H3.H3.CellToChildrenSize(System.UInt64,System.Int32,System.Int64@)"/> to size it.</param>
+            <returns><see cref="F:Ethar.GeoPose.H3.H3ErrorCode.Success"/>, <see cref="F:Ethar.GeoPose.H3.H3ErrorCode.ResDomain"/> if the child resolution is invalid for the cell, or <see cref="F:Ethar.GeoPose.H3.H3ErrorCode.MemoryBounds"/> if the array is missing or too small. The C library assumes the array is large enough; the port checks.</returns>
+        </member>
+        <member name="M:Ethar.GeoPose.H3.H3.CellToCenterChild(System.UInt64,System.Int32,System.UInt64@)">
+            <summary>
+            Produces the center child index for a given H3 index at the specified resolution. C name <c>cellToCenterChild</c>.
+            </summary>
+            <param name="h">The H3 index to find the center child of.</param>
+            <param name="childRes">The resolution to switch to.</param>
+            <param name="child">The H3 index of the center child, or <see cref="F:Ethar.GeoPose.H3.H3.H3Null"/> on failure.</param>
+            <returns><see cref="F:Ethar.GeoPose.H3.H3ErrorCode.Success"/>, or <see cref="F:Ethar.GeoPose.H3.H3ErrorCode.ResDomain"/> if the child resolution is coarser than the cell or above 15.</returns>
+        </member>
+        <member name="M:Ethar.GeoPose.H3.H3.MakeDirectChild(System.UInt64,System.Int32)">
+            <summary>
+            Returns the immediate child index based on the specified cell number. Bit operations only, could generate invalid indexes if not careful (deleted cell under a pentagon). C name <c>makeDirectChild</c>.
+            </summary>
+            <param name="h">The H3 index to find the direct child of.</param>
+            <param name="cellNumber">The id of the direct child (0-6).</param>
+            <returns>The new H3 index for the child.</returns>
+        </member>
+        <member name="M:Ethar.GeoPose.H3.H3.ZeroIndexDigits(System.UInt64,System.Int32,System.Int32)">
+            <summary>
+            Zero out index digits from start to end, inclusive. No-op if start is greater than end. C name <c>_zeroIndexDigits</c>.
+            </summary>
+            <param name="h">The H3 index.</param>
+            <param name="start">The first digit to zero.</param>
+            <param name="end">The last digit to zero.</param>
+            <returns>The updated index.</returns>
+        </member>
+        <member name="M:Ethar.GeoPose.H3.H3.HasChildAtRes(System.UInt64,System.Int32)">
+            <summary>
+            Determines whether one resolution is a valid child resolution for a cell. Each resolution is considered a valid child resolution of itself. C name <c>_hasChildAtRes</c>.
+            </summary>
+            <param name="h">The parent cell.</param>
+            <param name="childRes">The resolution of the child.</param>
+            <returns>The validity of the child resolution.</returns>
+        </member>
+        <member name="T:Ethar.GeoPose.H3.H3.ChildIterator">
+            <summary>
+            Iterates the children of a cell at a given resolution. Ported from the C struct <c>IterCellsChildren</c> and the functions <c>iterInitParent</c> and <c>iterStepChild</c> of iterators.c.
+            </summary>
+            <remarks>
+            Iteration through the children of a hexagon counts every digit between the parent and child resolution through 0 to 6.
+            A pentagon has only six children, so the first 1 that appears in the "skip digit" is skipped. The skip digit starts at the child resolution and moves to the coarser digit each time a 1 is skipped there.
+            </remarks>
+        </member>
+        <member name="F:Ethar.GeoPose.H3.H3.ChildIterator.H">
+            <summary>
+            The current child, or <see cref="F:Ethar.GeoPose.H3.H3.H3Null"/> when the iteration is over.
+            </summary>
+        </member>
+        <member name="M:Ethar.GeoPose.H3.H3.ChildIterator.InitParent(System.UInt64,System.Int32)">
+            <summary>
+            Initializes an iterator over the children of cell <paramref name="h"/> at resolution <paramref name="childRes"/>. C name <c>iterInitParent</c>.
+            </summary>
+            <param name="h">The parent cell.</param>
+            <param name="childRes">The child resolution.</param>
+            <returns>The iterator, positioned on the first child, or on <see cref="F:Ethar.GeoPose.H3.H3.H3Null"/> if the input was invalid.</returns>
+        </member>
+        <member name="M:Ethar.GeoPose.H3.H3.ChildIterator.Step">
+            <summary>
+            Steps to the next child cell. When the iteration is over, <see cref="F:Ethar.GeoPose.H3.H3.ChildIterator.H"/> is <see cref="F:Ethar.GeoPose.H3.H3.H3Null"/>. C name <c>iterStepChild</c>.
+            </summary>
+        </member>
+        <member name="M:Ethar.GeoPose.H3.H3.ChildIterator.GetResDigit(System.Int32)">
+            <summary>
+            Extracts the <paramref name="res"/> digit (0-7) of the current cell. C name <c>_getResDigit</c>.
+            </summary>
+            <param name="res">The digit resolution.</param>
+            <returns>The digit.</returns>
+        </member>
+        <member name="M:Ethar.GeoPose.H3.H3.ChildIterator.IncrementResDigit(System.Int32)">
+            <summary>
+            Increments the digit (0-7) at location <paramref name="res"/>, carrying into the next coarser digit on overflow. C name <c>_incrementResDigit</c>.
+            </summary>
+            <param name="res">The digit resolution.</param>
+        </member>
+        <member name="M:Ethar.GeoPose.H3.H3.LatLngToCell(Ethar.GeoPose.H3.LatLng,System.Int32,System.UInt64@)">
+            <summary>
+            Encodes a coordinate on the sphere to the H3 index of the containing cell at the specified resolution. C name <c>latLngToCell</c>.
+            </summary>
+            <param name="g">The spherical coordinates to encode, in radians.</param>
+            <param name="res">The desired H3 resolution for the encoding.</param>
+            <param name="output">The encoded H3 index, or <see cref="F:Ethar.GeoPose.H3.H3.H3Null"/> on failure.</param>
+            <returns><see cref="F:Ethar.GeoPose.H3.H3ErrorCode.Success"/>, <see cref="F:Ethar.GeoPose.H3.H3ErrorCode.ResDomain"/> for a resolution outside 0 to 15, <see cref="F:Ethar.GeoPose.H3.H3ErrorCode.LatLngDomain"/> if a coordinate is not finite, or <see cref="F:Ethar.GeoPose.H3.H3ErrorCode.Failed"/> if no cell was found.</returns>
+        </member>
+        <member name="M:Ethar.GeoPose.H3.H3.CellToLatLng(System.UInt64,Ethar.GeoPose.H3.LatLng@)">
+            <summary>
+            Determines the spherical coordinates of the center point of an H3 index. C name <c>cellToLatLng</c>.
+            </summary>
+            <param name="h3">The H3 index.</param>
+            <param name="g">The spherical coordinates of the H3 cell center, in radians.</param>
+            <returns><see cref="F:Ethar.GeoPose.H3.H3ErrorCode.Success"/>, or <see cref="F:Ethar.GeoPose.H3.H3ErrorCode.CellInvalid"/> if the base cell is out of range.</returns>
+        </member>
+        <member name="M:Ethar.GeoPose.H3.H3.CellToBoundary(System.UInt64,Ethar.GeoPose.H3.CellBoundary@)">
+            <summary>
+            Determines the cell boundary in spherical coordinates for an H3 index. C name <c>cellToBoundary</c>.
+            </summary>
+            <param name="h3">The H3 index.</param>
+            <param name="cb">The boundary of the H3 cell in spherical coordinates, or null on failure.</param>
+            <returns><see cref="F:Ethar.GeoPose.H3.H3ErrorCode.Success"/>, or <see cref="F:Ethar.GeoPose.H3.H3ErrorCode.CellInvalid"/> if the base cell is out of range.</returns>
+        </member>
+        <member name="M:Ethar.GeoPose.H3.H3.FaceIjkToH3(Ethar.GeoPose.H3.FaceIjk,System.Int32)">
+            <summary>
+            Convert a FaceIJK address to the corresponding H3 index. C name <c>_faceIjkToH3</c>.
+            </summary>
+            <param name="fijk">The FaceIJK address.</param>
+            <param name="res">The cell resolution.</param>
+            <returns>The encoded H3 index, or <see cref="F:Ethar.GeoPose.H3.H3.H3Null"/> on failure.</returns>
+        </member>
+        <member name="M:Ethar.GeoPose.H3.H3.Vec3ToCell(Ethar.GeoPose.H3.Vec3d,System.Int32,System.UInt64@)">
+            <summary>
+            Encodes a coordinate on the sphere to the H3 index of the containing cell at the specified resolution. C name <c>vec3ToCell</c>.
+            </summary>
+            <param name="v">The 3D cartesian coordinates to encode, on the unit sphere.</param>
+            <param name="res">The desired H3 resolution for the encoding.</param>
+            <param name="output">The encoded H3 index, or <see cref="F:Ethar.GeoPose.H3.H3.H3Null"/> on failure.</param>
+            <returns><see cref="F:Ethar.GeoPose.H3.H3ErrorCode.Success"/>, <see cref="F:Ethar.GeoPose.H3.H3ErrorCode.ResDomain"/>, <see cref="F:Ethar.GeoPose.H3.H3ErrorCode.Domain"/> if a component is not finite, or <see cref="F:Ethar.GeoPose.H3.H3ErrorCode.Failed"/>.</returns>
+        </member>
+        <member name="M:Ethar.GeoPose.H3.H3.H3ToFaceIjkWithInitializedFijk(System.UInt64,Ethar.GeoPose.H3.FaceIjk@)">
+            <summary>
+            Convert an H3 index to the FaceIJK address on a specified icosahedral face. C name <c>_h3ToFaceIjkWithInitializedFijk</c>.
+            </summary>
+            <param name="h">The H3 index.</param>
+            <param name="fijk">The FaceIJK address, initialized with the desired face and normalized base cell coordinates.</param>
+            <returns>True if the possibility of overage exists, otherwise false.</returns>
+        </member>
+        <member name="M:Ethar.GeoPose.H3.H3.H3ToFaceIjk(System.UInt64,Ethar.GeoPose.H3.FaceIjk@)">
+            <summary>
+            Convert an H3 index to a FaceIJK address. C name <c>_h3ToFaceIjk</c>.
+            </summary>
+            <param name="h">The H3 index.</param>
+            <param name="fijk">The corresponding FaceIJK address.</param>
+            <returns><see cref="F:Ethar.GeoPose.H3.H3ErrorCode.Success"/>, or <see cref="F:Ethar.GeoPose.H3.H3ErrorCode.CellInvalid"/> if the base cell is out of range.</returns>
+        </member>
+        <member name="M:Ethar.GeoPose.H3.H3.CellToVec3(System.UInt64,Ethar.GeoPose.H3.Vec3d@)">
+            <summary>
+            Determines the 3D cartesian coordinates of the center of an H3 cell. C name <c>cellToVec3</c>.
+            </summary>
+            <param name="h3">The H3 index.</param>
+            <param name="v">The 3D cartesian coordinates of the H3 cell center.</param>
+            <returns><see cref="F:Ethar.GeoPose.H3.H3ErrorCode.Success"/>, or <see cref="F:Ethar.GeoPose.H3.H3ErrorCode.CellInvalid"/> if the base cell is out of range.</returns>
+        </member>
+        <member name="M:Ethar.GeoPose.H3.H3.IsFinite(System.Double)">
+            <summary>
+            The C <c>isfinite</c>: true unless the value is NaN or infinite.
+            </summary>
+            <param name="value">The value.</param>
+            <returns>True if finite.</returns>
+        </member>
+        <member name="F:Ethar.GeoPose.H3.H3.HexagonAreaAvgKm2">
+            <summary>
+            Average hexagon area in square kilometres by resolution. C name <c>areas</c> in <c>getHexagonAreaAvgKm2</c>.
+            </summary>
+        </member>
+        <member name="F:Ethar.GeoPose.H3.H3.HexagonAreaAvgM2">
+            <summary>
+            Average hexagon area in square metres by resolution. C name <c>areas</c> in <c>getHexagonAreaAvgM2</c>.
+            </summary>
+        </member>
+        <member name="F:Ethar.GeoPose.H3.H3.HexagonEdgeLengthAvgKm">
+            <summary>
+            Average hexagon edge length in kilometres by resolution. C name <c>lens</c> in <c>getHexagonEdgeLengthAvgKm</c>.
+            </summary>
+        </member>
+        <member name="F:Ethar.GeoPose.H3.H3.HexagonEdgeLengthAvgM">
+            <summary>
+            Average hexagon edge length in metres by resolution. C name <c>lens</c> in <c>getHexagonEdgeLengthAvgM</c>.
+            </summary>
+        </member>
+        <member name="M:Ethar.GeoPose.H3.H3.DegsToRads(System.Double)">
+            <summary>
+            Convert from decimal degrees to radians. C name <c>degsToRads</c>.
+            </summary>
+            <param name="degrees">The decimal degrees.</param>
+            <returns>The corresponding radians.</returns>
+        </member>
+        <member name="M:Ethar.GeoPose.H3.H3.RadsToDegs(System.Double)">
+            <summary>
+            Convert from radians to decimal degrees. C name <c>radsToDegs</c>.
+            </summary>
+            <param name="radians">The radians.</param>
+            <returns>The corresponding decimal degrees.</returns>
+        </member>
+        <member name="M:Ethar.GeoPose.H3.H3.GreatCircleDistanceRads(Ethar.GeoPose.H3.LatLng,Ethar.GeoPose.H3.LatLng)">
+            <summary>
+            The great circle distance in radians between two spherical coordinates, by the Haversine formula. C name <c>greatCircleDistanceRads</c>.
+            </summary>
+            <param name="a">The first coordinates in radians.</param>
+            <param name="b">The second coordinates in radians.</param>
+            <returns>The great circle distance in radians between a and b.</returns>
+        </member>
+        <member name="M:Ethar.GeoPose.H3.H3.GreatCircleDistanceKm(Ethar.GeoPose.H3.LatLng,Ethar.GeoPose.H3.LatLng)">
+            <summary>
+            The great circle distance in kilometres between two spherical coordinates, on the WGS84 authalic sphere H3 uses. C name <c>greatCircleDistanceKm</c>.
+            </summary>
+            <param name="a">The first coordinates in radians.</param>
+            <param name="b">The second coordinates in radians.</param>
+            <returns>The great circle distance in kilometres between a and b.</returns>
+        </member>
+        <member name="M:Ethar.GeoPose.H3.H3.GreatCircleDistanceM(Ethar.GeoPose.H3.LatLng,Ethar.GeoPose.H3.LatLng)">
+            <summary>
+            The great circle distance in metres between two spherical coordinates, on the WGS84 authalic sphere H3 uses. C name <c>greatCircleDistanceM</c>.
+            </summary>
+            <param name="a">The first coordinates in radians.</param>
+            <param name="b">The second coordinates in radians.</param>
+            <returns>The great circle distance in metres between a and b.</returns>
+        </member>
+        <member name="M:Ethar.GeoPose.H3.H3.GetHexagonAreaAvgKm2(System.Int32,System.Double@)">
+            <summary>
+            Average hexagon area in square kilometres at the given resolution. C name <c>getHexagonAreaAvgKm2</c>.
+            </summary>
+            <param name="res">The resolution, 0 to 15.</param>
+            <param name="output">The area.</param>
+            <returns><see cref="F:Ethar.GeoPose.H3.H3ErrorCode.Success"/>, or <see cref="F:Ethar.GeoPose.H3.H3ErrorCode.ResDomain"/> for a resolution outside 0 to 15.</returns>
+        </member>
+        <member name="M:Ethar.GeoPose.H3.H3.GetHexagonAreaAvgM2(System.Int32,System.Double@)">
+            <summary>
+            Average hexagon area in square metres at the given resolution. C name <c>getHexagonAreaAvgM2</c>.
+            </summary>
+            <param name="res">The resolution, 0 to 15.</param>
+            <param name="output">The area.</param>
+            <returns><see cref="F:Ethar.GeoPose.H3.H3ErrorCode.Success"/>, or <see cref="F:Ethar.GeoPose.H3.H3ErrorCode.ResDomain"/> for a resolution outside 0 to 15.</returns>
+        </member>
+        <member name="M:Ethar.GeoPose.H3.H3.GetHexagonEdgeLengthAvgKm(System.Int32,System.Double@)">
+            <summary>
+            Average hexagon edge length in kilometres at the given resolution. C name <c>getHexagonEdgeLengthAvgKm</c>.
+            </summary>
+            <param name="res">The resolution, 0 to 15.</param>
+            <param name="output">The edge length.</param>
+            <returns><see cref="F:Ethar.GeoPose.H3.H3ErrorCode.Success"/>, or <see cref="F:Ethar.GeoPose.H3.H3ErrorCode.ResDomain"/> for a resolution outside 0 to 15.</returns>
+        </member>
+        <member name="M:Ethar.GeoPose.H3.H3.GetHexagonEdgeLengthAvgM(System.Int32,System.Double@)">
+            <summary>
+            Average hexagon edge length in metres at the given resolution. C name <c>getHexagonEdgeLengthAvgM</c>.
+            </summary>
+            <param name="res">The resolution, 0 to 15.</param>
+            <param name="output">The edge length.</param>
+            <returns><see cref="F:Ethar.GeoPose.H3.H3ErrorCode.Success"/>, or <see cref="F:Ethar.GeoPose.H3.H3ErrorCode.ResDomain"/> for a resolution outside 0 to 15.</returns>
+        </member>
+        <member name="M:Ethar.GeoPose.H3.H3.GetNumCells(System.Int32,System.Int64@)">
+            <summary>
+            Number of cells at the given resolution. C name <c>getNumCells</c>.
+            </summary>
+            <param name="res">The resolution, 0 to 15.</param>
+            <param name="output">The number of cells, 2 + 120 * 7^res.</param>
+            <returns><see cref="F:Ethar.GeoPose.H3.H3ErrorCode.Success"/>, or <see cref="F:Ethar.GeoPose.H3.H3ErrorCode.ResDomain"/> for a resolution outside 0 to 15.</returns>
+        </member>
+        <member name="T:Ethar.GeoPose.H3.H3CellBoundary">
+            <summary>
+            The outline of an H3 cell as GeoPose positions in degrees, counter-clockwise, all at one caller supplied height.
+            </summary>
+            <remarks>
+            A hexagon has 6 vertices and a pentagon 5, but a cell that straddles an icosahedron edge gains one extra vertex per crossing, so the count can reach 10.
+            The vertices are exposed through <see cref="P:Ethar.GeoPose.H3.H3CellBoundary.Count"/> and the indexer rather than a list to keep allocation low.
+            </remarks>
+        </member>
+        <member name="M:Ethar.GeoPose.H3.H3CellBoundary.#ctor(Ethar.GeoPose.H3.CellBoundary,System.Double)">
+            <summary>
+            Initializes a new instance of the <see cref="T:Ethar.GeoPose.H3.H3CellBoundary"/> class from an engine boundary in radians.
+            </summary>
+            <param name="boundary">The boundary in radians.</param>
+            <param name="heightInMeters">The height above the WGS84 ellipsoid to give every vertex.</param>
+        </member>
+        <member name="P:Ethar.GeoPose.H3.H3CellBoundary.Count">
+            <summary>
+            Gets the number of vertices, 5 to 10.
+            </summary>
+        </member>
+        <member name="P:Ethar.GeoPose.H3.H3CellBoundary.HeightInMeters">
+            <summary>
+            Gets the height above the WGS84 ellipsoid shared by every vertex.
+            </summary>
+        </member>
+        <member name="P:Ethar.GeoPose.H3.H3CellBoundary.Item(System.Int32)">
+            <summary>
+            Gets the vertex at the given position.
+            </summary>
+            <param name="index">The vertex position, 0 to <see cref="P:Ethar.GeoPose.H3.H3CellBoundary.Count"/> - 1.</param>
+            <returns>The vertex in degrees with the boundary height.</returns>
+        </member>
+        <member name="M:Ethar.GeoPose.H3.H3CellBoundary.ToArray">
+            <summary>
+            Copies the vertices to a new array.
+            </summary>
+            <returns>The vertices in counter-clockwise order.</returns>
+        </member>
+        <member name="T:Ethar.GeoPose.H3.H3CellRegistry`1">
+            <summary>
+            A registry of items placed at GeoPose positions that answers "which items are inside this H3 cell" at any resolution.
+            </summary>
+            <typeparam name="T">The item type, for example a GeoPose structural data unit or an application object.</typeparam>
+            <remarks>
+            Every item is stored once, keyed by its resolution 15 cell. Because the H3 index is hierarchical, all descendants of a cell at resolution r form one contiguous range of resolution 15 values, so a query is a binary search plus a scan of the matches.
+            Adding is O(1); the first query after an add sorts the registry, O(n log n); each query is then O(log n + matches). The registry is not thread safe.
+            Containment is by the index hierarchy, the same rule as <see cref="M:Ethar.GeoPose.H3.H3Index.Contains(Ethar.GeoPose.H3.H3Index)"/>. A point close to a cell edge can be projected directly into a neighbouring cell at a coarse resolution while its resolution 15 cell descends from this one; see the package readme.
+            </remarks>
+        </member>
+        <member name="P:Ethar.GeoPose.H3.H3CellRegistry`1.Count">
+            <summary>
+            Gets the number of registered items.
+            </summary>
+        </member>
+        <member name="P:Ethar.GeoPose.H3.H3CellRegistry`1.Items">
+            <summary>
+            Gets the registered items in no particular order.
+            </summary>
+        </member>
+        <member name="M:Ethar.GeoPose.H3.H3CellRegistry`1.Add(`0,Ethar.GeoPose.DataTypes.TangentPointPosition)">
+            <summary>
+            Registers an item at a position. The height is ignored.
+            </summary>
+            <param name="item">The item.</param>
+            <param name="position">The position in degrees.</param>
+        </member>
+        <member name="M:Ethar.GeoPose.H3.H3CellRegistry`1.Add(`0,Ethar.GeoPose.H3.H3Index)">
+            <summary>
+            Registers an item at a cell. A cell coarser than resolution 15 is stored by its centre child, so it is found by queries for that cell and its ancestors, but only by queries for finer cells that contain the centre.
+            </summary>
+            <param name="item">The item.</param>
+            <param name="cell">The cell.</param>
+        </member>
+        <member name="M:Ethar.GeoPose.H3.H3CellRegistry`1.Remove(`0)">
+            <summary>
+            Removes the first registration of an item.
+            </summary>
+            <param name="item">The item.</param>
+            <returns>True if the item was registered.</returns>
+        </member>
+        <member name="M:Ethar.GeoPose.H3.H3CellRegistry`1.Clear">
+            <summary>
+            Removes every registration.
+            </summary>
+        </member>
+        <member name="M:Ethar.GeoPose.H3.H3CellRegistry`1.FindWithin(Ethar.GeoPose.H3.H3Index)">
+            <summary>
+            Returns the items whose position lies in the cell.
+            </summary>
+            <param name="cell">The cell at any resolution.</param>
+            <returns>The items, in ascending order of their resolution 15 cell.</returns>
+        </member>
+        <member name="M:Ethar.GeoPose.H3.H3CellRegistry`1.FindWithin(Ethar.GeoPose.DataTypes.TangentPointPosition,System.Int32)">
+            <summary>
+            Returns the items that share the cell of a position at the given resolution.
+            </summary>
+            <remarks>
+            The cell is taken from the position's resolution 15 cell by the index hierarchy, the same rule the registry uses for its keys, so a registered position always finds itself.
+            </remarks>
+            <param name="position">The position in degrees. The height is ignored.</param>
+            <param name="resolution">The H3 resolution, 0 to 15.</param>
+            <returns>The items.</returns>
+        </member>
+        <member name="M:Ethar.GeoPose.H3.H3CellRegistry`1.CountWithin(Ethar.GeoPose.H3.H3Index)">
+            <summary>
+            Counts the items whose position lies in the cell without materialising them.
+            </summary>
+            <param name="cell">The cell at any resolution.</param>
+            <returns>The number of items.</returns>
+        </member>
+        <member name="M:Ethar.GeoPose.H3.H3CellRegistry`1.Range(Ethar.GeoPose.H3.H3Index,System.UInt64@,System.UInt64@)">
+            <summary>
+            Computes the inclusive range of resolution 15 values that are descendants of the cell.
+            The minimum is the centre child; the maximum has every digit below the cell's resolution set to 6, the highest child digit.
+            </summary>
+        </member>
+        <member name="M:Ethar.GeoPose.H3.H3CellRegistry`1.LowerBound(System.UInt64)">
+            <summary>
+            First position whose key is at least <paramref name="key"/>.
+            </summary>
+        </member>
+        <member name="M:Ethar.GeoPose.H3.H3CellRegistry`1.UpperBound(System.UInt64)">
+            <summary>
+            First position whose key is greater than <paramref name="key"/>.
+            </summary>
+        </member>
+        <member name="T:Ethar.GeoPose.H3.H3ErrorCode">
+            <summary>
+            Result code, success or a specific error, from an H3 operation. The numeric values match the C enum <c>H3ErrorCodes</c>.
+            </summary>
+        </member>
+        <member name="F:Ethar.GeoPose.H3.H3ErrorCode.Success">
+            <summary>
+            Success, no error. C name <c>E_SUCCESS</c>.
+            </summary>
+        </member>
+        <member name="F:Ethar.GeoPose.H3.H3ErrorCode.Failed">
+            <summary>
+            The operation failed but a more specific error is not available. C name <c>E_FAILED</c>.
+            </summary>
+        </member>
+        <member name="F:Ethar.GeoPose.H3.H3ErrorCode.Domain">
+            <summary>
+            Argument was outside the acceptable range, when a more specific error code is not available. C name <c>E_DOMAIN</c>.
+            </summary>
+        </member>
+        <member name="F:Ethar.GeoPose.H3.H3ErrorCode.LatLngDomain">
+            <summary>
+            Latitude or longitude arguments were outside the acceptable range. C name <c>E_LATLNG_DOMAIN</c>.
+            </summary>
+        </member>
+        <member name="F:Ethar.GeoPose.H3.H3ErrorCode.ResDomain">
+            <summary>
+            Resolution argument was outside the acceptable range. C name <c>E_RES_DOMAIN</c>.
+            </summary>
+        </member>
+        <member name="F:Ethar.GeoPose.H3.H3ErrorCode.CellInvalid">
+            <summary>
+            Cell argument was not valid. C name <c>E_CELL_INVALID</c>.
+            </summary>
+        </member>
+        <member name="F:Ethar.GeoPose.H3.H3ErrorCode.DirEdgeInvalid">
+            <summary>
+            Directed edge argument was not valid. C name <c>E_DIR_EDGE_INVALID</c>.
+            </summary>
+        </member>
+        <member name="F:Ethar.GeoPose.H3.H3ErrorCode.UndirEdgeInvalid">
+            <summary>
+            Undirected edge argument was not valid. C name <c>E_UNDIR_EDGE_INVALID</c>.
+            </summary>
+        </member>
+        <member name="F:Ethar.GeoPose.H3.H3ErrorCode.VertexInvalid">
+            <summary>
+            Vertex argument was not valid. C name <c>E_VERTEX_INVALID</c>.
+            </summary>
+        </member>
+        <member name="F:Ethar.GeoPose.H3.H3ErrorCode.Pentagon">
+            <summary>
+            Pentagon distortion was encountered which the algorithm could not handle. C name <c>E_PENTAGON</c>.
+            </summary>
+        </member>
+        <member name="F:Ethar.GeoPose.H3.H3ErrorCode.DuplicateInput">
+            <summary>
+            Duplicate input was encountered in the arguments and the algorithm could not handle it. C name <c>E_DUPLICATE_INPUT</c>.
+            </summary>
+        </member>
+        <member name="F:Ethar.GeoPose.H3.H3ErrorCode.NotNeighbors">
+            <summary>
+            Cell arguments were not neighbors. C name <c>E_NOT_NEIGHBORS</c>.
+            </summary>
+        </member>
+        <member name="F:Ethar.GeoPose.H3.H3ErrorCode.ResMismatch">
+            <summary>
+            Cell arguments had incompatible resolutions. C name <c>E_RES_MISMATCH</c>.
+            </summary>
+        </member>
+        <member name="F:Ethar.GeoPose.H3.H3ErrorCode.MemoryAlloc">
+            <summary>
+            Necessary memory allocation failed. C name <c>E_MEMORY_ALLOC</c>.
+            </summary>
+        </member>
+        <member name="F:Ethar.GeoPose.H3.H3ErrorCode.MemoryBounds">
+            <summary>
+            Bounds of provided memory were not large enough. C name <c>E_MEMORY_BOUNDS</c>.
+            </summary>
+        </member>
+        <member name="F:Ethar.GeoPose.H3.H3ErrorCode.OptionInvalid">
+            <summary>
+            Mode or flags argument was not valid. C name <c>E_OPTION_INVALID</c>.
+            </summary>
+        </member>
+        <member name="F:Ethar.GeoPose.H3.H3ErrorCode.IndexInvalid">
+            <summary>
+            Index argument was not valid. C name <c>E_INDEX_INVALID</c>.
+            </summary>
+        </member>
+        <member name="F:Ethar.GeoPose.H3.H3ErrorCode.BaseCellDomain">
+            <summary>
+            Base cell number was outside of the acceptable range. C name <c>E_BASE_CELL_DOMAIN</c>.
+            </summary>
+        </member>
+        <member name="F:Ethar.GeoPose.H3.H3ErrorCode.DigitDomain">
+            <summary>
+            Child digits invalid. C name <c>E_DIGIT_DOMAIN</c>.
+            </summary>
+        </member>
+        <member name="F:Ethar.GeoPose.H3.H3ErrorCode.DeletedDigit">
+            <summary>
+            Deleted subsequence indicates an invalid index. C name <c>E_DELETED_DIGIT</c>.
+            </summary>
+        </member>
+        <member name="T:Ethar.GeoPose.H3.H3Exception">
+            <summary>
+            Exception thrown when an H3 operation fails. Carries the H3 error code so callers can mirror the C library's behaviour.
+            </summary>
+        </member>
+        <member name="F:Ethar.GeoPose.H3.H3Exception.Descriptions">
+            <summary>
+            Descriptions of each error code, in enum order. C name <c>H3ErrorDescriptions</c>.
+            </summary>
+        </member>
+        <member name="M:Ethar.GeoPose.H3.H3Exception.#ctor(Ethar.GeoPose.H3.H3ErrorCode)">
+            <summary>
+            Initializes a new instance of the <see cref="T:Ethar.GeoPose.H3.H3Exception"/> class with the standard description of the error code.
+            </summary>
+            <param name="errorCode">The H3 error code.</param>
+        </member>
+        <member name="M:Ethar.GeoPose.H3.H3Exception.#ctor(Ethar.GeoPose.H3.H3ErrorCode,System.String)">
+            <summary>
+            Initializes a new instance of the <see cref="T:Ethar.GeoPose.H3.H3Exception"/> class.
+            </summary>
+            <param name="errorCode">The H3 error code.</param>
+            <param name="message">The error message.</param>
+        </member>
+        <member name="P:Ethar.GeoPose.H3.H3Exception.ErrorCode">
+            <summary>
+            Gets the H3 error code.
+            </summary>
+        </member>
+        <member name="M:Ethar.GeoPose.H3.H3Exception.Describe(Ethar.GeoPose.H3.H3ErrorCode)">
+            <summary>
+            Returns the string describing the error code. C name <c>describeH3Error</c>.
+            </summary>
+            <param name="errorCode">The H3 error code.</param>
+            <returns>The description, or "Invalid error code" for a value outside the enum.</returns>
+        </member>
+        <member name="T:Ethar.GeoPose.H3.H3Index">
+            <summary>
+            A validated H3 cell index: a 64-bit identifier for one hexagonal or pentagonal cell at one of the 16 H3 resolutions.
+            </summary>
+            <remarks>
+            The struct can only hold a value that passes <see cref="M:Ethar.GeoPose.H3.H3.IsValidCell(System.UInt64)"/>, so a caller who is handed an <see cref="T:Ethar.GeoPose.H3.H3Index"/> never has to check it again.
+            The one exception is <c>default(H3Index)</c>, which holds <see cref="F:Ethar.GeoPose.H3.H3.H3Null"/>.
+            The text form is the 15 character lowercase hexadecimal string used by H3 everywhere, and parsing and formatting are culture invariant.
+            </remarks>
+        </member>
+        <member name="M:Ethar.GeoPose.H3.H3Index.#ctor(System.UInt64)">
+            <summary>
+            Initializes a new instance of the <see cref="T:Ethar.GeoPose.H3.H3Index"/> struct.
+            </summary>
+            <param name="value">The 64-bit H3 cell index.</param>
+            <exception cref="T:Ethar.GeoPose.H3.H3Exception">Thrown with <see cref="F:Ethar.GeoPose.H3.H3ErrorCode.CellInvalid"/> if the value is not a valid cell.</exception>
+        </member>
+        <member name="P:Ethar.GeoPose.H3.H3Index.Value">
+            <summary>
+            Gets the 64-bit H3 cell index.
+            </summary>
+        </member>
+        <member name="P:Ethar.GeoPose.H3.H3Index.Resolution">
+            <summary>
+            Gets the resolution, 0 to 15.
+            </summary>
+        </member>
+        <member name="P:Ethar.GeoPose.H3.H3Index.BaseCell">
+            <summary>
+            Gets the base cell number, 0 to 121.
+            </summary>
+        </member>
+        <member name="P:Ethar.GeoPose.H3.H3Index.IsPentagon">
+            <summary>
+            Gets a value indicating whether the cell is one of the 12 pentagons at its resolution.
+            </summary>
+        </member>
+        <member name="P:Ethar.GeoPose.H3.H3Index.IsClassIII">
+            <summary>
+            Gets a value indicating whether the cell is at a Class III resolution. Odd resolutions are Class III and are rotated relative to the icosahedron.
+            </summary>
+        </member>
+        <member name="P:Ethar.GeoPose.H3.H3Index.Center">
+            <summary>
+            Gets the centre of the cell in radians. Use the <c>ToTangentPointPosition</c> extension method for a GeoPose position in degrees.
+            </summary>
+        </member>
+        <member name="M:Ethar.GeoPose.H3.H3Index.op_Equality(Ethar.GeoPose.H3.H3Index,Ethar.GeoPose.H3.H3Index)">
+            <summary>
+            Returns true if both indexes name the same cell.
+            </summary>
+            <param name="left">The first index.</param>
+            <param name="right">The second index.</param>
+            <returns>True if equal.</returns>
+        </member>
+        <member name="M:Ethar.GeoPose.H3.H3Index.op_Inequality(Ethar.GeoPose.H3.H3Index,Ethar.GeoPose.H3.H3Index)">
+            <summary>
+            Returns true if the indexes name different cells.
+            </summary>
+            <param name="left">The first index.</param>
+            <param name="right">The second index.</param>
+            <returns>True if not equal.</returns>
+        </member>
+        <member name="M:Ethar.GeoPose.H3.H3Index.op_LessThan(Ethar.GeoPose.H3.H3Index,Ethar.GeoPose.H3.H3Index)">
+            <summary>
+            Orders indexes by their numeric value.
+            </summary>
+            <param name="left">The first index.</param>
+            <param name="right">The second index.</param>
+            <returns>True if the first value is less than the second.</returns>
+        </member>
+        <member name="M:Ethar.GeoPose.H3.H3Index.op_GreaterThan(Ethar.GeoPose.H3.H3Index,Ethar.GeoPose.H3.H3Index)">
+            <summary>
+            Orders indexes by their numeric value.
+            </summary>
+            <param name="left">The first index.</param>
+            <param name="right">The second index.</param>
+            <returns>True if the first value is greater than the second.</returns>
+        </member>
+        <member name="M:Ethar.GeoPose.H3.H3Index.op_LessThanOrEqual(Ethar.GeoPose.H3.H3Index,Ethar.GeoPose.H3.H3Index)">
+            <summary>
+            Orders indexes by their numeric value.
+            </summary>
+            <param name="left">The first index.</param>
+            <param name="right">The second index.</param>
+            <returns>True if the first value is less than or equal to the second.</returns>
+        </member>
+        <member name="M:Ethar.GeoPose.H3.H3Index.op_GreaterThanOrEqual(Ethar.GeoPose.H3.H3Index,Ethar.GeoPose.H3.H3Index)">
+            <summary>
+            Orders indexes by their numeric value.
+            </summary>
+            <param name="left">The first index.</param>
+            <param name="right">The second index.</param>
+            <returns>True if the first value is greater than or equal to the second.</returns>
+        </member>
+        <member name="M:Ethar.GeoPose.H3.H3Index.Parse(System.String)">
+            <summary>
+            Parses the hexadecimal text form of a cell index. Upper and lower case are accepted and surrounding whitespace is ignored. Parsing is culture invariant.
+            </summary>
+            <param name="text">The text, for example <c>8928308280fffff</c>.</param>
+            <returns>The index.</returns>
+            <exception cref="T:Ethar.GeoPose.H3.H3Exception">Thrown with <see cref="F:Ethar.GeoPose.H3.H3ErrorCode.Failed"/> if the text is not hexadecimal, or <see cref="F:Ethar.GeoPose.H3.H3ErrorCode.CellInvalid"/> if it does not name a valid cell.</exception>
+        </member>
+        <member name="M:Ethar.GeoPose.H3.H3Index.TryParse(System.String,Ethar.GeoPose.H3.H3Index@)">
+            <summary>
+            Parses the hexadecimal text form of a cell index without throwing.
+            </summary>
+            <param name="text">The text, for example <c>8928308280fffff</c>.</param>
+            <param name="index">The index, or <c>default</c> on failure.</param>
+            <returns>True if the text names a valid cell.</returns>
+        </member>
+        <member name="M:Ethar.GeoPose.H3.H3Index.TryCreate(System.UInt64,Ethar.GeoPose.H3.H3Index@)">
+            <summary>
+            Wraps a 64-bit value without throwing.
+            </summary>
+            <param name="value">The 64-bit H3 cell index.</param>
+            <param name="index">The index, or <c>default</c> if the value is not a valid cell.</param>
+            <returns>True if the value is a valid cell.</returns>
+        </member>
+        <member name="M:Ethar.GeoPose.H3.H3Index.FromLatLng(Ethar.GeoPose.H3.LatLng,System.Int32)">
+            <summary>
+            Creates the index of the cell containing a point at the given resolution.
+            </summary>
+            <param name="point">The point in radians.</param>
+            <param name="resolution">The resolution, 0 to 15.</param>
+            <returns>The containing cell.</returns>
+            <exception cref="T:Ethar.GeoPose.H3.H3Exception">Thrown with <see cref="F:Ethar.GeoPose.H3.H3ErrorCode.ResDomain"/> for a resolution outside 0 to 15, or <see cref="F:Ethar.GeoPose.H3.H3ErrorCode.LatLngDomain"/> for a non finite coordinate.</exception>
+        </member>
+        <member name="M:Ethar.GeoPose.H3.H3Index.Boundary">
+            <summary>
+            Returns the boundary of the cell in radians, counter-clockwise. Use the <c>ToCellBoundary</c> extension method for GeoPose positions in degrees.
+            </summary>
+            <returns>The boundary, with 5 to 10 vertices.</returns>
+        </member>
+        <member name="M:Ethar.GeoPose.H3.H3Index.Parent(System.Int32)">
+            <summary>
+            Returns the ancestor of this cell at a coarser resolution, or the cell itself at its own resolution.
+            </summary>
+            <param name="resolution">The parent resolution, 0 to <see cref="P:Ethar.GeoPose.H3.H3Index.Resolution"/>.</param>
+            <returns>The parent cell.</returns>
+            <exception cref="T:Ethar.GeoPose.H3.H3Exception">Thrown with <see cref="F:Ethar.GeoPose.H3.H3ErrorCode.ResDomain"/> for a resolution outside 0 to 15, or <see cref="F:Ethar.GeoPose.H3.H3ErrorCode.ResMismatch"/> for a resolution finer than this cell.</exception>
+        </member>
+        <member name="M:Ethar.GeoPose.H3.H3Index.Ancestors">
+            <summary>
+            Returns every ancestor of this cell, indexed by resolution, from resolution 0 up to and including the cell itself.
+            </summary>
+            <remarks>
+            This is the "superposition" of the cell over all coarser levels. Each entry is a few bit operations, so callers who store the finest cell they need can derive any coarser level on demand rather than storing all of them.
+            </remarks>
+            <returns>An array of <see cref="P:Ethar.GeoPose.H3.H3Index.Resolution"/> + 1 cells where element r is the ancestor at resolution r.</returns>
+        </member>
+        <member name="M:Ethar.GeoPose.H3.H3Index.CenterChild(System.Int32)">
+            <summary>
+            Returns the child of this cell whose centre coincides with this cell's centre, at a finer resolution.
+            </summary>
+            <param name="resolution">The child resolution, <see cref="P:Ethar.GeoPose.H3.H3Index.Resolution"/> to 15.</param>
+            <returns>The center child, or this cell at its own resolution.</returns>
+            <exception cref="T:Ethar.GeoPose.H3.H3Exception">Thrown with <see cref="F:Ethar.GeoPose.H3.H3ErrorCode.ResDomain"/> for a resolution coarser than this cell or above 15.</exception>
+        </member>
+        <member name="M:Ethar.GeoPose.H3.H3Index.ChildrenSize(System.Int32)">
+            <summary>
+            Returns the number of children of this cell at a finer resolution: 7 to the power of the resolution difference for a hexagon, fewer for a pentagon.
+            </summary>
+            <param name="resolution">The child resolution, <see cref="P:Ethar.GeoPose.H3.H3Index.Resolution"/> to 15.</param>
+            <returns>The number of children.</returns>
+            <exception cref="T:Ethar.GeoPose.H3.H3Exception">Thrown with <see cref="F:Ethar.GeoPose.H3.H3ErrorCode.ResDomain"/> for a resolution coarser than this cell or above 15.</exception>
+        </member>
+        <member name="M:Ethar.GeoPose.H3.H3Index.Children(System.Int32)">
+            <summary>
+            Returns every child of this cell at a finer resolution.
+            </summary>
+            <param name="resolution">The child resolution, <see cref="P:Ethar.GeoPose.H3.H3Index.Resolution"/> to 15.</param>
+            <returns>The children. The count grows by a factor of seven per resolution step, so keep the step small.</returns>
+            <exception cref="T:Ethar.GeoPose.H3.H3Exception">Thrown with <see cref="F:Ethar.GeoPose.H3.H3ErrorCode.ResDomain"/> for a resolution coarser than this cell or above 15.</exception>
+        </member>
+        <member name="M:Ethar.GeoPose.H3.H3Index.Contains(Ethar.GeoPose.H3.H3Index)">
+            <summary>
+            Returns true if <paramref name="other"/> is this cell or one of its descendants at a finer resolution.
+            </summary>
+            <remarks>
+            This is the H3 idiom <c>cellToParent(other, resolution) == cell</c>. Containment follows the index hierarchy, which is what H3 defines; the hexagons themselves only approximately nest.
+            </remarks>
+            <param name="other">The cell to test.</param>
+            <returns>True if the other cell lies under this cell in the hierarchy.</returns>
+        </member>
+        <member name="M:Ethar.GeoPose.H3.H3Index.IsWithin(Ethar.GeoPose.H3.H3Index)">
+            <summary>
+            Returns true if this cell is <paramref name="ancestor"/> or one of its descendants.
+            </summary>
+            <param name="ancestor">The coarser cell.</param>
+            <returns>True if this cell lies under the ancestor in the hierarchy.</returns>
+        </member>
+        <member name="M:Ethar.GeoPose.H3.H3Index.Equals(Ethar.GeoPose.H3.H3Index)">
+            <inheritdoc/>
+        </member>
+        <member name="M:Ethar.GeoPose.H3.H3Index.Equals(System.Object)">
+            <inheritdoc/>
+        </member>
+        <member name="M:Ethar.GeoPose.H3.H3Index.GetHashCode">
+            <inheritdoc/>
+        </member>
+        <member name="M:Ethar.GeoPose.H3.H3Index.CompareTo(Ethar.GeoPose.H3.H3Index)">
+            <inheritdoc/>
+        </member>
+        <member name="M:Ethar.GeoPose.H3.H3Index.ToString">
+            <summary>
+            Returns the 15 character lowercase hexadecimal form of the index, culture invariant.
+            </summary>
+            <returns>The text, for example <c>8928308280fffff</c>.</returns>
+        </member>
+        <member name="M:Ethar.GeoPose.H3.H3Index.System#IComparable#CompareTo(System.Object)">
+            <inheritdoc/>
+        </member>
+        <member name="T:Ethar.GeoPose.H3.LatLng">
+            <summary>
+            Latitude and longitude in radians, exactly as the H3 C API. Ported from the C struct <c>LatLng</c>.
+            </summary>
+            <remarks>
+            Use the extension methods in <c>Ethar.GeoPose.Extensions</c> to move between this type and a GeoPose <c>TangentPointPosition</c> in degrees.
+            </remarks>
+        </member>
+        <member name="F:Ethar.GeoPose.H3.LatLng.EpsilonDeg">
+            <summary>
+            Epsilon of about 0.1 mm in degrees. C name <c>EPSILON_DEG</c>.
+            </summary>
+        </member>
+        <member name="F:Ethar.GeoPose.H3.LatLng.EpsilonRad">
+            <summary>
+            Epsilon of about 0.1 mm in radians. C name <c>EPSILON_RAD</c>.
+            </summary>
+        </member>
+        <member name="M:Ethar.GeoPose.H3.LatLng.#ctor(System.Double,System.Double)">
+            <summary>
+            Initializes a new instance of the <see cref="T:Ethar.GeoPose.H3.LatLng"/> struct.
+            </summary>
+            <param name="lat">The latitude in radians.</param>
+            <param name="lng">The longitude in radians.</param>
+        </member>
+        <member name="P:Ethar.GeoPose.H3.LatLng.Lat">
+            <summary>
+            Gets the latitude in radians.
+            </summary>
+        </member>
+        <member name="P:Ethar.GeoPose.H3.LatLng.Lng">
+            <summary>
+            Gets the longitude in radians.
+            </summary>
+        </member>
+        <member name="M:Ethar.GeoPose.H3.LatLng.op_Equality(Ethar.GeoPose.H3.LatLng,Ethar.GeoPose.H3.LatLng)">
+            <summary>
+            Returns true if both coordinates are exactly equal.
+            </summary>
+            <param name="left">The first coordinate.</param>
+            <param name="right">The second coordinate.</param>
+            <returns>True if equal.</returns>
+        </member>
+        <member name="M:Ethar.GeoPose.H3.LatLng.op_Inequality(Ethar.GeoPose.H3.LatLng,Ethar.GeoPose.H3.LatLng)">
+            <summary>
+            Returns true if the coordinates differ.
+            </summary>
+            <param name="left">The first coordinate.</param>
+            <param name="right">The second coordinate.</param>
+            <returns>True if not equal.</returns>
+        </member>
+        <member name="M:Ethar.GeoPose.H3.LatLng.FromDegrees(System.Double,System.Double)">
+            <summary>
+            Creates spherical coordinates from decimal degrees. C name <c>setGeoDegs</c>.
+            </summary>
+            <param name="latDegs">The latitude in decimal degrees.</param>
+            <param name="lngDegs">The longitude in decimal degrees.</param>
+            <returns>The coordinates in radians.</returns>
+        </member>
+        <member name="M:Ethar.GeoPose.H3.LatLng.Equals(Ethar.GeoPose.H3.LatLng)">
+            <inheritdoc/>
+        </member>
+        <member name="M:Ethar.GeoPose.H3.LatLng.Equals(System.Object)">
+            <inheritdoc/>
+        </member>
+        <member name="M:Ethar.GeoPose.H3.LatLng.GetHashCode">
+            <inheritdoc/>
+        </member>
+        <member name="M:Ethar.GeoPose.H3.LatLng.ToString">
+            <summary>
+            Returns the coordinates in radians, culture invariant.
+            </summary>
+            <returns>The text, for example <c>Lat:0.71, Lng:-1.29</c>.</returns>
+        </member>
+        <member name="M:Ethar.GeoPose.H3.LatLng.PosAngleRads(System.Double)">
+            <summary>
+            Normalizes radians to a value between 0.0 and two PI. C name <c>_posAngleRads</c>.
+            </summary>
+            <param name="rads">The input radians value.</param>
+            <returns>The normalized radians value.</returns>
+        </member>
+        <member name="M:Ethar.GeoPose.H3.LatLng.GeoAlmostEqualThreshold(Ethar.GeoPose.H3.LatLng,Ethar.GeoPose.H3.LatLng,System.Double)">
+            <summary>
+            Determines if the components of two spherical coordinates are within some threshold distance of each other. C name <c>geoAlmostEqualThreshold</c>.
+            </summary>
+            <param name="p1">The first spherical coordinates.</param>
+            <param name="p2">The second spherical coordinates.</param>
+            <param name="threshold">The threshold distance.</param>
+            <returns>Whether or not the two coordinates are within the threshold distance of each other.</returns>
+        </member>
+        <member name="M:Ethar.GeoPose.H3.LatLng.GeoAlmostEqual(Ethar.GeoPose.H3.LatLng,Ethar.GeoPose.H3.LatLng)">
+            <summary>
+            Determines if the components of two spherical coordinates are within the standard epsilon distance of each other. C name <c>geoAlmostEqual</c>.
+            </summary>
+            <param name="p1">The first spherical coordinates.</param>
+            <param name="p2">The second spherical coordinates.</param>
+            <returns>Whether or not the two coordinates are within the epsilon distance of each other.</returns>
+        </member>
+        <member name="M:Ethar.GeoPose.H3.LatLng.ConstrainLat(System.Double)">
+            <summary>
+            Makes sure latitudes are in the proper bounds. C name <c>constrainLat</c>.
+            </summary>
+            <param name="lat">The original latitude value.</param>
+            <returns>The corrected latitude value.</returns>
+        </member>
+        <member name="M:Ethar.GeoPose.H3.LatLng.ConstrainLng(System.Double)">
+            <summary>
+            Makes sure longitudes are in the proper bounds. C name <c>constrainLng</c>.
+            </summary>
+            <param name="lng">The original longitude value.</param>
+            <returns>The corrected longitude value.</returns>
+        </member>
+        <member name="T:Ethar.GeoPose.H3.MathExtensions">
+            <summary>
+            Math functions that should have been in math.h but are not. Ported from mathExtensions.c.
+            </summary>
+        </member>
+        <member name="M:Ethar.GeoPose.H3.MathExtensions.Ipow(System.Int64,System.Int64)">
+            <summary>
+            Integer exponentiation by squaring. C name <c>_ipow</c>.
+            </summary>
+            <param name="base">The integer base, positive or negative.</param>
+            <param name="exp">The integer exponent, which should be non-negative.</param>
+            <returns>The exponentiated value.</returns>
+        </member>
+        <member name="T:Ethar.GeoPose.H3.Overage">
+            <summary>
+            Digit representing an overage type, that is whether a face coordinate has crossed onto a neighbouring icosahedron face. Ported from the C enum <c>Overage</c>.
+            </summary>
+        </member>
+        <member name="F:Ethar.GeoPose.H3.Overage.NoOverage">
+            <summary>
+            No overage, on the original face. C name <c>NO_OVERAGE</c>.
+            </summary>
+        </member>
+        <member name="F:Ethar.GeoPose.H3.Overage.FaceEdge">
+            <summary>
+            On a face edge. Only occurs on substrate grids. C name <c>FACE_EDGE</c>.
+            </summary>
+        </member>
+        <member name="F:Ethar.GeoPose.H3.Overage.NewFace">
+            <summary>
+            Overage on a new face interior. C name <c>NEW_FACE</c>.
+            </summary>
+        </member>
+        <member name="T:Ethar.GeoPose.H3.Tables.BaseCellTables">
+            <summary>
+            Base cell lookup tables from baseCells.c.
+            </summary>
+        </member>
+        <member name="F:Ethar.GeoPose.H3.Tables.BaseCellTables.baseCellNeighbors">
+            <summary>
+            Neighboring base cell ID in each IJK direction. 127 indicates there is no neighbor in that direction. C name baseCellNeighbors[NUM_BASE_CELLS][7].
+            </summary>
+        </member>
+        <member name="F:Ethar.GeoPose.H3.Tables.BaseCellTables.baseCellNeighbor60CCWRots">
+            <summary>
+            Neighboring base cell rotations in each IJK direction. -1 indicates there is no neighbor in that direction. C name baseCellNeighbor60CCWRots[NUM_BASE_CELLS][7].
+            </summary>
+        </member>
+        <member name="F:Ethar.GeoPose.H3.Tables.BaseCellTables.faceIjkBaseCells">
+            <summary>
+            Resolution 0 base cell lookup table for each face, indexed by face, i, j, k. Valid coordinates are 0 to 2. C name faceIjkBaseCells[NUM_ICOSA_FACES][3][3][3].
+            </summary>
+        </member>
+        <member name="F:Ethar.GeoPose.H3.Tables.BaseCellTables.baseCellData">
+            <summary>
+            Resolution 0 base cell data: the home face and ijk+ coordinates on that face, whether the base cell is a pentagon and, for pentagons, the two clockwise offset faces (-1 when none). C name baseCellData[NUM_BASE_CELLS].
+            </summary>
+        </member>
+        <member name="T:Ethar.GeoPose.H3.Tables.Constants">
+            <summary>
+            Constants shared by the H3 engine. Names and values are exactly as in constants.h.
+            </summary>
+        </member>
+        <member name="F:Ethar.GeoPose.H3.Tables.Constants.M_PI">
+            <summary>
+            pi
+            </summary>
+        </member>
+        <member name="F:Ethar.GeoPose.H3.Tables.Constants.M_PI_2">
+            <summary>
+            pi / 2.0
+            </summary>
+        </member>
+        <member name="F:Ethar.GeoPose.H3.Tables.Constants.M_2PI">
+            <summary>
+            2.0 * PI
+            </summary>
+        </member>
+        <member name="F:Ethar.GeoPose.H3.Tables.Constants.M_PI_180">
+            <summary>
+            pi / 180
+            </summary>
+        </member>
+        <member name="F:Ethar.GeoPose.H3.Tables.Constants.M_180_PI">
+            <summary>
+            180 / pi
+            </summary>
+        </member>
+        <member name="F:Ethar.GeoPose.H3.Tables.Constants.EPSILON">
+            <summary>
+            threshold epsilon
+            </summary>
+        </member>
+        <member name="F:Ethar.GeoPose.H3.Tables.Constants.M_SQRT3_2">
+            <summary>
+            sqrt(3) / 2.0
+            </summary>
+        </member>
+        <member name="F:Ethar.GeoPose.H3.Tables.Constants.M_SIN60">
+            <summary>
+            sin(60')
+            </summary>
+        </member>
+        <member name="F:Ethar.GeoPose.H3.Tables.Constants.M_RSIN60">
+            <summary>
+            1/sin(60')
+            </summary>
+        </member>
+        <member name="F:Ethar.GeoPose.H3.Tables.Constants.M_ONETHIRD">
+            <summary>
+            one third
+            </summary>
+        </member>
+        <member name="F:Ethar.GeoPose.H3.Tables.Constants.M_ONESEVENTH">
+            <summary>
+            one seventh (1/7)
+            </summary>
+        </member>
+        <member name="F:Ethar.GeoPose.H3.Tables.Constants.M_AP7_ROT_RADS">
+            <summary>
+            rotation angle between Class II and Class III resolution axes (asin(sqrt(3.0 / 28.0)))
+            </summary>
+        </member>
+        <member name="F:Ethar.GeoPose.H3.Tables.Constants.M_SIN_AP7_ROT">
+            <summary>
+            sin(M_AP7_ROT_RADS)
+            </summary>
+        </member>
+        <member name="F:Ethar.GeoPose.H3.Tables.Constants.M_COS_AP7_ROT">
+            <summary>
+            cos(M_AP7_ROT_RADS)
+            </summary>
+        </member>
+        <member name="F:Ethar.GeoPose.H3.Tables.Constants.EARTH_RADIUS_KM">
+            <summary>
+            earth radius in kilometers using WGS84 authalic radius
+            </summary>
+        </member>
+        <member name="F:Ethar.GeoPose.H3.Tables.Constants.RES0_U_GNOMONIC">
+            <summary>
+            scaling factor from hex2d resolution 0 unit length (or distance between adjacent cell center points on the plane) to gnomonic unit length.
+            </summary>
+        </member>
+        <member name="F:Ethar.GeoPose.H3.Tables.Constants.INV_RES0_U_GNOMONIC">
+            <summary>
+            INV_RES0_U_GNOMONIC
+            </summary>
+        </member>
+        <member name="F:Ethar.GeoPose.H3.Tables.Constants.MAX_H3_RES">
+            <summary>
+            max H3 resolution; H3 version 1 has 16 resolutions, numbered 0 through 15
+            </summary>
+        </member>
+        <member name="F:Ethar.GeoPose.H3.Tables.Constants.NUM_ICOSA_FACES">
+            <summary>
+            The number of faces on an icosahedron
+            </summary>
+        </member>
+        <member name="F:Ethar.GeoPose.H3.Tables.Constants.NUM_BASE_CELLS">
+            <summary>
+            The number of H3 base cells
+            </summary>
+        </member>
+        <member name="F:Ethar.GeoPose.H3.Tables.Constants.NUM_HEX_VERTS">
+            <summary>
+            The number of vertices in a hexagon
+            </summary>
+        </member>
+        <member name="F:Ethar.GeoPose.H3.Tables.Constants.NUM_PENT_VERTS">
+            <summary>
+            The number of vertices in a pentagon
+            </summary>
+        </member>
+        <member name="F:Ethar.GeoPose.H3.Tables.Constants.NUM_PENTAGONS">
+            <summary>
+            The number of pentagons per resolution
+            </summary>
+        </member>
+        <member name="F:Ethar.GeoPose.H3.Tables.Constants.H3_CELL_MODE">
+            <summary>
+            H3 index modes
+            </summary>
+        </member>
+        <member name="F:Ethar.GeoPose.H3.Tables.Constants.H3_DIRECTEDEDGE_MODE">
+            <summary>
+            H3_DIRECTEDEDGE_MODE
+            </summary>
+        </member>
+        <member name="F:Ethar.GeoPose.H3.Tables.Constants.H3_EDGE_MODE">
+            <summary>
+            H3_EDGE_MODE
+            </summary>
+        </member>
+        <member name="F:Ethar.GeoPose.H3.Tables.Constants.H3_VERTEX_MODE">
+            <summary>
+            H3_VERTEX_MODE
+            </summary>
+        </member>
+        <member name="T:Ethar.GeoPose.H3.Tables.CoordIjkTables">
+            <summary>
+            Lookup tables from coordijk.h: the unit vectors of the seven digits and the digit rotation tables.
+            </summary>
+        </member>
+        <member name="F:Ethar.GeoPose.H3.Tables.CoordIjkTables.UNIT_VECS">
+            <summary>
+            CoordIJK unit vectors corresponding to the 7 H3 digits. C name UNIT_VECS.
+            </summary>
+        </member>
+        <member name="F:Ethar.GeoPose.H3.Tables.CoordIjkTables.ROTATE60CCW">
+            <summary>
+            Digit after a 60 degree counter-clockwise rotation, indexed by digit. Generated from the switch statement in C function _rotate60ccw.
+            </summary>
+        </member>
+        <member name="F:Ethar.GeoPose.H3.Tables.CoordIjkTables.ROTATE60CW">
+            <summary>
+            Digit after a 60 degree clockwise rotation, indexed by digit. Generated from the switch statement in C function _rotate60cw.
+            </summary>
+        </member>
+        <member name="T:Ethar.GeoPose.H3.Tables.FaceIjkTables">
+            <summary>
+            Icosahedron face lookup tables and constants from faceijk.c.
+            </summary>
+        </member>
+        <member name="F:Ethar.GeoPose.H3.Tables.FaceIjkTables.M_SQRT7">
+            <summary>
+            square root of 7 and inverse square root of 7
+            </summary>
+        </member>
+        <member name="F:Ethar.GeoPose.H3.Tables.FaceIjkTables.M_RSQRT7">
+            <summary>
+            M_RSQRT7
+            </summary>
+        </member>
+        <member name="F:Ethar.GeoPose.H3.Tables.FaceIjkTables.faceCenterPoint">
+            <summary>
+            Icosahedron face centers in x/y/z on the unit sphere. C name faceCenterPoint[NUM_ICOSA_FACES].
+            </summary>
+        </member>
+        <member name="F:Ethar.GeoPose.H3.Tables.FaceIjkTables.faceAxesAzRadsCII">
+            <summary>
+            Icosahedron face ijk axes as azimuth in radians from face center to vertex 0/1/2 respectively. C name faceAxesAzRadsCII[NUM_ICOSA_FACES][3].
+            </summary>
+        </member>
+        <member name="F:Ethar.GeoPose.H3.Tables.FaceIjkTables.faceNeighbors">
+            <summary>
+            Definition of which faces neighbor each other, indexed by face and quadrant (0 central, 1 IJ, 2 KI, 3 JK). C name faceNeighbors[NUM_ICOSA_FACES][4].
+            </summary>
+        </member>
+        <member name="F:Ethar.GeoPose.H3.Tables.FaceIjkTables.adjacentFaceDir">
+            <summary>
+            Direction from the origin face to the destination face, relative to the origin face's coordinate system, or -1 if not adjacent. Values 1, 2 and 3 are the IJ, KI and JK quadrants. C name adjacentFaceDir[NUM_ICOSA_FACES][NUM_ICOSA_FACES].
+            </summary>
+        </member>
+        <member name="F:Ethar.GeoPose.H3.Tables.FaceIjkTables.maxDimByCIIres">
+            <summary>
+            Overage distance table, indexed by resolution. -1 marks class III resolutions. C name maxDimByCIIres[].
+            </summary>
+        </member>
+        <member name="F:Ethar.GeoPose.H3.Tables.FaceIjkTables.unitScaleByCIIres">
+            <summary>
+            Unit scale distance table, indexed by resolution. -1 marks class III resolutions. C name unitScaleByCIIres[].
+            </summary>
+        </member>
+        <member name="T:Ethar.GeoPose.H3.Vec2d">
+            <summary>
+            2D floating point vector. Ported from the C struct <c>Vec2d</c> and the functions of vec2d.c.
+            </summary>
+        </member>
+        <member name="F:Ethar.GeoPose.H3.Vec2d.FltEpsilon">
+            <summary>
+            The C <c>FLT_EPSILON</c>, 2 to the power -23. Not the same as <see cref="F:System.Single.Epsilon"/>, which is the smallest positive float.
+            </summary>
+        </member>
+        <member name="M:Ethar.GeoPose.H3.Vec2d.#ctor(System.Double,System.Double)">
+            <summary>
+            Initializes a new instance of the <see cref="T:Ethar.GeoPose.H3.Vec2d"/> struct.
+            </summary>
+            <param name="x">The x component.</param>
+            <param name="y">The y component.</param>
+        </member>
+        <member name="P:Ethar.GeoPose.H3.Vec2d.X">
+            <summary>
+            Gets or sets the x component.
+            </summary>
+        </member>
+        <member name="P:Ethar.GeoPose.H3.Vec2d.Y">
+            <summary>
+            Gets or sets the y component.
+            </summary>
+        </member>
+        <member name="M:Ethar.GeoPose.H3.Vec2d.V2dMag(Ethar.GeoPose.H3.Vec2d)">
+            <summary>
+            Calculates the magnitude of a 2D cartesian vector. C name <c>_v2dMag</c>.
+            </summary>
+            <param name="v">The 2D cartesian vector.</param>
+            <returns>The magnitude of the vector.</returns>
+        </member>
+        <member name="M:Ethar.GeoPose.H3.Vec2d.V2dIntersect(Ethar.GeoPose.H3.Vec2d,Ethar.GeoPose.H3.Vec2d,Ethar.GeoPose.H3.Vec2d,Ethar.GeoPose.H3.Vec2d)">
+            <summary>
+            Finds the intersection between two lines. Assumes that the lines intersect and that the intersection is not at an endpoint of either line. C name <c>_v2dIntersect</c>.
+            </summary>
+            <param name="p0">The first endpoint of the first line.</param>
+            <param name="p1">The second endpoint of the first line.</param>
+            <param name="p2">The first endpoint of the second line.</param>
+            <param name="p3">The second endpoint of the second line.</param>
+            <returns>The intersection point.</returns>
+        </member>
+        <member name="M:Ethar.GeoPose.H3.Vec2d.V2dAlmostEquals(Ethar.GeoPose.H3.Vec2d,Ethar.GeoPose.H3.Vec2d)">
+            <summary>
+            Whether two 2D vectors are almost equal, within the C float epsilon. C name <c>_v2dAlmostEquals</c>.
+            </summary>
+            <param name="v1">First vector to compare.</param>
+            <param name="v2">Second vector to compare.</param>
+            <returns>Whether the vectors are almost equal.</returns>
+        </member>
+        <member name="M:Ethar.GeoPose.H3.Vec2d.ToString">
+            <inheritdoc/>
+        </member>
+        <member name="T:Ethar.GeoPose.H3.Vec3d">
+            <summary>
+            3D floating point vector. For geodesic calculations it represents a point on the surface of the Earth as a unit vector in 3D Cartesian space. Ported from the C struct <c>Vec3d</c> and the inline functions of vec3d.h.
+            </summary>
+            <remarks>
+            The struct is mutable so that the ported maths can update it in place, as the C code does through a pointer.
+            </remarks>
+        </member>
+        <member name="M:Ethar.GeoPose.H3.Vec3d.#ctor(System.Double,System.Double,System.Double)">
+            <summary>
+            Initializes a new instance of the <see cref="T:Ethar.GeoPose.H3.Vec3d"/> struct.
+            </summary>
+            <param name="x">The x component, towards 0 degrees latitude, 0 degrees longitude.</param>
+            <param name="y">The y component, towards 0 degrees latitude, 90 degrees longitude.</param>
+            <param name="z">The z component, towards the north pole.</param>
+        </member>
+        <member name="P:Ethar.GeoPose.H3.Vec3d.X">
+            <summary>
+            Gets or sets the x component, towards 0 degrees latitude, 0 degrees longitude.
+            </summary>
+        </member>
+        <member name="P:Ethar.GeoPose.H3.Vec3d.Y">
+            <summary>
+            Gets or sets the y component, towards 0 degrees latitude, 90 degrees longitude.
+            </summary>
+        </member>
+        <member name="P:Ethar.GeoPose.H3.Vec3d.Z">
+            <summary>
+            Gets or sets the z component, towards the north pole.
+            </summary>
+        </member>
+        <member name="M:Ethar.GeoPose.H3.Vec3d.LatLngToVec3(Ethar.GeoPose.H3.LatLng)">
+            <summary>
+            Convert latitude and longitude to a unit vector on the sphere. C name <c>latLngToVec3</c>.
+            </summary>
+            <param name="geo">The spherical coordinates in radians.</param>
+            <returns>The unit vector.</returns>
+        </member>
+        <member name="M:Ethar.GeoPose.H3.Vec3d.Vec3ToLatLng(Ethar.GeoPose.H3.Vec3d)">
+            <summary>
+            Convert a unit vector on the sphere to latitude and longitude. C name <c>vec3ToLatLng</c>.
+            </summary>
+            <param name="v">The unit vector.</param>
+            <returns>The spherical coordinates in radians.</returns>
+        </member>
+        <member name="M:Ethar.GeoPose.H3.Vec3d.Vec3LinComb(System.Double,Ethar.GeoPose.H3.Vec3d,System.Double,Ethar.GeoPose.H3.Vec3d)">
+            <summary>
+            Linear combination a * v1 + b * v2. C name <c>vec3LinComb</c>.
+            </summary>
+            <param name="a">The first scalar.</param>
+            <param name="v1">The first vector.</param>
+            <param name="b">The second scalar.</param>
+            <param name="v2">The second vector.</param>
+            <returns>The combination.</returns>
+        </member>
+        <member name="M:Ethar.GeoPose.H3.Vec3d.Vec3Cross(Ethar.GeoPose.H3.Vec3d,Ethar.GeoPose.H3.Vec3d)">
+            <summary>
+            Cross product. C name <c>vec3Cross</c>.
+            </summary>
+            <param name="v1">The first vector.</param>
+            <param name="v2">The second vector.</param>
+            <returns>The cross product v1 x v2.</returns>
+        </member>
+        <member name="M:Ethar.GeoPose.H3.Vec3d.Vec3Dot(Ethar.GeoPose.H3.Vec3d,Ethar.GeoPose.H3.Vec3d)">
+            <summary>
+            Dot product. C name <c>vec3Dot</c>.
+            </summary>
+            <param name="v1">The first vector.</param>
+            <param name="v2">The second vector.</param>
+            <returns>The dot product.</returns>
+        </member>
+        <member name="M:Ethar.GeoPose.H3.Vec3d.Vec3NormSq(Ethar.GeoPose.H3.Vec3d)">
+            <summary>
+            Squared norm. C name <c>vec3NormSq</c>.
+            </summary>
+            <param name="v">The vector.</param>
+            <returns>The squared length.</returns>
+        </member>
+        <member name="M:Ethar.GeoPose.H3.Vec3d.Vec3Norm(Ethar.GeoPose.H3.Vec3d)">
+            <summary>
+            Norm. C name <c>vec3Norm</c>.
+            </summary>
+            <param name="v">The vector.</param>
+            <returns>The length.</returns>
+        </member>
+        <member name="M:Ethar.GeoPose.H3.Vec3d.Vec3Normalize(Ethar.GeoPose.H3.Vec3d@)">
+            <summary>
+            Normalizes the vector in place. A zero vector, or one whose squared norm underflows to zero, becomes exactly zero. C name <c>vec3Normalize</c>.
+            </summary>
+            <param name="v">The vector to normalize.</param>
+        </member>
+        <member name="M:Ethar.GeoPose.H3.Vec3d.Vec3DistSq(Ethar.GeoPose.H3.Vec3d,Ethar.GeoPose.H3.Vec3d)">
+            <summary>
+            Squared euclidean distance between two vectors. C name <c>vec3DistSq</c>.
+            </summary>
+            <param name="v1">The first vector.</param>
+            <param name="v2">The second vector.</param>
+            <returns>The squared distance.</returns>
+        </member>
+        <member name="M:Ethar.GeoPose.H3.Vec3d.ToString">
+            <inheritdoc/>
+        </member>
+        <member name="T:Ethar.GeoPose.Extensions.BasicSduH3Extensions">
+            <summary>
+            H3 cell indexing for the Basic GeoPose structural data units, which carry a single position.
+            </summary>
+        </member>
+        <member name="M:Ethar.GeoPose.Extensions.BasicSduH3Extensions.ToH3Cell(Ethar.GeoPose.StructuralDataUnits.BasicYawPitchRollSdu,System.Int32)">
+            <summary>
+            Returns the H3 cell containing the GeoPose position at the given resolution.
+            </summary>
+            <param name="sdu">The GeoPose.</param>
+            <param name="resolution">The H3 resolution, 0 to 15.</param>
+            <returns>The containing cell.</returns>
+        </member>
+        <member name="M:Ethar.GeoPose.Extensions.BasicSduH3Extensions.ToH3Cell(Ethar.GeoPose.StructuralDataUnits.BasicQuaternionSdu,System.Int32)">
+            <summary>
+            Returns the H3 cell containing the GeoPose position at the given resolution.
+            </summary>
+            <param name="sdu">The GeoPose.</param>
+            <param name="resolution">The H3 resolution, 0 to 15.</param>
+            <returns>The containing cell.</returns>
+        </member>
+        <member name="M:Ethar.GeoPose.Extensions.BasicSduH3Extensions.IsInH3Cell(Ethar.GeoPose.StructuralDataUnits.BasicYawPitchRollSdu,Ethar.GeoPose.H3.H3Index)">
+            <summary>
+            Returns true if the GeoPose position lies in the given H3 cell.
+            </summary>
+            <param name="sdu">The GeoPose.</param>
+            <param name="cell">The cell at any resolution.</param>
+            <returns>True if the position is in the cell.</returns>
+        </member>
+        <member name="M:Ethar.GeoPose.Extensions.BasicSduH3Extensions.IsInH3Cell(Ethar.GeoPose.StructuralDataUnits.BasicQuaternionSdu,Ethar.GeoPose.H3.H3Index)">
+            <summary>
+            Returns true if the GeoPose position lies in the given H3 cell.
+            </summary>
+            <param name="sdu">The GeoPose.</param>
+            <param name="cell">The cell at any resolution.</param>
+            <returns>True if the position is in the cell.</returns>
+        </member>
+        <member name="T:Ethar.GeoPose.Extensions.H3IndexGeoPoseExtensions">
+            <summary>
+            GeoPose positions and poses built from an H3 cell. The height is always supplied by the caller because a cell is two dimensional and the datum choice must be explicit.
+            </summary>
+        </member>
+        <member name="M:Ethar.GeoPose.Extensions.H3IndexGeoPoseExtensions.ToTangentPointPosition(Ethar.GeoPose.H3.H3Index,System.Double)">
+            <summary>
+            Returns the centre of the cell as a GeoPose position in degrees.
+            </summary>
+            <param name="cell">The cell.</param>
+            <param name="heightInMeters">The height above the WGS84 ellipsoid to give the position.</param>
+            <returns>The cell centre.</returns>
+        </member>
+        <member name="M:Ethar.GeoPose.Extensions.H3IndexGeoPoseExtensions.ToCellBoundary(Ethar.GeoPose.H3.H3Index,System.Double)">
+            <summary>
+            Returns the outline of the cell as GeoPose positions in degrees.
+            </summary>
+            <param name="cell">The cell.</param>
+            <param name="heightInMeters">The height above the WGS84 ellipsoid to give every vertex.</param>
+            <returns>The boundary, 5 to 10 vertices counter-clockwise.</returns>
+        </member>
+        <member name="M:Ethar.GeoPose.Extensions.H3IndexGeoPoseExtensions.ToBasicYawPitchRollSdu(Ethar.GeoPose.H3.H3Index,System.Double,Ethar.GeoPose.DataTypes.YawPitchRollAngles)">
+            <summary>
+            Builds a Basic-YPR GeoPose whose position is the cell centre.
+            </summary>
+            <param name="cell">The cell.</param>
+            <param name="heightInMeters">The height above the WGS84 ellipsoid of the position.</param>
+            <param name="angles">The orientation.</param>
+            <returns>The GeoPose.</returns>
+        </member>
+        <member name="M:Ethar.GeoPose.Extensions.H3IndexGeoPoseExtensions.ToBasicQuaternionSdu(Ethar.GeoPose.H3.H3Index,System.Double,Ethar.GeoPose.DataTypes.UnitQuaternion)">
+            <summary>
+            Builds a Basic-Quaternion GeoPose whose position is the cell centre.
+            </summary>
+            <param name="cell">The cell.</param>
+            <param name="heightInMeters">The height above the WGS84 ellipsoid of the position.</param>
+            <param name="quaternion">The orientation.</param>
+            <returns>The GeoPose.</returns>
+        </member>
+        <member name="M:Ethar.GeoPose.Extensions.H3IndexGeoPoseExtensions.DistanceTo(Ethar.GeoPose.H3.H3Index,Ethar.GeoPose.H3.H3Index)">
+            <summary>
+            Returns the distance in metres between the centres of two cells, using the GeoPose geodesy rather than the H3 sphere.
+            </summary>
+            <param name="cell">The first cell.</param>
+            <param name="other">The second cell.</param>
+            <returns>The great circle distance in metres.</returns>
+        </member>
+        <member name="M:Ethar.GeoPose.Extensions.H3IndexGeoPoseExtensions.ToTangentPointPosition(Ethar.GeoPose.H3.LatLng,System.Double)">
+            <summary>
+            Converts engine coordinates in radians to a GeoPose position in degrees.
+            </summary>
+            <param name="point">The coordinates in radians.</param>
+            <param name="heightInMeters">The height above the WGS84 ellipsoid to give the position.</param>
+            <returns>The position.</returns>
+        </member>
+        <member name="T:Ethar.GeoPose.Extensions.TangentPointPositionH3Extensions">
+            <summary>
+            H3 cell indexing for a GeoPose <see cref="T:Ethar.GeoPose.DataTypes.TangentPointPosition"/>. Latitude and longitude are converted from degrees to the radians the engine uses; the height is ignored because H3 is two dimensional.
+            </summary>
+        </member>
+        <member name="M:Ethar.GeoPose.Extensions.TangentPointPositionH3Extensions.ToH3Cell(Ethar.GeoPose.DataTypes.TangentPointPosition,System.Int32)">
+            <summary>
+            Returns the H3 cell containing the position at the given resolution.
+            </summary>
+            <param name="position">The position in degrees. The height is ignored.</param>
+            <param name="resolution">The H3 resolution, 0 (coarsest, about 1,280 km edges) to 15 (finest, about 0.5 m edges).</param>
+            <returns>The containing cell.</returns>
+            <exception cref="T:Ethar.GeoPose.H3.H3Exception">Thrown with <see cref="F:Ethar.GeoPose.H3.H3ErrorCode.LatLngDomain"/> if the latitude or longitude is outside the GeoPose range, or <see cref="F:Ethar.GeoPose.H3.H3ErrorCode.ResDomain"/> for a resolution outside 0 to 15.</exception>
+        </member>
+        <member name="M:Ethar.GeoPose.Extensions.TangentPointPositionH3Extensions.ToH3Cells(Ethar.GeoPose.DataTypes.TangentPointPosition)">
+            <summary>
+            Returns the H3 cell containing the position at every resolution, indexed by resolution 0 to 15, each one projected directly.
+            </summary>
+            <remarks>
+            This performs 16 projections and gives the exact H3 cell at every level. The cheaper alternative, <c>position.ToH3Cell(15).Ancestors()</c>, derives the coarser cells from the finest one by the index hierarchy.
+            The two differ for points near cell edges because H3 cells only approximately nest; see the package readme for the measured rate.
+            </remarks>
+            <param name="position">The position in degrees. The height is ignored.</param>
+            <returns>An array of 16 cells where element r is the cell at resolution r.</returns>
+        </member>
+        <member name="M:Ethar.GeoPose.Extensions.TangentPointPositionH3Extensions.IsInH3Cell(Ethar.GeoPose.DataTypes.TangentPointPosition,Ethar.GeoPose.H3.H3Index)">
+            <summary>
+            Returns true if the position lies in the given H3 cell, that is if indexing the position at the cell's resolution produces the cell.
+            </summary>
+            <param name="position">The position in degrees. The height is ignored.</param>
+            <param name="cell">The cell at any resolution.</param>
+            <returns>True if the position is in the cell.</returns>
+        </member>
+        <member name="M:Ethar.GeoPose.Extensions.TangentPointPositionH3Extensions.ToH3LatLng(Ethar.GeoPose.DataTypes.TangentPointPosition)">
+            <summary>
+            Converts the position to the radians form the H3 engine uses. The height is dropped.
+            </summary>
+            <param name="position">The position in degrees.</param>
+            <returns>The latitude and longitude in radians.</returns>
+        </member>
+    </members>
+</doc>

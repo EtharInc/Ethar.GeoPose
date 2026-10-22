@@ -35,13 +35,13 @@ namespace Ethar.GeoPose.UnitTests
 
             var translateRotate = sdu.StreamElement.Frame as TranslateRotateSpecification;
 
-            Assert.That(translateRotate.Translation.X, Is.EqualTo(0.1f));
-            Assert.That(translateRotate.Translation.Y, Is.EqualTo(0.2f));
-            Assert.That(translateRotate.Translation.Z, Is.EqualTo(0.3f));
-            Assert.That(translateRotate.Rotation.X, Is.EqualTo(0.692f));
-            Assert.That(translateRotate.Rotation.Y, Is.EqualTo(0.691f));
-            Assert.That(translateRotate.Rotation.Z, Is.EqualTo(0.141f));
-            Assert.That(translateRotate.Rotation.W, Is.EqualTo(0.14f));
+            Assert.That(translateRotate.Translation.X, Is.EqualTo(0.1));
+            Assert.That(translateRotate.Translation.Y, Is.EqualTo(0.2));
+            Assert.That(translateRotate.Translation.Z, Is.EqualTo(0.3));
+            Assert.That(translateRotate.Rotation.X, Is.EqualTo(0.692));
+            Assert.That(translateRotate.Rotation.Y, Is.EqualTo(0.691));
+            Assert.That(translateRotate.Rotation.Z, Is.EqualTo(0.141));
+            Assert.That(translateRotate.Rotation.W, Is.EqualTo(0.14));
         }
 
         [TestCase(16534234327, "/Ethar.GeoPose/1.0", "Translate-Rotate",
@@ -50,8 +50,8 @@ namespace Ethar.GeoPose.UnitTests
         {
             var frameAndTime = new FrameAndTimeElement()
             {
-                Frame = new TranslateRotateSpecification(new DataTypes.UnitVector3(0.1f, 0.2f, 0.3f),
-                    new UnitQuaternion() { X = 0.692f, Y = 0.691f, Z = 0.141f, W = 0.14f }),
+                Frame = new TranslateRotateSpecification(new DataTypes.UnitVector3(0.1, 0.2, 0.3),
+                    new UnitQuaternion() { X = 0.692, Y = 0.691, Z = 0.141, W = 0.14 }),
                 ValidTime = validTime
             };
 
@@ -81,8 +81,8 @@ namespace Ethar.GeoPose.UnitTests
         {
             var frameAndTime = new FrameAndTimeElement()
             {
-                Frame = new TranslateRotateSpecification(new DataTypes.UnitVector3(0.1f, 0.2f, 0.3f),
-                    new UnitQuaternion() { X = 0.692f, Y = 0.691f, Z = 0.141f, W = 0.14f }),
+                Frame = new TranslateRotateSpecification(new DataTypes.UnitVector3(0.1, 0.2, 0.3),
+                    new UnitQuaternion() { X = 0.692, Y = 0.691, Z = 0.141, W = 0.14 }),
                 ValidTime = validTime
             };
 
@@ -101,8 +101,8 @@ namespace Ethar.GeoPose.UnitTests
         {
             var frameAndTime = new FrameAndTimeElement()
             {
-                Frame = new TranslateRotateSpecification(new DataTypes.UnitVector3(0.1f, 0.2f, 0.3f),
-                    new UnitQuaternion() { X = 0.692f, Y = 0.691f, Z = 0.141f, W = 0.14f }),
+                Frame = new TranslateRotateSpecification(new DataTypes.UnitVector3(0.1, 0.2, 0.3),
+                    new UnitQuaternion() { X = 0.692, Y = 0.691, Z = 0.141, W = 0.14 }),
                 ValidTime = validTime
             };
 

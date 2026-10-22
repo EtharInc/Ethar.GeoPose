@@ -63,14 +63,14 @@ namespace Ethar.GeoPose.UnitTests
                         new LtpEnuSpecification(new TangentPointPosition()
                                 { Latitude = 48, Longitude = -122, HeightInMeters = 5 }),
                         new TranslateRotateSpecification(
-                            new DataTypes.UnitVector3(0.1f, 0.2f, 0.3f),
-                            new DataTypes.UnitQuaternion() { X = 0.692f, Y = 0.691f, Z = 0.141f, W = 0.14f }),
+                            new DataTypes.UnitVector3(0.1, 0.2, 0.3),
+                            new DataTypes.UnitQuaternion() { X = 0.692, Y = 0.691, Z = 0.141, W = 0.14 }),
                         new TranslateRotateSpecification(
-                            new DataTypes.UnitVector3(0.4f, 0.5f, 0.6f),
-                            new DataTypes.UnitQuaternion() { X = 0.692f, Y = 0.691f, Z = 0.141f, W = 0.14f }),
+                            new DataTypes.UnitVector3(0.4, 0.5, 0.6),
+                            new DataTypes.UnitQuaternion() { X = 0.692, Y = 0.691, Z = 0.141, W = 0.14 }),
                         new TranslateRotateSpecification(
-                            new DataTypes.UnitVector3(0.7f, 0.8f, 0.9f),
-                            new DataTypes.UnitQuaternion() { X = 0.692f, Y = 0.691f, Z = 0.141f, W = 0.14f })
+                            new DataTypes.UnitVector3(0.7, 0.8, 0.9),
+                            new DataTypes.UnitQuaternion() { X = 0.692, Y = 0.691, Z = 0.141, W = 0.14 })
                     },
                     new List<FrameTransformIndexPair>()
                     {
@@ -83,14 +83,14 @@ namespace Ethar.GeoPose.UnitTests
                         new LtpEnuSpecification(new TangentPointPosition()
                                 { Latitude = 48, Longitude = -122, HeightInMeters = 5 }),
                         new TranslateRotateSpecification(
-                            new DataTypes.UnitVector3(0.1f, 0.2f, 0.3f),
-                            new DataTypes.UnitQuaternion() { X = 0.692f, Y = 0.691f, Z = 0.141f, W = 0.14f }),
+                            new DataTypes.UnitVector3(0.1, 0.2, 0.3),
+                            new DataTypes.UnitQuaternion() { X = 0.692, Y = 0.691, Z = 0.141, W = 0.14 }),
                         new TranslateRotateSpecification(
-                            new DataTypes.UnitVector3(0.4f, 0.5f, 0.6f),
-                            new DataTypes.UnitQuaternion() { X = 0.692f, Y = 0.691f, Z = 0.141f, W = 0.14f }),
+                            new DataTypes.UnitVector3(0.4, 0.5, 0.6),
+                            new DataTypes.UnitQuaternion() { X = 0.692, Y = 0.691, Z = 0.141, W = 0.14 }),
                         new TranslateRotateSpecification(
-                            new DataTypes.UnitVector3(0.7f, 0.8f, 0.9f),
-                            new DataTypes.UnitQuaternion() { X = 0.692f, Y = 0.691f, Z = 0.141f, W = 0.14f })
+                            new DataTypes.UnitVector3(0.7, 0.8, 0.9),
+                            new DataTypes.UnitQuaternion() { X = 0.692, Y = 0.691, Z = 0.141, W = 0.14 })
                     },
                     new List<FrameTransformIndexPair>()
                     {
@@ -103,14 +103,14 @@ namespace Ethar.GeoPose.UnitTests
                         new LtpEnuSpecification(new DataTypes.TangentPointPosition()
                                 { Latitude = 48, Longitude = -122, HeightInMeters = 5 }),
                         new TranslateRotateSpecification(
-                            new DataTypes.UnitVector3(0.1f, 0.2f, 0.3f),
-                            new UnitQuaternion() { X = 0.692f, Y = 0.691f, Z = 0.141f, W = 0.14f }),
+                            new DataTypes.UnitVector3(0.1, 0.2, 0.3),
+                            new UnitQuaternion() { X = 0.692, Y = 0.691, Z = 0.141, W = 0.14 }),
                         new TranslateRotateSpecification(
-                            new DataTypes.UnitVector3(0.4f, 0.5f, 0.6f),
-                            new UnitQuaternion() { X = 0.692f, Y = 0.691f, Z = 0.141f, W = 0.14f }),
+                            new DataTypes.UnitVector3(0.4, 0.5, 0.6),
+                            new UnitQuaternion() { X = 0.692, Y = 0.691, Z = 0.141, W = 0.14 }),
                         new TranslateRotateSpecification(
-                            new DataTypes.UnitVector3(0.7f, 0.8f, 0.9f),
-                            new UnitQuaternion() { X = 0.692f, Y = 0.691f, Z = 0.141f, W = 0.14f })
+                            new DataTypes.UnitVector3(0.7, 0.8, 0.9),
+                            new UnitQuaternion() { X = 0.692, Y = 0.691, Z = 0.141, W = 0.14 })
                     },
                     new List<FrameTransformIndexPair>()
                     {
@@ -123,14 +123,14 @@ namespace Ethar.GeoPose.UnitTests
                         new LtpEnuSpecification(new TangentPointPosition()
                                 { Latitude = 48, Longitude = -122, HeightInMeters = 5 }),
                         new TranslateRotateSpecification(
-                            new DataTypes.UnitVector3(0.1f, 0.2f, 0.3f),
-                            new UnitQuaternion() { X = 0.692f, Y = 0.691f, Z = 0.141f, W = 0.14f }),
+                            new DataTypes.UnitVector3(0.1, 0.2, 0.3),
+                            new UnitQuaternion() { X = 0.692, Y = 0.691, Z = 0.141, W = 0.14 }),
                         new TranslateRotateSpecification(
-                            new DataTypes.UnitVector3(0.4f, 0.5f, 0.6f),
-                            new UnitQuaternion() { X = 0.692f, Y = 0.691f, Z = 0.141f, W = 0.14f }),
+                            new DataTypes.UnitVector3(0.4, 0.5, 0.6),
+                            new UnitQuaternion() { X = 0.692, Y = 0.691, Z = 0.141, W = 0.14 }),
                         new TranslateRotateSpecification(
-                            new DataTypes.UnitVector3(0.7f, 0.8f, 0.9f),
-                            new UnitQuaternion() { X = 0.692f, Y = 0.691f, Z = 0.141f, W = 0.14f })
+                            new DataTypes.UnitVector3(0.7, 0.8, 0.9),
+                            new UnitQuaternion() { X = 0.692, Y = 0.691, Z = 0.141, W = 0.14 })
                     },
                     new List<FrameTransformIndexPair>()
                     {
@@ -153,17 +153,17 @@ namespace Ethar.GeoPose.UnitTests
                 yield return new TestCaseData(new List<BaseFrameSpecification>()
                     {
                         new TranslateRotateSpecification(
-                            new DataTypes.UnitVector3(0.1f, 0.2f, 0.3f),
-                            new UnitQuaternion() { X = 0.692f, Y = 0.691f, Z = 0.141f, W = 0.14f }),
+                            new DataTypes.UnitVector3(0.1, 0.2, 0.3),
+                            new UnitQuaternion() { X = 0.692, Y = 0.691, Z = 0.141, W = 0.14 }),
                         new TranslateRotateSpecification(
-                            new DataTypes.UnitVector3(0.1f, 0.2f, 0.3f),
-                            new UnitQuaternion() { X = 0.692f, Y = 0.691f, Z = 0.141f, W = 0.14f }),
+                            new DataTypes.UnitVector3(0.1, 0.2, 0.3),
+                            new UnitQuaternion() { X = 0.692, Y = 0.691, Z = 0.141, W = 0.14 }),
                         new TranslateRotateSpecification(
-                            new DataTypes.UnitVector3(0.4f, 0.5f, 0.6f),
-                            new UnitQuaternion() { X = 0.692f, Y = 0.691f, Z = 0.141f, W = 0.14f }),
+                            new DataTypes.UnitVector3(0.4, 0.5, 0.6),
+                            new UnitQuaternion() { X = 0.692, Y = 0.691, Z = 0.141, W = 0.14 }),
                         new TranslateRotateSpecification(
-                            new DataTypes.UnitVector3(0.7f, 0.8f, 0.9f),
-                            new UnitQuaternion() { X = 0.692f, Y = 0.691f, Z = 0.141f, W = 0.14f })
+                            new DataTypes.UnitVector3(0.7, 0.8, 0.9),
+                            new UnitQuaternion() { X = 0.692, Y = 0.691, Z = 0.141, W = 0.14 })
                     },
                     new List<FrameTransformIndexPair>()).Returns(false);
                 yield return new TestCaseData(new List<BaseFrameSpecification>()
@@ -171,17 +171,17 @@ namespace Ethar.GeoPose.UnitTests
                         new LtpEnuSpecification(new DataTypes.TangentPointPosition()
                                 { Latitude = 48, Longitude = -122, HeightInMeters = 5 }),
                         new TranslateRotateSpecification(
-                            new DataTypes.UnitVector3(0.1f, 0.2f, 0.3f),
-                            new UnitQuaternion() { X = 0.692f, Y = 0.691f, Z = 0.141f, W = 0.14f }),
+                            new DataTypes.UnitVector3(0.1, 0.2, 0.3),
+                            new UnitQuaternion() { X = 0.692, Y = 0.691, Z = 0.141, W = 0.14 }),
                         new TranslateRotateSpecification(
-                            new DataTypes.UnitVector3(0.4f, 0.5f, 0.6f),
-                            new UnitQuaternion() { X = 0.692f, Y = 0.691f, Z = 0.141f, W = 0.14f }),
+                            new DataTypes.UnitVector3(0.4, 0.5, 0.6),
+                            new UnitQuaternion() { X = 0.692, Y = 0.691, Z = 0.141, W = 0.14 }),
                         new TranslateRotateSpecification(
-                            new DataTypes.UnitVector3(0.7f, 0.8f, 0.9f),
-                            new UnitQuaternion() { X = 0.692f, Y = 0.691f, Z = 0.141f, W = 0.14f }),
+                            new DataTypes.UnitVector3(0.7, 0.8, 0.9),
+                            new UnitQuaternion() { X = 0.692, Y = 0.691, Z = 0.141, W = 0.14 }),
                         new TranslateRotateSpecification(
-                            new DataTypes.UnitVector3(0.7f, 0.8f, 0.9f),
-                            new UnitQuaternion() { X = 0.692f, Y = 0.691f, Z = 0.141f, W = 0.14f })
+                            new DataTypes.UnitVector3(0.7, 0.8, 0.9),
+                            new UnitQuaternion() { X = 0.692, Y = 0.691, Z = 0.141, W = 0.14 })
                     },
                     new List<FrameTransformIndexPair>()
                     {
@@ -195,17 +195,17 @@ namespace Ethar.GeoPose.UnitTests
                         new LtpEnuSpecification(new DataTypes.TangentPointPosition()
                                 { Latitude = 48, Longitude = -122, HeightInMeters = 5 }),
                         new TranslateRotateSpecification(
-                            new DataTypes.UnitVector3(0.1f, 0.2f, 0.3f),
-                            new UnitQuaternion() { X = 0.692f, Y = 0.691f, Z = 0.141f, W = 0.14f }),
+                            new DataTypes.UnitVector3(0.1, 0.2, 0.3),
+                            new UnitQuaternion() { X = 0.692, Y = 0.691, Z = 0.141, W = 0.14 }),
                         new TranslateRotateSpecification(
-                            new DataTypes.UnitVector3(0.4f, 0.5f, 0.6f),
-                            new UnitQuaternion() { X = 0.692f, Y = 0.691f, Z = 0.141f, W = 0.14f }),
+                            new DataTypes.UnitVector3(0.4, 0.5, 0.6),
+                            new UnitQuaternion() { X = 0.692, Y = 0.691, Z = 0.141, W = 0.14 }),
                         new TranslateRotateSpecification(
-                            new DataTypes.UnitVector3(0.7f, 0.8f, 0.9f),
-                            new UnitQuaternion() { X = 0.692f, Y = 0.691f, Z = 0.141f, W = 0.14f }),
+                            new DataTypes.UnitVector3(0.7, 0.8, 0.9),
+                            new UnitQuaternion() { X = 0.692, Y = 0.691, Z = 0.141, W = 0.14 }),
                         new TranslateRotateSpecification(
-                            new DataTypes.UnitVector3(0.7f, 0.8f, 0.9f),
-                            new UnitQuaternion() { X = 0.692f, Y = 0.691f, Z = 0.141f, W = 0.14f })
+                            new DataTypes.UnitVector3(0.7, 0.8, 0.9),
+                            new UnitQuaternion() { X = 0.692, Y = 0.691, Z = 0.141, W = 0.14 })
                     },
                     new List<FrameTransformIndexPair>()
                     {

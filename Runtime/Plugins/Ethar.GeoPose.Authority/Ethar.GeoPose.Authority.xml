@@ -135,6 +135,14 @@
             </summary>
             <param name="position"> The position in latitude and longitude in decimal degrees, and height in meters.</param>
         </member>
+        <member name="M:Ethar.GeoPose.Authority.FrameSpecifications.LtpNedSpecification.#ctor(System.String,System.String,Ethar.GeoPose.DataTypes.TangentPointPosition)">
+            <summary>
+            Initializes a new instance of the <see cref="T:Ethar.GeoPose.Authority.FrameSpecifications.LtpNedSpecification"/> class for a derived authority or id.
+            </summary>
+            <param name="id">The frame specification id.</param>
+            <param name="authority">The authority name.</param>
+            <param name="position">The tangent point.</param>
+        </member>
         <member name="P:Ethar.GeoPose.Authority.FrameSpecifications.LtpNedSpecification.Position">
             <summary>
              Gets the position in latitude and longitude in decimal degrees, and height in meters.
@@ -203,6 +211,15 @@
             <param name="translation">The translation.</param>
             <param name="rotation">The rotation.</param>
         </member>
+        <member name="M:Ethar.GeoPose.Authority.FrameSpecifications.TranslateRotateSpecification.#ctor(System.String,System.String,Ethar.GeoPose.DataTypes.UnitVector3,Ethar.GeoPose.DataTypes.UnitQuaternion)">
+            <summary>
+            Initializes a new instance of the <see cref="T:Ethar.GeoPose.Authority.FrameSpecifications.TranslateRotateSpecification"/> class for a derived authority or id.
+            </summary>
+            <param name="id">The frame specification id.</param>
+            <param name="authority">The authority name.</param>
+            <param name="translation">The translation.</param>
+            <param name="rotation">The rotation.</param>
+        </member>
         <member name="P:Ethar.GeoPose.Authority.FrameSpecifications.TranslateRotateSpecification.Translation">
             <summary>
             Gets the translation.
@@ -256,80 +273,100 @@
         <member name="M:Ethar.GeoPose.Authority.FrameSpecifications.YawPitchRollOrientedLtpEnuSpecification.GetHashCode">
             <inheritdoc/>
         </member>
+        <member name="T:Ethar.GeoPose.Authority.GeoPoseAuthorities">
+            <summary>
+            Registration helpers for the authorities shipped with this package.
+            </summary>
+        </member>
+        <member name="M:Ethar.GeoPose.Authority.GeoPoseAuthorities.RegisterDefaults">
+            <summary>
+            Registers the Ethar authority (<c>/Ethar.GeoPose/1.0</c>) and the OGC example authority (<c>/geopose/1.0</c>) with the
+            <see cref="T:Ethar.GeoPose.Authority.AuthorityProvider"/>. Registering an authority that is already registered is a no-op.
+            </summary>
+        </member>
+        <member name="M:Ethar.GeoPose.Authority.GeoPoseAuthorities.UnregisterDefaults">
+            <summary>
+            Removes both shipped authorities from the <see cref="T:Ethar.GeoPose.Authority.AuthorityProvider"/>.
+            </summary>
+        </member>
         <member name="T:Ethar.GeoPose.Authority.JsonConversion.EtharFrameSpecificationJsonConverter">
             <summary>
-            A utility class that converts JObjects to frame specifications.
+            Converts the Ethar authority's frame specifications to and from their JSON representation.
             </summary>
+            <remarks>
+            All numbers are read and written with the invariant culture. On input the OGC parameter name <c>height</c> is accepted as an
+            alias of <c>heightInMeters</c>; on output the Ethar names are always written.
+            </remarks>
         </member>
         <member name="M:Ethar.GeoPose.Authority.JsonConversion.EtharFrameSpecificationJsonConverter.ConvertJsonToLtpEnuFrameSpecification(Newtonsoft.Json.Linq.JObject)">
             <summary>
-            Converts json to a <see cref="T:Ethar.GeoPose.Authority.FrameSpecifications.LtpEnuSpecification"/>.
+            Converts a JSON object to an LTP-ENU frame specification.
             </summary>
-            <param name="jObject">The json to convert.</param>
-            <returns>A <see cref="T:Ethar.GeoPose.Authority.FrameSpecifications.LtpEnuSpecification"/>.</returns>
+            <param name="jObject">The JSON object.</param>
+            <returns>The frame specification, or null if the parameters could not be validated.</returns>
         </member>
         <member name="M:Ethar.GeoPose.Authority.JsonConversion.EtharFrameSpecificationJsonConverter.ConvertLtpEnuFrameSpecificationToJson(Ethar.GeoPose.Authority.FrameSpecifications.LtpEnuSpecification)">
             <summary>
-            Converts a <see cref="T:Ethar.GeoPose.Authority.FrameSpecifications.LtpEnuSpecification"/> to json.
+            Converts an LTP-ENU frame specification to a JSON object.
             </summary>
-            <param name="spec">The <see cref="T:Ethar.GeoPose.Authority.FrameSpecifications.LtpEnuSpecification"/> to convert.</param>
-            <returns>A json representation of the <see cref="T:Ethar.GeoPose.Authority.FrameSpecifications.LtpEnuSpecification"/>.</returns>
+            <param name="spec">The frame specification.</param>
+            <returns>The JSON object.</returns>
         </member>
         <member name="M:Ethar.GeoPose.Authority.JsonConversion.EtharFrameSpecificationJsonConverter.ConvertJsonToLtpNedFrameSpecification(Newtonsoft.Json.Linq.JObject)">
             <summary>
-            Converts json to a <see cref="T:Ethar.GeoPose.Authority.FrameSpecifications.LtpNedSpecification"/>.
+            Converts a JSON object to an LTP-NED frame specification.
             </summary>
-            <param name="jObject">The json to convert.</param>
-            <returns>A <see cref="T:Ethar.GeoPose.Authority.FrameSpecifications.LtpNedSpecification"/>.</returns>
+            <param name="jObject">The JSON object.</param>
+            <returns>The frame specification, or null if the parameters could not be validated.</returns>
         </member>
         <member name="M:Ethar.GeoPose.Authority.JsonConversion.EtharFrameSpecificationJsonConverter.ConvertLtpNedFrameSpecificationToJson(Ethar.GeoPose.Authority.FrameSpecifications.LtpNedSpecification)">
             <summary>
-            Converts a <see cref="T:Ethar.GeoPose.Authority.FrameSpecifications.LtpNedSpecification"/> to json.
+            Converts an LTP-NED frame specification to a JSON object.
             </summary>
-            <param name="spec">The <see cref="T:Ethar.GeoPose.Authority.FrameSpecifications.LtpNedSpecification"/> to convert.</param>
-            <returns>A json representation of the <see cref="T:Ethar.GeoPose.Authority.FrameSpecifications.LtpNedSpecification"/>.</returns>
+            <param name="spec">The frame specification.</param>
+            <returns>The JSON object.</returns>
         </member>
         <member name="M:Ethar.GeoPose.Authority.JsonConversion.EtharFrameSpecificationJsonConverter.ConvertJsonToYprOrientedLtpEnuFrameSpecification(Newtonsoft.Json.Linq.JObject)">
             <summary>
-            Converts json to a <see cref="T:Ethar.GeoPose.Authority.FrameSpecifications.YawPitchRollOrientedLtpEnuSpecification"/>.
+            Converts a JSON object to a yaw, pitch, roll oriented LTP-ENU frame specification.
             </summary>
-            <param name="jObject">The json to convert.</param>
-            <returns>A <see cref="T:Ethar.GeoPose.Authority.FrameSpecifications.YawPitchRollOrientedLtpEnuSpecification"/>.</returns>
+            <param name="jObject">The JSON object.</param>
+            <returns>The frame specification, or null if the parameters could not be validated.</returns>
         </member>
         <member name="M:Ethar.GeoPose.Authority.JsonConversion.EtharFrameSpecificationJsonConverter.ConvertYprOrientedLtpEnuFrameSpecificationToJson(Ethar.GeoPose.Authority.FrameSpecifications.YawPitchRollOrientedLtpEnuSpecification)">
             <summary>
-            Converts a <see cref="T:Ethar.GeoPose.Authority.FrameSpecifications.YawPitchRollOrientedLtpEnuSpecification"/> to json.
+            Converts a yaw, pitch, roll oriented LTP-ENU frame specification to a JSON object.
             </summary>
-            <param name="spec">The <see cref="T:Ethar.GeoPose.Authority.FrameSpecifications.YawPitchRollOrientedLtpEnuSpecification"/> to convert.</param>
-            <returns>A json representation of the <see cref="T:Ethar.GeoPose.Authority.FrameSpecifications.YawPitchRollOrientedLtpEnuSpecification"/>.</returns>
+            <param name="spec">The frame specification.</param>
+            <returns>The JSON object.</returns>
         </member>
         <member name="M:Ethar.GeoPose.Authority.JsonConversion.EtharFrameSpecificationJsonConverter.ConvertJsonToQuaternionOrientedLtpEnuFrameSpecification(Newtonsoft.Json.Linq.JObject)">
             <summary>
-            Converts json to a <see cref="T:Ethar.GeoPose.Authority.FrameSpecifications.QuaternionOrientedLtpEnuSpecification"/>.
+            Converts a JSON object to a quaternion oriented LTP-ENU frame specification.
             </summary>
-            <param name="jObject">The json to convert.</param>
-            <returns>A <see cref="T:Ethar.GeoPose.Authority.FrameSpecifications.QuaternionOrientedLtpEnuSpecification"/>.</returns>
+            <param name="jObject">The JSON object.</param>
+            <returns>The frame specification, or null if the parameters could not be validated.</returns>
         </member>
         <member name="M:Ethar.GeoPose.Authority.JsonConversion.EtharFrameSpecificationJsonConverter.ConvertQuaternionOrientedLtpEnuFrameSpecificationToJson(Ethar.GeoPose.Authority.FrameSpecifications.QuaternionOrientedLtpEnuSpecification)">
             <summary>
-            Converts a <see cref="T:Ethar.GeoPose.Authority.FrameSpecifications.QuaternionOrientedLtpEnuSpecification"/> to json.
+            Converts a quaternion oriented LTP-ENU frame specification to a JSON object.
             </summary>
-            <param name="spec">The <see cref="T:Ethar.GeoPose.Authority.FrameSpecifications.QuaternionOrientedLtpEnuSpecification"/> to convert.</param>
-            <returns>A json representation of the <see cref="T:Ethar.GeoPose.Authority.FrameSpecifications.QuaternionOrientedLtpEnuSpecification"/>.</returns>
+            <param name="spec">The frame specification.</param>
+            <returns>The JSON object.</returns>
         </member>
         <member name="M:Ethar.GeoPose.Authority.JsonConversion.EtharFrameSpecificationJsonConverter.ConvertJsonToTranslateRotateFrameSpecification(Newtonsoft.Json.Linq.JObject)">
             <summary>
-            Converts json to a <see cref="T:Ethar.GeoPose.Authority.FrameSpecifications.TranslateRotateSpecification"/>.
+            Converts a JSON object to a translate-rotate frame specification.
             </summary>
-            <param name="jObject">The json to convert.</param>
-            <returns>A <see cref="T:Ethar.GeoPose.Authority.FrameSpecifications.TranslateRotateSpecification"/>.</returns>
+            <param name="jObject">The JSON object.</param>
+            <returns>The frame specification, or null if the parameters could not be validated.</returns>
         </member>
         <member name="M:Ethar.GeoPose.Authority.JsonConversion.EtharFrameSpecificationJsonConverter.ConvertTranslateRotateFrameSpecificationToJson(Ethar.GeoPose.Authority.FrameSpecifications.TranslateRotateSpecification)">
             <summary>
-            Converts a <see cref="T:Ethar.GeoPose.Authority.FrameSpecifications.TranslateRotateSpecification"/> to json.
+            Converts a translate-rotate frame specification to a JSON object.
             </summary>
-            <param name="spec">The <see cref="T:Ethar.GeoPose.Authority.FrameSpecifications.TranslateRotateSpecification"/> to convert.</param>
-            <returns>A json representation of the <see cref="T:Ethar.GeoPose.Authority.FrameSpecifications.TranslateRotateSpecification"/>.</returns>
+            <param name="spec">The frame specification.</param>
+            <returns>The JSON object.</returns>
         </member>
         <member name="T:Ethar.GeoPose.Authority.JsonConversion.EtharTransitionModelJsonConverter">
             <summary>
@@ -363,6 +400,173 @@
             </summary>
             <param name="model">The <see cref="T:Ethar.GeoPose.Authority.TransitionModels.InterpolatedTransitionModel"/> to convert.</param>
             <returns>A json representation of the <see cref="T:Ethar.GeoPose.Authority.TransitionModels.InterpolatedTransitionModel"/>.</returns>
+        </member>
+        <member name="T:Ethar.GeoPose.Authority.Ogc.OgcConstants">
+            <summary>
+            Identifiers used by the OGC GeoPose 1.0 example instances (https://schemas.opengis.net/geopose/1.0/instances/).
+            </summary>
+            <remarks>
+            The standard leaves authority strings, frame ids and parameter grammar to each authority. The OGC's own instance files, which
+            the conformance test suite and other implementations use, all carry the authority <c>/geopose/1.0</c> and the ids and grammar
+            below. <see cref="T:Ethar.GeoPose.Authority.Ogc.OgcGeoPoseAuthority"/> implements that authority so those files, and payloads from implementations that follow
+            them, can be exchanged with this library.
+            </remarks>
+        </member>
+        <member name="F:Ethar.GeoPose.Authority.Ogc.OgcConstants.AuthorityName">
+            <summary>
+            The authority string used by the OGC example instances.
+            </summary>
+        </member>
+        <member name="T:Ethar.GeoPose.Authority.Ogc.OgcFrameSpecificationTypes">
+            <summary>
+            Frame specification ids used by the OGC GeoPose 1.0 example instances.
+            </summary>
+        </member>
+        <member name="F:Ethar.GeoPose.Authority.Ogc.OgcFrameSpecificationTypes.LtpEnu">
+            <summary>
+            Local tangent plane East-North-Up, the extrinsic frame used as the outer frame of the Advanced, Series and Stream instances.
+            Parameters: <c>longitude=…&amp;latitude=…&amp;height=…</c>.
+            </summary>
+        </member>
+        <member name="F:Ethar.GeoPose.Authority.Ogc.OgcFrameSpecificationTypes.ExtrinsicLtpEnu">
+            <summary>
+            Path form of <see cref="F:Ethar.GeoPose.Authority.Ogc.OgcFrameSpecificationTypes.LtpEnu"/> used by the Chain and Graph instances. Same parameters.
+            </summary>
+        </member>
+        <member name="F:Ethar.GeoPose.Authority.Ogc.OgcFrameSpecificationTypes.LtpNed">
+            <summary>
+            Local tangent plane North-East-Down, named in the OGC reviewers guide. Same parameters as <see cref="F:Ethar.GeoPose.Authority.Ogc.OgcFrameSpecificationTypes.LtpEnu"/>.
+            </summary>
+        </member>
+        <member name="F:Ethar.GeoPose.Authority.Ogc.OgcFrameSpecificationTypes.IntrinsicTranslateRotate">
+            <summary>
+            Intrinsic translate-then-rotate frame used by the Chain and Graph instances.
+            Parameters: <c>translation=[x, y, z]&amp;rotation=[w, x, y, z]</c>.
+            </summary>
+        </member>
+        <member name="F:Ethar.GeoPose.Authority.Ogc.OgcFrameSpecificationTypes.RotateTranslate">
+            <summary>
+            Intrinsic frame used by the Series and Stream instances. Same parameters as <see cref="F:Ethar.GeoPose.Authority.Ogc.OgcFrameSpecificationTypes.IntrinsicTranslateRotate"/>.
+            </summary>
+        </member>
+        <member name="T:Ethar.GeoPose.Authority.Ogc.OgcGeoPoseAuthority">
+            <summary>
+            The <c>/geopose/1.0</c> authority: reads and writes the frame specifications and transition models exactly as the OGC GeoPose 1.0
+            example instances encode them, so that those files and payloads from other implementations can be exchanged with this library.
+            </summary>
+            <remarks>
+            <para>
+            Grammar, taken from https://schemas.opengis.net/geopose/1.0/instances/: LTP frames carry
+            <c>longitude=…&amp;latitude=…&amp;height=…</c> (height above the WGS 84 ellipsoid), and translate-rotate frames carry
+            <c>translation=[x, y, z]&amp;rotation=[w, x, y, z]</c>. The rotation array is w-first, as the standard's prose lists the components;
+            the JSON <c>quaternion</c> member of the Basic and Advanced targets is x-first. Numbers are culture-invariant.
+            </para>
+            <para>
+            Register with <c>AuthorityProvider.RegisterAuthority(new OgcGeoPoseAuthority())</c>, or call <see cref="M:Ethar.GeoPose.Authority.GeoPoseAuthorities.RegisterDefaults"/>
+            to register it together with the Ethar authority.
+            </para>
+            </remarks>
+        </member>
+        <member name="M:Ethar.GeoPose.Authority.Ogc.OgcGeoPoseAuthority.#ctor">
+            <summary>
+            Initializes a new instance of the <see cref="T:Ethar.GeoPose.Authority.Ogc.OgcGeoPoseAuthority"/> class.
+            </summary>
+        </member>
+        <member name="P:Ethar.GeoPose.Authority.Ogc.OgcGeoPoseAuthority.AuthorityName">
+            <inheritdoc/>
+        </member>
+        <member name="P:Ethar.GeoPose.Authority.Ogc.OgcGeoPoseAuthority.Validator">
+            <summary>
+            Gets the validator applied to parsed frame specifications.
+            </summary>
+        </member>
+        <member name="M:Ethar.GeoPose.Authority.Ogc.OgcGeoPoseAuthority.ConvertFrameSpecToJson(Ethar.GeoPose.Interfaces.IFrameSpecification)">
+            <inheritdoc/>
+        </member>
+        <member name="M:Ethar.GeoPose.Authority.Ogc.OgcGeoPoseAuthority.ConvertJsonToFrameSpec(Newtonsoft.Json.Linq.JObject)">
+            <inheritdoc/>
+        </member>
+        <member name="M:Ethar.GeoPose.Authority.Ogc.OgcGeoPoseAuthority.ConvertJsonToTransitionModel(Newtonsoft.Json.Linq.JObject)">
+            <inheritdoc/>
+        </member>
+        <member name="M:Ethar.GeoPose.Authority.Ogc.OgcGeoPoseAuthority.ConvertTransitionModelToJson(Ethar.GeoPose.TransitionModels.TransitionModel)">
+            <inheritdoc/>
+        </member>
+        <member name="M:Ethar.GeoPose.Authority.Ogc.OgcGeoPoseAuthority.IsFrameSpecificationExtrinsic(Ethar.GeoPose.Interfaces.IFrameSpecification)">
+            <inheritdoc/>
+        </member>
+        <member name="T:Ethar.GeoPose.Authority.Ogc.OgcInterpolateTransitionModel">
+            <summary>
+            The <c>interpolate</c> transition model under the <c>/geopose/1.0</c> authority.
+            </summary>
+        </member>
+        <member name="M:Ethar.GeoPose.Authority.Ogc.OgcInterpolateTransitionModel.#ctor">
+            <summary>
+            Initializes a new instance of the <see cref="T:Ethar.GeoPose.Authority.Ogc.OgcInterpolateTransitionModel"/> class.
+            </summary>
+        </member>
+        <member name="T:Ethar.GeoPose.Authority.Ogc.OgcLtpEnuSpecification">
+            <summary>
+            An LTP-ENU frame specification under the <c>/geopose/1.0</c> authority. The id is preserved as received
+            (<c>LTP-ENU</c> or <c>/Extrinsic/LTP-ENU</c>) so a payload round-trips unchanged.
+            </summary>
+        </member>
+        <member name="M:Ethar.GeoPose.Authority.Ogc.OgcLtpEnuSpecification.#ctor(Ethar.GeoPose.DataTypes.TangentPointPosition,System.String)">
+            <summary>
+            Initializes a new instance of the <see cref="T:Ethar.GeoPose.Authority.Ogc.OgcLtpEnuSpecification"/> class.
+            </summary>
+            <param name="position">The tangent point.</param>
+            <param name="id">The frame id, <see cref="F:Ethar.GeoPose.Authority.Ogc.OgcFrameSpecificationTypes.LtpEnu"/> by default.</param>
+        </member>
+        <member name="T:Ethar.GeoPose.Authority.Ogc.OgcLtpNedSpecification">
+            <summary>
+            An LTP-NED frame specification under the <c>/geopose/1.0</c> authority.
+            </summary>
+        </member>
+        <member name="M:Ethar.GeoPose.Authority.Ogc.OgcLtpNedSpecification.#ctor(Ethar.GeoPose.DataTypes.TangentPointPosition)">
+            <summary>
+            Initializes a new instance of the <see cref="T:Ethar.GeoPose.Authority.Ogc.OgcLtpNedSpecification"/> class.
+            </summary>
+            <param name="position">The tangent point.</param>
+        </member>
+        <member name="T:Ethar.GeoPose.Authority.Ogc.OgcNoneTransitionModel">
+            <summary>
+            The <c>none</c> transition model under the <c>/geopose/1.0</c> authority.
+            </summary>
+        </member>
+        <member name="M:Ethar.GeoPose.Authority.Ogc.OgcNoneTransitionModel.#ctor">
+            <summary>
+            Initializes a new instance of the <see cref="T:Ethar.GeoPose.Authority.Ogc.OgcNoneTransitionModel"/> class.
+            </summary>
+        </member>
+        <member name="T:Ethar.GeoPose.Authority.Ogc.OgcTransitionModelTypes">
+            <summary>
+            Transition model ids used by the OGC GeoPose 1.0 example instances.
+            </summary>
+        </member>
+        <member name="F:Ethar.GeoPose.Authority.Ogc.OgcTransitionModelTypes.None">
+            <summary>
+            No transition between poses.
+            </summary>
+        </member>
+        <member name="F:Ethar.GeoPose.Authority.Ogc.OgcTransitionModelTypes.Interpolate">
+            <summary>
+            Interpolated transition between poses. The instances name it <c>interpolate</c>; the Ethar authority's equivalent is <c>interpolated</c>.
+            </summary>
+        </member>
+        <member name="T:Ethar.GeoPose.Authority.Ogc.OgcTranslateRotateSpecification">
+            <summary>
+            A translate-rotate frame specification under the <c>/geopose/1.0</c> authority. The id is preserved as received
+            (<c>/Intrinsic/Translate-Rotate</c> or <c>RotateTranslate</c>) so a payload round-trips unchanged.
+            </summary>
+        </member>
+        <member name="M:Ethar.GeoPose.Authority.Ogc.OgcTranslateRotateSpecification.#ctor(Ethar.GeoPose.DataTypes.UnitVector3,Ethar.GeoPose.DataTypes.UnitQuaternion,System.String)">
+            <summary>
+            Initializes a new instance of the <see cref="T:Ethar.GeoPose.Authority.Ogc.OgcTranslateRotateSpecification"/> class.
+            </summary>
+            <param name="translation">The translation.</param>
+            <param name="rotation">The rotation.</param>
+            <param name="id">The frame id, <see cref="F:Ethar.GeoPose.Authority.Ogc.OgcFrameSpecificationTypes.IntrinsicTranslateRotate"/> by default.</param>
         </member>
         <member name="T:Ethar.GeoPose.Authority.TransitionModels.EtharTransitionModelTypes">
             <summary>

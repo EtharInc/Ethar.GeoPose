@@ -97,6 +97,700 @@
             <param name="frameSpec">The <see cref="T:Ethar.GeoPose.Interfaces.IFrameSpecification"/> to check.</param>
             <returns>True if the <see cref="T:Ethar.GeoPose.Interfaces.IFrameSpecification"/> is extrinsic, false otherwise.</returns>
         </member>
+        <member name="T:Ethar.GeoPose.Conventions.Angles">
+            <summary>
+            Angle unit conversion and normalisation helpers. GeoPose angles are decimal degrees.
+            </summary>
+        </member>
+        <member name="M:Ethar.GeoPose.Conventions.Angles.DegreesToRadians(System.Double)">
+            <summary>
+            Converts degrees to radians.
+            </summary>
+            <param name="degrees">The angle in degrees.</param>
+            <returns>The angle in radians.</returns>
+        </member>
+        <member name="M:Ethar.GeoPose.Conventions.Angles.RadiansToDegrees(System.Double)">
+            <summary>
+            Converts radians to degrees.
+            </summary>
+            <param name="radians">The angle in radians.</param>
+            <returns>The angle in degrees.</returns>
+        </member>
+        <member name="M:Ethar.GeoPose.Conventions.Angles.Normalize360(System.Double)">
+            <summary>
+            Normalises an angle to the range [0, 360).
+            </summary>
+            <param name="degrees">The angle in degrees.</param>
+            <returns>The equivalent angle in the range [0, 360).</returns>
+        </member>
+        <member name="M:Ethar.GeoPose.Conventions.Angles.Normalize180(System.Double)">
+            <summary>
+            Normalises an angle to the range [-180, 180).
+            </summary>
+            <param name="degrees">The angle in degrees.</param>
+            <returns>The equivalent angle in the range [-180, 180).</returns>
+        </member>
+        <member name="T:Ethar.GeoPose.Conventions.CompassHeading">
+            <summary>
+            Conversions between compass bearings and GeoPose Basic-YPR yaw.
+            </summary>
+            <remarks>
+            <para>
+            A compass bearing is measured clockwise from true North: North 0°, East 90°, South 180°, West 270°.
+            Device compasses, map bearings and most user interfaces use this convention.
+            </para>
+            <para>
+            GeoPose Basic-YPR yaw (OGC GeoPose 1.0, /req/basic-ypr/angles) is a rotation of the LTP-ENU frame about its Up axis.
+            ENU is right-handed, so positive yaw is counter-clockwise viewed from above, turning East towards North. The standard assigns
+            pitch to the y axis and roll to the x axis, the aircraft convention in which x is the longitudinal (forward) axis, so the
+            un-rotated inner frame faces East (its x axis) and a yaw of 90° faces North.
+            </para>
+            <para>
+            The two conventions are related by <c>yaw = 90 - bearing</c>, which is its own inverse. The standard does not state the
+            sign convention or the forward axis in words; the reading above follows from its axis assignment and from the right-handed
+            frame, and is the reading these helpers implement.
+            </para>
+            </remarks>
+        </member>
+        <member name="M:Ethar.GeoPose.Conventions.CompassHeading.ToGeoPoseYaw(System.Double)">
+            <summary>
+            Converts a compass bearing to a GeoPose Basic-YPR yaw.
+            </summary>
+            <param name="bearingDegrees">The bearing in degrees, clockwise from true North.</param>
+            <returns>The yaw in degrees, in the range [-180, 180), counter-clockwise from East.</returns>
+        </member>
+        <member name="M:Ethar.GeoPose.Conventions.CompassHeading.ToCompassBearing(System.Double)">
+            <summary>
+            Converts a GeoPose Basic-YPR yaw to a compass bearing.
+            </summary>
+            <param name="yawDegrees">The yaw in degrees, counter-clockwise from East.</param>
+            <returns>The bearing in degrees, clockwise from true North, in the range [0, 360).</returns>
+        </member>
+        <member name="M:Ethar.GeoPose.Conventions.CompassHeading.EngineHeadingOffset(System.Double,System.Double)">
+            <summary>
+            Computes the heading offset of an engine frame: the compass bearing of the engine's +Z (forward) axis.
+            </summary>
+            <remarks>
+            Engines such as Unity start their world frame at the device's initial pose, so the world +Z axis points wherever the device
+            faced at start-up. Sampling the device's true heading together with the device's current yaw in the engine frame gives the
+            bearing of the engine's +Z axis, which is the value <see cref="T:Ethar.GeoPose.Conventions.LeftHandedYUpConversions"/> and
+            <see cref="T:Ethar.GeoPose.Conventions.LeftHandedYUpFrame"/> call the heading offset.
+            </remarks>
+            <param name="deviceTrueHeadingDegrees">The device's true heading in degrees, clockwise from true North.</param>
+            <param name="deviceEngineYawDegrees">The device's yaw about the engine Up axis in degrees, positive clockwise viewed from above (the left-handed convention).</param>
+            <returns>The heading offset in degrees, in the range [0, 360).</returns>
+        </member>
+        <member name="T:Ethar.GeoPose.Conventions.EnginePose">
+            <summary>
+            A position and rotation in a left-handed, Y-up engine frame, the result of mapping a GeoPose through a <see cref="T:Ethar.GeoPose.Conventions.LeftHandedYUpFrame"/>.
+            </summary>
+        </member>
+        <member name="M:Ethar.GeoPose.Conventions.EnginePose.#ctor(Ethar.GeoPose.Conventions.LeftHandedYUpVector,Ethar.GeoPose.DataTypes.UnitQuaternion)">
+            <summary>
+            Initializes a new instance of the <see cref="T:Ethar.GeoPose.Conventions.EnginePose"/> struct.
+            </summary>
+            <param name="position">The position in engine world space, in meters.</param>
+            <param name="rotation">The rotation in engine world space.</param>
+        </member>
+        <member name="P:Ethar.GeoPose.Conventions.EnginePose.Position">
+            <summary>
+            Gets or sets the position in engine world space, in meters.
+            </summary>
+        </member>
+        <member name="P:Ethar.GeoPose.Conventions.EnginePose.Rotation">
+            <summary>
+            Gets or sets the rotation in engine world space. The components map directly onto an engine quaternion (x, y, z, w).
+            </summary>
+        </member>
+        <member name="M:Ethar.GeoPose.Conventions.EnginePose.op_Equality(Ethar.GeoPose.Conventions.EnginePose,Ethar.GeoPose.Conventions.EnginePose)">
+            <summary>
+            Performs an equality comparison on two objects of type <see cref="T:Ethar.GeoPose.Conventions.EnginePose"/>.
+            </summary>
+            <param name="a">The first object.</param>
+            <param name="b">The second object.</param>
+            <returns>True if the objects are equal.</returns>
+        </member>
+        <member name="M:Ethar.GeoPose.Conventions.EnginePose.op_Inequality(Ethar.GeoPose.Conventions.EnginePose,Ethar.GeoPose.Conventions.EnginePose)">
+            <summary>
+            Performs an inequality comparison on two objects of type <see cref="T:Ethar.GeoPose.Conventions.EnginePose"/>.
+            </summary>
+            <param name="a">The first object.</param>
+            <param name="b">The second object.</param>
+            <returns>True if the objects are not equal.</returns>
+        </member>
+        <member name="M:Ethar.GeoPose.Conventions.EnginePose.Equals(Ethar.GeoPose.Conventions.EnginePose)">
+            <inheritdoc/>
+        </member>
+        <member name="M:Ethar.GeoPose.Conventions.EnginePose.Equals(System.Object)">
+            <inheritdoc/>
+        </member>
+        <member name="M:Ethar.GeoPose.Conventions.EnginePose.GetHashCode">
+            <inheritdoc/>
+        </member>
+        <member name="M:Ethar.GeoPose.Conventions.EnginePose.ToString">
+            <inheritdoc/>
+        </member>
+        <member name="T:Ethar.GeoPose.Conventions.AngleUnit">
+            <summary>
+            The unit an angle is expressed in.
+            </summary>
+        </member>
+        <member name="F:Ethar.GeoPose.Conventions.AngleUnit.Degrees">
+            <summary>
+            Decimal degrees, the unit the GeoPose standard requires.
+            </summary>
+        </member>
+        <member name="F:Ethar.GeoPose.Conventions.AngleUnit.Radians">
+            <summary>
+            Radians.
+            </summary>
+        </member>
+        <member name="T:Ethar.GeoPose.Conventions.RotationAxis">
+            <summary>
+            An axis of the frame a rotation is applied about.
+            </summary>
+        </member>
+        <member name="F:Ethar.GeoPose.Conventions.RotationAxis.X">
+            <summary>
+            The x axis (East in LTP-ENU).
+            </summary>
+        </member>
+        <member name="F:Ethar.GeoPose.Conventions.RotationAxis.Y">
+            <summary>
+            The y axis (North in LTP-ENU).
+            </summary>
+        </member>
+        <member name="F:Ethar.GeoPose.Conventions.RotationAxis.Z">
+            <summary>
+            The z axis (Up in LTP-ENU).
+            </summary>
+        </member>
+        <member name="T:Ethar.GeoPose.Conventions.EulerConvention">
+            <summary>
+            Describes how a yaw, pitch, roll triple is turned into a rotation: which axis each angle rotates about, whether the rotations are
+            intrinsic (about the already rotated local axes) or extrinsic (about the fixed frame axes), and the angle unit.
+            </summary>
+            <remarks>
+            <para>
+            The three axes must be distinct (a Tait-Bryan sequence). <see cref="P:Ethar.GeoPose.Conventions.EulerConvention.GeoPoseStandard"/> is what OGC GeoPose 1.0 requires and what the
+            OGC GeoPoseSandbox implements; use it unless you are exchanging data with a source known to use something else.
+            </para>
+            <para>
+            <see cref="P:Ethar.GeoPose.Conventions.EulerConvention.OgcInstanceFiles"/> exists because the Basic-YPR and Basic-Quaternion example files published at
+            schemas.opengis.net/geopose/1.0/instances describe the same pose only when the angles are read as radians with pitch about the x axis.
+            That is not the standard's text; it is offered so that data produced the same way can be converted correctly and so the discrepancy
+            is reproducible in tests.
+            </para>
+            </remarks>
+        </member>
+        <member name="M:Ethar.GeoPose.Conventions.EulerConvention.#ctor(Ethar.GeoPose.Conventions.RotationAxis,Ethar.GeoPose.Conventions.RotationAxis,Ethar.GeoPose.Conventions.RotationAxis,Ethar.GeoPose.Conventions.AngleUnit,System.Boolean)">
+            <summary>
+            Initializes a new instance of the <see cref="T:Ethar.GeoPose.Conventions.EulerConvention"/> struct.
+            </summary>
+            <param name="yawAxis">The axis the first rotation (yaw) is about.</param>
+            <param name="pitchAxis">The axis the second rotation (pitch) is about.</param>
+            <param name="rollAxis">The axis the third rotation (roll) is about.</param>
+            <param name="unit">The unit of all three angles.</param>
+            <param name="isIntrinsic">True for intrinsic rotations (about the rotated local axes), false for extrinsic (about the fixed frame axes).</param>
+            <exception cref="T:System.ArgumentException">Thrown if the three axes are not distinct.</exception>
+        </member>
+        <member name="P:Ethar.GeoPose.Conventions.EulerConvention.GeoPoseStandard">
+            <summary>
+            Gets the convention required by OGC GeoPose 1.0 /req/basic-ypr/angles and implemented by the OGC GeoPoseSandbox:
+            intrinsic rotations about local z (yaw), then y (pitch), then x (roll), in degrees.
+            </summary>
+        </member>
+        <member name="P:Ethar.GeoPose.Conventions.EulerConvention.OgcInstanceFiles">
+            <summary>
+            Gets the convention that reproduces the OGC example instance files: intrinsic rotations about local z (yaw), then x (pitch),
+            then y (roll), in radians. See the type remarks.
+            </summary>
+        </member>
+        <member name="P:Ethar.GeoPose.Conventions.EulerConvention.YawAxis">
+            <summary>
+            Gets the axis the first rotation (yaw) is about.
+            </summary>
+        </member>
+        <member name="P:Ethar.GeoPose.Conventions.EulerConvention.PitchAxis">
+            <summary>
+            Gets the axis the second rotation (pitch) is about.
+            </summary>
+        </member>
+        <member name="P:Ethar.GeoPose.Conventions.EulerConvention.RollAxis">
+            <summary>
+            Gets the axis the third rotation (roll) is about.
+            </summary>
+        </member>
+        <member name="P:Ethar.GeoPose.Conventions.EulerConvention.Unit">
+            <summary>
+            Gets the unit of all three angles.
+            </summary>
+        </member>
+        <member name="P:Ethar.GeoPose.Conventions.EulerConvention.IsIntrinsic">
+            <summary>
+            Gets a value indicating whether the rotations are intrinsic (about the rotated local axes) rather than extrinsic.
+            </summary>
+        </member>
+        <member name="M:Ethar.GeoPose.Conventions.EulerConvention.op_Equality(Ethar.GeoPose.Conventions.EulerConvention,Ethar.GeoPose.Conventions.EulerConvention)">
+            <summary>
+            Performs an equality comparison on two objects of type <see cref="T:Ethar.GeoPose.Conventions.EulerConvention"/>.
+            </summary>
+            <param name="a">The first object.</param>
+            <param name="b">The second object.</param>
+            <returns>True if the objects are equal.</returns>
+        </member>
+        <member name="M:Ethar.GeoPose.Conventions.EulerConvention.op_Inequality(Ethar.GeoPose.Conventions.EulerConvention,Ethar.GeoPose.Conventions.EulerConvention)">
+            <summary>
+            Performs an inequality comparison on two objects of type <see cref="T:Ethar.GeoPose.Conventions.EulerConvention"/>.
+            </summary>
+            <param name="a">The first object.</param>
+            <param name="b">The second object.</param>
+            <returns>True if the objects are not equal.</returns>
+        </member>
+        <member name="M:Ethar.GeoPose.Conventions.EulerConvention.ToDegrees(System.Double)">
+            <summary>
+            Converts an angle in this convention's unit to degrees.
+            </summary>
+            <param name="value">The angle in this convention's unit.</param>
+            <returns>The angle in degrees.</returns>
+        </member>
+        <member name="M:Ethar.GeoPose.Conventions.EulerConvention.FromDegrees(System.Double)">
+            <summary>
+            Converts an angle in degrees to this convention's unit.
+            </summary>
+            <param name="degrees">The angle in degrees.</param>
+            <returns>The angle in this convention's unit.</returns>
+        </member>
+        <member name="M:Ethar.GeoPose.Conventions.EulerConvention.Equals(Ethar.GeoPose.Conventions.EulerConvention)">
+            <inheritdoc/>
+        </member>
+        <member name="M:Ethar.GeoPose.Conventions.EulerConvention.Equals(System.Object)">
+            <inheritdoc/>
+        </member>
+        <member name="M:Ethar.GeoPose.Conventions.EulerConvention.GetHashCode">
+            <inheritdoc/>
+        </member>
+        <member name="M:Ethar.GeoPose.Conventions.EulerConvention.ToString">
+            <inheritdoc/>
+        </member>
+        <member name="T:Ethar.GeoPose.Conventions.ForwardAxis">
+            <summary>
+            Which local axis of a posed object is treated as its forward direction when a GeoPose orientation is mapped to an engine frame.
+            </summary>
+        </member>
+        <member name="F:Ethar.GeoPose.Conventions.ForwardAxis.GeoPoseX">
+            <summary>
+            The GeoPose convention: the inner frame's x axis is the reference direction, so an un-rotated pose faces East and a yaw of 90°
+            faces North. The mapped engine rotation is the exact image of the GeoPose rotation; the object's engine +X axis faces the
+            bearing the GeoPose x axis faces.
+            </summary>
+        </member>
+        <member name="F:Ethar.GeoPose.Conventions.ForwardAxis.EngineZ">
+            <summary>
+            The engine convention: the object's engine +Z axis should face the bearing the GeoPose x axis faces. An extra 90° local yaw is
+            applied so that models authored with +Z forward (Unity's convention) point the right way. Use this when placing engine content;
+            use <see cref="F:Ethar.GeoPose.Conventions.ForwardAxis.GeoPoseX"/> when the engine rotation must round-trip exactly to the GeoPose value.
+            </summary>
+        </member>
+        <member name="T:Ethar.GeoPose.Conventions.LeftHandedYUpConversions">
+            <summary>
+            Conversions between the right-handed LTP-ENU frame and a left-handed, Y-up engine frame (Unity's world space), with a heading offset.
+            </summary>
+            <remarks>
+            <para>
+            The axis mapping is East to +X, Up to +Y and North to +Z. Because the two frames have opposite handedness, this swap alone is
+            not enough for rotations: a rotation by θ about an ENU axis becomes a rotation by -θ about the mapped axis. In quaternion terms an
+            ENU quaternion (x, y, z, w) becomes (-x, -z, -y, w) in the engine frame.
+            </para>
+            <para>
+            The heading offset is the compass bearing of the engine's +Z axis, in degrees, clockwise from true North. Engines that start their
+            world frame at the device's initial pose have an arbitrary heading offset; a QR code or tracked image with a known GeoPose gives a
+            measured one. True North lies at engine yaw <c>-heading offset</c>. Every ENU displacement and every ENU rotation is therefore
+            turned by <c>-heading offset</c> about the engine's Y axis after the axis mapping, and by <c>+heading offset</c> before mapping back.
+            Use <see cref="M:Ethar.GeoPose.Conventions.CompassHeading.EngineHeadingOffset(System.Double,System.Double)"/> to obtain the offset from a device compass reading.
+            </para>
+            </remarks>
+        </member>
+        <member name="M:Ethar.GeoPose.Conventions.LeftHandedYUpConversions.ToLeftHandedYUp(Ethar.GeoPose.Geodesy.EnuVector,System.Double)">
+            <summary>
+            Maps an ENU displacement to the engine frame.
+            </summary>
+            <param name="displacement">The East, North, Up displacement in meters.</param>
+            <param name="headingOffsetDegrees">The compass bearing of the engine's +Z axis in degrees.</param>
+            <returns>The displacement in the engine frame.</returns>
+        </member>
+        <member name="M:Ethar.GeoPose.Conventions.LeftHandedYUpConversions.ToEnu(Ethar.GeoPose.Conventions.LeftHandedYUpVector,System.Double)">
+            <summary>
+            Maps an engine-frame displacement back to ENU.
+            </summary>
+            <param name="displacement">The displacement in the engine frame.</param>
+            <param name="headingOffsetDegrees">The compass bearing of the engine's +Z axis in degrees.</param>
+            <returns>The East, North, Up displacement in meters.</returns>
+        </member>
+        <member name="M:Ethar.GeoPose.Conventions.LeftHandedYUpConversions.ToLeftHandedYUp(Ethar.GeoPose.DataTypes.UnitQuaternion,System.Double)">
+            <summary>
+            Maps a rotation expressed in the ENU frame to the engine frame.
+            </summary>
+            <param name="enuRotation">The unit quaternion in the ENU frame, rotating inner-frame vectors into ENU.</param>
+            <param name="headingOffsetDegrees">The compass bearing of the engine's +Z axis in degrees.</param>
+            <returns>The unit quaternion in the engine frame, rotating the object's local vectors into engine world space.</returns>
+        </member>
+        <member name="M:Ethar.GeoPose.Conventions.LeftHandedYUpConversions.ToEnu(Ethar.GeoPose.DataTypes.UnitQuaternion,System.Double)">
+            <summary>
+            Maps a rotation expressed in the engine frame back to the ENU frame.
+            </summary>
+            <param name="engineRotation">The unit quaternion in the engine frame.</param>
+            <param name="headingOffsetDegrees">The compass bearing of the engine's +Z axis in degrees.</param>
+            <returns>The unit quaternion in the ENU frame.</returns>
+        </member>
+        <member name="T:Ethar.GeoPose.Conventions.LeftHandedYUpFrame">
+            <summary>
+            The mapping between a left-handed, Y-up engine world frame and the Earth: a geodetic origin, the engine position of that origin,
+            and the heading offset of the engine frame. Converts GeoPoses to engine poses and back.
+            </summary>
+            <remarks>
+            <para>
+            This is the double precision, engine-independent replacement for the origin mapping carried by the Unity samples. An origin manager
+            (GPS, QR code, tracked image) measures the three values; everything else is derived here so that every consumer applies the same
+            axis mapping and the same heading sign.
+            </para>
+            <para>
+            The heading offset is the compass bearing of the engine's +Z axis. For a device-anchored engine frame it is
+            <c>CompassHeading.EngineHeadingOffset(trueHeading, deviceEngineYaw)</c>. For a QR code or image whose GeoPose yaw is known, it is the
+            bearing that GeoPose faces minus the engine yaw of the anchor: <c>CompassHeading.ToCompassBearing(poseYaw) - anchorEngineYaw</c>.
+            </para>
+            </remarks>
+        </member>
+        <member name="M:Ethar.GeoPose.Conventions.LeftHandedYUpFrame.#ctor(Ethar.GeoPose.DataTypes.TangentPointPosition,Ethar.GeoPose.Conventions.LeftHandedYUpVector,System.Double)">
+            <summary>
+            Initializes a new instance of the <see cref="T:Ethar.GeoPose.Conventions.LeftHandedYUpFrame"/> struct.
+            </summary>
+            <param name="origin">The geodetic position of the frame origin (WGS 84, ellipsoidal height).</param>
+            <param name="engineOrigin">The engine world position that coincides with <paramref name="origin"/>.</param>
+            <param name="headingOffsetDegrees">The compass bearing of the engine's +Z axis in degrees, clockwise from true North.</param>
+        </member>
+        <member name="P:Ethar.GeoPose.Conventions.LeftHandedYUpFrame.Origin">
+            <summary>
+            Gets the geodetic position of the frame origin.
+            </summary>
+        </member>
+        <member name="P:Ethar.GeoPose.Conventions.LeftHandedYUpFrame.EngineOrigin">
+            <summary>
+            Gets the engine world position that coincides with <see cref="P:Ethar.GeoPose.Conventions.LeftHandedYUpFrame.Origin"/>.
+            </summary>
+        </member>
+        <member name="P:Ethar.GeoPose.Conventions.LeftHandedYUpFrame.HeadingOffsetDegrees">
+            <summary>
+            Gets the compass bearing of the engine's +Z axis in degrees, in the range [0, 360).
+            </summary>
+        </member>
+        <member name="M:Ethar.GeoPose.Conventions.LeftHandedYUpFrame.op_Equality(Ethar.GeoPose.Conventions.LeftHandedYUpFrame,Ethar.GeoPose.Conventions.LeftHandedYUpFrame)">
+            <summary>
+            Performs an equality comparison on two objects of type <see cref="T:Ethar.GeoPose.Conventions.LeftHandedYUpFrame"/>.
+            </summary>
+            <param name="a">The first object.</param>
+            <param name="b">The second object.</param>
+            <returns>True if the objects are equal.</returns>
+        </member>
+        <member name="M:Ethar.GeoPose.Conventions.LeftHandedYUpFrame.op_Inequality(Ethar.GeoPose.Conventions.LeftHandedYUpFrame,Ethar.GeoPose.Conventions.LeftHandedYUpFrame)">
+            <summary>
+            Performs an inequality comparison on two objects of type <see cref="T:Ethar.GeoPose.Conventions.LeftHandedYUpFrame"/>.
+            </summary>
+            <param name="a">The first object.</param>
+            <param name="b">The second object.</param>
+            <returns>True if the objects are not equal.</returns>
+        </member>
+        <member name="M:Ethar.GeoPose.Conventions.LeftHandedYUpFrame.ToEngine(Ethar.GeoPose.DataTypes.TangentPointPosition)">
+            <summary>
+            Maps a geodetic position to an engine world position.
+            </summary>
+            <param name="position">The geodetic position (WGS 84, ellipsoidal height).</param>
+            <returns>The engine world position in meters.</returns>
+        </member>
+        <member name="M:Ethar.GeoPose.Conventions.LeftHandedYUpFrame.ToEngine(Ethar.GeoPose.DataTypes.UnitQuaternion,Ethar.GeoPose.Conventions.ForwardAxis)">
+            <summary>
+            Maps a GeoPose orientation in the ENU frame to an engine world rotation.
+            </summary>
+            <param name="enuRotation">The unit quaternion in the ENU frame.</param>
+            <param name="forwardAxis">Which local axis should face the GeoPose reference direction.</param>
+            <returns>The engine world rotation.</returns>
+        </member>
+        <member name="M:Ethar.GeoPose.Conventions.LeftHandedYUpFrame.ToEngine(Ethar.GeoPose.StructuralDataUnits.BasicYawPitchRollSdu,Ethar.GeoPose.Conventions.ForwardAxis)">
+            <summary>
+            Maps a Basic-YPR GeoPose to an engine pose.
+            </summary>
+            <param name="sdu">The Basic-YPR structural data unit.</param>
+            <param name="forwardAxis">Which local axis should face the GeoPose reference direction.</param>
+            <returns>The engine pose.</returns>
+        </member>
+        <member name="M:Ethar.GeoPose.Conventions.LeftHandedYUpFrame.ToEngine(Ethar.GeoPose.StructuralDataUnits.BasicQuaternionSdu,Ethar.GeoPose.Conventions.ForwardAxis)">
+            <summary>
+            Maps a Basic-Quaternion GeoPose to an engine pose.
+            </summary>
+            <param name="sdu">The Basic-Quaternion structural data unit.</param>
+            <param name="forwardAxis">Which local axis should face the GeoPose reference direction.</param>
+            <returns>The engine pose.</returns>
+        </member>
+        <member name="M:Ethar.GeoPose.Conventions.LeftHandedYUpFrame.ToGeodetic(Ethar.GeoPose.Conventions.LeftHandedYUpVector)">
+            <summary>
+            Maps an engine world position to a geodetic position.
+            </summary>
+            <param name="enginePosition">The engine world position in meters.</param>
+            <returns>The geodetic position (WGS 84, ellipsoidal height).</returns>
+        </member>
+        <member name="M:Ethar.GeoPose.Conventions.LeftHandedYUpFrame.ToEnuRotation(Ethar.GeoPose.DataTypes.UnitQuaternion,Ethar.GeoPose.Conventions.ForwardAxis)">
+            <summary>
+            Maps an engine world rotation to a GeoPose orientation in the ENU frame.
+            </summary>
+            <param name="engineRotation">The engine world rotation.</param>
+            <param name="forwardAxis">The forward axis convention the engine rotation was built with.</param>
+            <returns>The unit quaternion in the ENU frame.</returns>
+        </member>
+        <member name="M:Ethar.GeoPose.Conventions.LeftHandedYUpFrame.ToBasicYawPitchRoll(Ethar.GeoPose.Conventions.EnginePose,Ethar.GeoPose.Conventions.ForwardAxis)">
+            <summary>
+            Maps an engine pose to a Basic-YPR GeoPose.
+            </summary>
+            <param name="pose">The engine pose.</param>
+            <param name="forwardAxis">The forward axis convention the engine rotation was built with.</param>
+            <returns>The Basic-YPR structural data unit.</returns>
+        </member>
+        <member name="M:Ethar.GeoPose.Conventions.LeftHandedYUpFrame.ToBasicQuaternion(Ethar.GeoPose.Conventions.EnginePose,Ethar.GeoPose.Conventions.ForwardAxis)">
+            <summary>
+            Maps an engine pose to a Basic-Quaternion GeoPose.
+            </summary>
+            <param name="pose">The engine pose.</param>
+            <param name="forwardAxis">The forward axis convention the engine rotation was built with.</param>
+            <returns>The Basic-Quaternion structural data unit.</returns>
+        </member>
+        <member name="M:Ethar.GeoPose.Conventions.LeftHandedYUpFrame.Equals(Ethar.GeoPose.Conventions.LeftHandedYUpFrame)">
+            <inheritdoc/>
+        </member>
+        <member name="M:Ethar.GeoPose.Conventions.LeftHandedYUpFrame.Equals(System.Object)">
+            <inheritdoc/>
+        </member>
+        <member name="M:Ethar.GeoPose.Conventions.LeftHandedYUpFrame.GetHashCode">
+            <inheritdoc/>
+        </member>
+        <member name="M:Ethar.GeoPose.Conventions.LeftHandedYUpFrame.ToString">
+            <inheritdoc/>
+        </member>
+        <member name="T:Ethar.GeoPose.Conventions.LeftHandedYUpVector">
+            <summary>
+            A vector in a left-handed, Y-up engine frame such as Unity's world space, in meters.
+            </summary>
+            <remarks>
+            X points right, Y points up and Z points forward. Positive rotation about Y is clockwise when viewed from above.
+            This is the opposite sense to the right-handed LTP-ENU frame; use <see cref="T:Ethar.GeoPose.Conventions.LeftHandedYUpConversions"/> to convert.
+            </remarks>
+        </member>
+        <member name="M:Ethar.GeoPose.Conventions.LeftHandedYUpVector.#ctor(System.Double,System.Double,System.Double)">
+            <summary>
+            Initializes a new instance of the <see cref="T:Ethar.GeoPose.Conventions.LeftHandedYUpVector"/> struct.
+            </summary>
+            <param name="x">The X (right) component.</param>
+            <param name="y">The Y (up) component.</param>
+            <param name="z">The Z (forward) component.</param>
+        </member>
+        <member name="P:Ethar.GeoPose.Conventions.LeftHandedYUpVector.Zero">
+            <summary>
+            Gets the zero vector.
+            </summary>
+        </member>
+        <member name="P:Ethar.GeoPose.Conventions.LeftHandedYUpVector.X">
+            <summary>
+            Gets or sets the X (right) component.
+            </summary>
+        </member>
+        <member name="P:Ethar.GeoPose.Conventions.LeftHandedYUpVector.Y">
+            <summary>
+            Gets or sets the Y (up) component.
+            </summary>
+        </member>
+        <member name="P:Ethar.GeoPose.Conventions.LeftHandedYUpVector.Z">
+            <summary>
+            Gets or sets the Z (forward) component.
+            </summary>
+        </member>
+        <member name="M:Ethar.GeoPose.Conventions.LeftHandedYUpVector.op_Addition(Ethar.GeoPose.Conventions.LeftHandedYUpVector,Ethar.GeoPose.Conventions.LeftHandedYUpVector)">
+            <summary>
+            Adds two vectors.
+            </summary>
+            <param name="a">The first vector.</param>
+            <param name="b">The second vector.</param>
+            <returns>The component-wise sum.</returns>
+        </member>
+        <member name="M:Ethar.GeoPose.Conventions.LeftHandedYUpVector.op_Subtraction(Ethar.GeoPose.Conventions.LeftHandedYUpVector,Ethar.GeoPose.Conventions.LeftHandedYUpVector)">
+            <summary>
+            Subtracts one vector from another.
+            </summary>
+            <param name="a">The vector to subtract from.</param>
+            <param name="b">The vector to subtract.</param>
+            <returns>The component-wise difference.</returns>
+        </member>
+        <member name="M:Ethar.GeoPose.Conventions.LeftHandedYUpVector.op_Equality(Ethar.GeoPose.Conventions.LeftHandedYUpVector,Ethar.GeoPose.Conventions.LeftHandedYUpVector)">
+            <summary>
+            Performs an equality comparison on two objects of type <see cref="T:Ethar.GeoPose.Conventions.LeftHandedYUpVector"/>.
+            </summary>
+            <param name="a">The first object.</param>
+            <param name="b">The second object.</param>
+            <returns>True if the objects are equal.</returns>
+        </member>
+        <member name="M:Ethar.GeoPose.Conventions.LeftHandedYUpVector.op_Inequality(Ethar.GeoPose.Conventions.LeftHandedYUpVector,Ethar.GeoPose.Conventions.LeftHandedYUpVector)">
+            <summary>
+            Performs an inequality comparison on two objects of type <see cref="T:Ethar.GeoPose.Conventions.LeftHandedYUpVector"/>.
+            </summary>
+            <param name="a">The first object.</param>
+            <param name="b">The second object.</param>
+            <returns>True if the objects are not equal.</returns>
+        </member>
+        <member name="M:Ethar.GeoPose.Conventions.LeftHandedYUpVector.Equals(Ethar.GeoPose.Conventions.LeftHandedYUpVector)">
+            <inheritdoc/>
+        </member>
+        <member name="M:Ethar.GeoPose.Conventions.LeftHandedYUpVector.Equals(System.Object)">
+            <inheritdoc/>
+        </member>
+        <member name="M:Ethar.GeoPose.Conventions.LeftHandedYUpVector.GetHashCode">
+            <inheritdoc/>
+        </member>
+        <member name="M:Ethar.GeoPose.Conventions.LeftHandedYUpVector.ToString">
+            <inheritdoc/>
+        </member>
+        <member name="T:Ethar.GeoPose.Conventions.OrientationConversions">
+            <summary>
+            Quaternion arithmetic and conversions between yaw, pitch, roll angles and unit quaternions.
+            </summary>
+            <remarks>
+            <para>
+            Quaternions follow the Hamilton convention. <c>a.Multiply(b)</c> is the rotation that applies <c>b</c> first and then <c>a</c>.
+            A <see cref="T:Ethar.GeoPose.DataTypes.UnitQuaternion"/> produced by these helpers rotates a vector expressed in the inner (posed) frame into the outer
+            frame: <c>v_outer = q · v_inner · q*</c>, which is what <see cref="M:Ethar.GeoPose.Conventions.OrientationConversions.Rotate(Ethar.GeoPose.DataTypes.UnitQuaternion,Ethar.GeoPose.DataTypes.UnitVector3)"/> computes.
+            </para>
+            <para>
+            The parameterless <see cref="M:Ethar.GeoPose.Conventions.OrientationConversions.ToQuaternion(Ethar.GeoPose.DataTypes.YawPitchRollAngles)"/> and <see cref="M:Ethar.GeoPose.Conventions.OrientationConversions.ToYawPitchRoll(Ethar.GeoPose.DataTypes.UnitQuaternion)"/> use
+            <see cref="P:Ethar.GeoPose.Conventions.EulerConvention.GeoPoseStandard"/>: OGC GeoPose 1.0 /req/basic-ypr/angles, intrinsic rotations about local z (yaw),
+            then y (pitch), then x (roll), in degrees, <c>q = qz(yaw) · qy(pitch) · qx(roll)</c>. The overloads that take an
+            <see cref="T:Ethar.GeoPose.Conventions.EulerConvention"/> support any Tait-Bryan sequence, intrinsic or extrinsic, in degrees or radians, so data produced under
+            another convention can be converted to the standard one with <see cref="M:Ethar.GeoPose.Conventions.OrientationConversions.ConvertTo(Ethar.GeoPose.DataTypes.YawPitchRollAngles,Ethar.GeoPose.Conventions.EulerConvention,Ethar.GeoPose.Conventions.EulerConvention)"/>.
+            </para>
+            </remarks>
+        </member>
+        <member name="M:Ethar.GeoPose.Conventions.OrientationConversions.FromAxisAngle(Ethar.GeoPose.DataTypes.UnitVector3,System.Double)">
+            <summary>
+            Builds the unit quaternion for a rotation of <paramref name="degrees"/> about an arbitrary axis.
+            </summary>
+            <param name="axis">The axis of rotation; it is normalised before use.</param>
+            <param name="degrees">The angle in degrees, positive in the right-handed sense about the axis.</param>
+            <returns>The unit quaternion.</returns>
+        </member>
+        <member name="M:Ethar.GeoPose.Conventions.OrientationConversions.FromAxisAngle(Ethar.GeoPose.Conventions.RotationAxis,System.Double)">
+            <summary>
+            Builds the unit quaternion for a rotation of <paramref name="degrees"/> about a frame axis.
+            </summary>
+            <param name="axis">The frame axis.</param>
+            <param name="degrees">The angle in degrees, positive in the right-handed sense about the axis.</param>
+            <returns>The unit quaternion.</returns>
+        </member>
+        <member name="M:Ethar.GeoPose.Conventions.OrientationConversions.ToQuaternion(Ethar.GeoPose.DataTypes.YawPitchRollAngles)">
+            <summary>
+            Converts GeoPose yaw, pitch and roll angles to the equivalent unit quaternion using <see cref="P:Ethar.GeoPose.Conventions.EulerConvention.GeoPoseStandard"/>.
+            </summary>
+            <param name="angles">The angles in degrees.</param>
+            <returns>The unit quaternion <c>qz(yaw) · qy(pitch) · qx(roll)</c>.</returns>
+        </member>
+        <member name="M:Ethar.GeoPose.Conventions.OrientationConversions.ToQuaternion(Ethar.GeoPose.DataTypes.YawPitchRollAngles,Ethar.GeoPose.Conventions.EulerConvention)">
+            <summary>
+            Converts yaw, pitch and roll angles expressed under a given convention to the equivalent unit quaternion.
+            </summary>
+            <param name="angles">The angles, in the convention's unit.</param>
+            <param name="convention">The axis sequence, intrinsic or extrinsic application, and unit.</param>
+            <returns>The unit quaternion.</returns>
+        </member>
+        <member name="M:Ethar.GeoPose.Conventions.OrientationConversions.ToYawPitchRoll(Ethar.GeoPose.DataTypes.UnitQuaternion)">
+            <summary>
+            Converts a unit quaternion to GeoPose yaw, pitch and roll angles using <see cref="P:Ethar.GeoPose.Conventions.EulerConvention.GeoPoseStandard"/>.
+            </summary>
+            <param name="quaternion">The unit quaternion; it is normalised before use.</param>
+            <returns>The angles in degrees. Yaw and roll are in [-180, 180); pitch is in [-90, 90].</returns>
+        </member>
+        <member name="M:Ethar.GeoPose.Conventions.OrientationConversions.ToYawPitchRoll(Ethar.GeoPose.DataTypes.UnitQuaternion,Ethar.GeoPose.Conventions.EulerConvention)">
+            <summary>
+            Converts a unit quaternion to yaw, pitch and roll angles under a given convention.
+            </summary>
+            <param name="quaternion">The unit quaternion; it is normalised before use.</param>
+            <param name="convention">The axis sequence, intrinsic or extrinsic application, and unit.</param>
+            <returns>The angles in the convention's unit. Yaw and roll cover a half turn either way; pitch covers a quarter turn either way.</returns>
+        </member>
+        <member name="M:Ethar.GeoPose.Conventions.OrientationConversions.ConvertTo(Ethar.GeoPose.DataTypes.YawPitchRollAngles,Ethar.GeoPose.Conventions.EulerConvention,Ethar.GeoPose.Conventions.EulerConvention)">
+            <summary>
+            Re-expresses yaw, pitch and roll angles from one convention in another.
+            </summary>
+            <param name="angles">The angles in the source convention.</param>
+            <param name="from">The source convention.</param>
+            <param name="to">The target convention.</param>
+            <returns>The same rotation as angles in the target convention.</returns>
+        </member>
+        <member name="M:Ethar.GeoPose.Conventions.OrientationConversions.Norm(Ethar.GeoPose.DataTypes.UnitQuaternion)">
+            <summary>
+            Gets the Euclidean norm of the quaternion. A valid GeoPose quaternion has a norm of one.
+            </summary>
+            <param name="quaternion">The quaternion.</param>
+            <returns>The norm.</returns>
+        </member>
+        <member name="M:Ethar.GeoPose.Conventions.OrientationConversions.IsUnit(Ethar.GeoPose.DataTypes.UnitQuaternion,System.Double)">
+            <summary>
+            Checks that the quaternion is a unit quaternion within a tolerance.
+            </summary>
+            <param name="quaternion">The quaternion.</param>
+            <param name="tolerance">The allowed deviation of the norm from one.</param>
+            <returns>True if the norm is within the tolerance of one.</returns>
+        </member>
+        <member name="M:Ethar.GeoPose.Conventions.OrientationConversions.Normalize(Ethar.GeoPose.DataTypes.UnitQuaternion)">
+            <summary>
+            Returns the quaternion scaled to unit length.
+            </summary>
+            <param name="quaternion">The quaternion.</param>
+            <returns>The normalised quaternion.</returns>
+            <exception cref="T:System.InvalidOperationException">Thrown if the quaternion has zero length.</exception>
+        </member>
+        <member name="M:Ethar.GeoPose.Conventions.OrientationConversions.Conjugate(Ethar.GeoPose.DataTypes.UnitQuaternion)">
+            <summary>
+            Returns the conjugate, which for a unit quaternion is the inverse rotation.
+            </summary>
+            <param name="quaternion">The quaternion.</param>
+            <returns>The conjugate.</returns>
+        </member>
+        <member name="M:Ethar.GeoPose.Conventions.OrientationConversions.Multiply(Ethar.GeoPose.DataTypes.UnitQuaternion,Ethar.GeoPose.DataTypes.UnitQuaternion)">
+            <summary>
+            Hamilton product. The result applies <paramref name="second"/> first and then <paramref name="first"/>.
+            </summary>
+            <param name="first">The rotation applied last.</param>
+            <param name="second">The rotation applied first.</param>
+            <returns>The combined rotation.</returns>
+        </member>
+        <member name="M:Ethar.GeoPose.Conventions.OrientationConversions.Rotate(Ethar.GeoPose.DataTypes.UnitQuaternion,Ethar.GeoPose.DataTypes.UnitVector3)">
+            <summary>
+            Rotates a vector by the quaternion: <c>v' = q · v · q*</c>.
+            </summary>
+            <param name="quaternion">The unit quaternion.</param>
+            <param name="vector">The vector to rotate.</param>
+            <returns>The rotated vector.</returns>
+        </member>
+        <member name="M:Ethar.GeoPose.Conventions.OrientationConversions.Rotate(Ethar.GeoPose.DataTypes.UnitQuaternion,Ethar.GeoPose.Geodesy.EnuVector)">
+            <summary>
+            Rotates an ENU displacement by a quaternion expressed in the ENU frame.
+            </summary>
+            <param name="quaternion">The unit quaternion in the ENU frame.</param>
+            <param name="displacement">The displacement to rotate.</param>
+            <returns>The rotated displacement.</returns>
+        </member>
+        <member name="M:Ethar.GeoPose.Conventions.OrientationConversions.AngleTo(Ethar.GeoPose.DataTypes.UnitQuaternion,Ethar.GeoPose.DataTypes.UnitQuaternion)">
+            <summary>
+            Returns the smallest angle between two rotations, in degrees. Zero means the same rotation (q and -q count as equal).
+            </summary>
+            <param name="a">The first rotation.</param>
+            <param name="b">The second rotation.</param>
+            <returns>The angle in degrees, in [0, 180].</returns>
+        </member>
         <member name="T:Ethar.GeoPose.DataTypes.FrameAndTimeElement">
              <summary>
              A construct that represents a frame and time used in a chain of poses.
@@ -363,13 +1057,23 @@
             <inheritdoc/>
         </member>
         <member name="T:Ethar.GeoPose.DataTypes.TangentPointPosition">
-             <summary>
-             A construct that represents a location represented by latitude and longitude in decimal degrees and a height in meters.
-            
-             Requirements derived from figure 13 in section 7.2.4 of version 1.0.0 of the GeoPose spec http://www.opengis.net/doc/DIS/geopose/1.0.
-             </summary>
+            <summary>
+            A construct that represents a location represented by latitude and longitude in decimal degrees and a height in meters.
+            </summary>
+            <remarks>
+            <para>
+            The position is on the WGS 84 ellipsoid (EPSG:4979). Latitude is in [-90, 90] and longitude in [-180, 180] decimal degrees.
+            <see cref="P:Ethar.GeoPose.DataTypes.TangentPointPosition.HeightInMeters"/> is the height above the WGS 84 ellipsoid (OGC GeoPose 1.0 requirement /req/tangent-point/height),
+            positive above and negative below. It is not a height above mean sea level; device altitudes reported above sea level must be
+            corrected by the local geoid separation, which is tens of meters in most of the world.
+            </para>
+            <para>
+            Convert to and from ECEF and Local Tangent Plane ENU with <see cref="T:Ethar.GeoPose.Geodesy.GeodeticConverter"/>.
+            Requirements derived from figure 13 in section 7.2.4 of version 1.0 of the GeoPose standard https://docs.ogc.org/is/21-056r11/21-056r11.html.
+            </para>
+            </remarks>
         </member>
-        <member name="M:Ethar.GeoPose.DataTypes.TangentPointPosition.#ctor(System.Single,System.Single,System.Single)">
+        <member name="M:Ethar.GeoPose.DataTypes.TangentPointPosition.#ctor(System.Double,System.Double,System.Double)">
             <summary>
             Initializes a new instance of the <see cref="T:Ethar.GeoPose.DataTypes.TangentPointPosition"/> struct.
             </summary>
@@ -424,8 +1128,22 @@
             <summary>
             A data type that represents a quaternion for serialization.
             </summary>
+            <remarks>
+            <para>
+            OGC GeoPose 1.0 (21-056r11) requirement /req/basic-quaternion/quaternion: a rotation-only transformation of a reference frame
+            aligned East-North-Up, as a unit quaternion whose components' squares sum to one. The standard lists the components as w, x, y, z;
+            the JSON encoding and this type carry them as x, y, z, w.
+            </para>
+            <para>
+            The quaternion rotates a vector expressed in the inner (posed) frame into the ENU frame, <c>v_enu = q · v_inner · q*</c>,
+            in the Hamilton convention used by <see cref="T:Ethar.GeoPose.Conventions.OrientationConversions"/>. The standard does not name an
+            active or passive convention; this is the reading the library implements and tests. Use
+            <see cref="M:Ethar.GeoPose.Conventions.OrientationConversions.IsUnit(Ethar.GeoPose.DataTypes.UnitQuaternion,System.Double)"/> to validate incoming data and
+            <see cref="T:Ethar.GeoPose.Conventions.LeftHandedYUpConversions"/> to map to a left-handed, Y-up engine frame.
+            </para>
+            </remarks>
         </member>
-        <member name="M:Ethar.GeoPose.DataTypes.UnitQuaternion.#ctor(System.Single,System.Single,System.Single,System.Single)">
+        <member name="M:Ethar.GeoPose.DataTypes.UnitQuaternion.#ctor(System.Double,System.Double,System.Double,System.Double)">
             <summary>
             Initializes a new instance of the <see cref="T:Ethar.GeoPose.DataTypes.UnitQuaternion"/> struct.
             </summary>
@@ -434,7 +1152,7 @@
             <param name="z">The z value.</param>
             <param name="w">The w value.</param>
         </member>
-        <member name="M:Ethar.GeoPose.DataTypes.UnitQuaternion.#ctor(Ethar.GeoPose.DataTypes.UnitVector3,System.Single)">
+        <member name="M:Ethar.GeoPose.DataTypes.UnitQuaternion.#ctor(Ethar.GeoPose.DataTypes.UnitVector3,System.Double)">
             <summary>
             Initializes a new instance of the <see cref="T:Ethar.GeoPose.DataTypes.UnitQuaternion"/> struct from the given vector and rotation parts.
             </summary>
@@ -499,7 +1217,7 @@
             A data type that represents a vector3 for serialization.
             </summary>
         </member>
-        <member name="M:Ethar.GeoPose.DataTypes.UnitVector3.#ctor(System.Single,System.Single,System.Single)">
+        <member name="M:Ethar.GeoPose.DataTypes.UnitVector3.#ctor(System.Double,System.Double,System.Double)">
             <summary>
             Initializes a new instance of the <see cref="T:Ethar.GeoPose.DataTypes.UnitVector3"/> struct.
             </summary>
@@ -599,13 +1317,31 @@
             <inheritdoc/>
         </member>
         <member name="T:Ethar.GeoPose.DataTypes.YawPitchRollAngles">
-             <summary>
-             A construct that represents yaw, pitch, and roll angles specified in decimal degrees.
-            
-             Requirements derived from figure 8 in section 7.2.1 of version 1.0.0 of the GeoPose spec http://www.opengis.net/doc/DIS/geopose/1.0.
-             </summary>
+            <summary>
+            A construct that represents yaw, pitch, and roll angles specified in decimal degrees.
+            </summary>
+            <remarks>
+            <para>
+            Frame and order follow OGC GeoPose 1.0 (21-056r11) requirement /req/basic-ypr/angles: three consecutive rotations of a
+            reference frame aligned East-North-Up (x East, y North, z Up, right-handed) about the local, already rotated, axes z (yaw),
+            then y (pitch), then x (roll), in that order. All three are signed decimal degrees.
+            </para>
+            <para>
+            The frame is right-handed, so a positive yaw is counter-clockwise viewed from above and turns East towards North. With pitch on y
+            and roll on x the x axis is the reference (forward) direction: an all-zero orientation faces East and a yaw of 90° faces North.
+            Compass bearings are clockwise from North, the opposite sense; convert with <see cref="T:Ethar.GeoPose.Conventions.CompassHeading"/>.
+            Convert to a unit quaternion with <see cref="M:Ethar.GeoPose.Conventions.OrientationConversions.ToQuaternion(Ethar.GeoPose.DataTypes.YawPitchRollAngles)"/>.
+            </para>
+            <para>
+            Left-handed, Y-up engines such as Unity cannot use these values directly as Euler angles: the axes and the sense of rotation both
+            differ. Map through <see cref="T:Ethar.GeoPose.Conventions.LeftHandedYUpFrame"/> instead.
+            </para>
+            <para>
+            Requirements derived from figure 8 in section 7.2.1 of version 1.0 of the GeoPose standard https://docs.ogc.org/is/21-056r11/21-056r11.html.
+            </para>
+            </remarks>
         </member>
-        <member name="M:Ethar.GeoPose.DataTypes.YawPitchRollAngles.#ctor(System.Single,System.Single,System.Single)">
+        <member name="M:Ethar.GeoPose.DataTypes.YawPitchRollAngles.#ctor(System.Double,System.Double,System.Double)">
             <summary>
             Initializes a new instance of the <see cref="T:Ethar.GeoPose.DataTypes.YawPitchRollAngles"/> struct.
             </summary>
@@ -746,66 +1482,118 @@
         </member>
         <member name="T:Ethar.GeoPose.Extensions.TangentPointPositionExtensions">
             <summary>
-            Extensions for the <see cref="T:Ethar.GeoPose.DataTypes.TangentPointPosition"/> struct.
+            Extensions for <see cref="T:Ethar.GeoPose.DataTypes.TangentPointPosition"/>.
             </summary>
         </member>
         <member name="M:Ethar.GeoPose.Extensions.TangentPointPositionExtensions.Validate(Ethar.GeoPose.DataTypes.TangentPointPosition)">
             <summary>
-            Validates that the <see cref="T:Ethar.GeoPose.DataTypes.TangentPointPosition"/> contains a valid latitude and longitude.
+            Validates that the latitude and longitude are within range.
             </summary>
-            <param name="position">The position to validate.</param>
-            <returns>A <see cref="T:Ethar.GeoPose.Validation.FrameSpecificationValidationResult"/> with information on the validity of the <see cref="T:Ethar.GeoPose.DataTypes.TangentPointPosition"/>.</returns>
+            <param name="position">The position.</param>
+            <returns>The validation result.</returns>
         </member>
         <member name="M:Ethar.GeoPose.Extensions.TangentPointPositionExtensions.BuildParamString(Ethar.GeoPose.DataTypes.TangentPointPosition)">
             <summary>
-            Builds a parameter string for various frame specification types.
+            Builds the Ethar authority parameter string for the position, culture-invariant:
+            <c>latitude=…&amp;longitude=…&amp;heightInMeters=…</c>.
             </summary>
-            <param name="position">The position to build the parameter string for.</param>
-            <returns>A parameter string representation of the <see cref="T:Ethar.GeoPose.DataTypes.TangentPointPosition"/>.</returns>
+            <param name="position">The position.</param>
+            <returns>The parameter string.</returns>
+        </member>
+        <member name="T:Ethar.GeoPose.Extensions.TangentPointPositionGeodesyExtensions">
+            <summary>
+            Geodesy conveniences on <see cref="T:Ethar.GeoPose.DataTypes.TangentPointPosition"/>; thin wrappers over <see cref="T:Ethar.GeoPose.Geodesy.GeodeticConverter"/>.
+            </summary>
+        </member>
+        <member name="M:Ethar.GeoPose.Extensions.TangentPointPositionGeodesyExtensions.ToEcef(Ethar.GeoPose.DataTypes.TangentPointPosition)">
+            <summary>
+            Converts the position to ECEF.
+            </summary>
+            <param name="position">The geodetic position.</param>
+            <returns>The ECEF position in meters.</returns>
+        </member>
+        <member name="M:Ethar.GeoPose.Extensions.TangentPointPositionGeodesyExtensions.EnuOffsetFrom(Ethar.GeoPose.DataTypes.TangentPointPosition,Ethar.GeoPose.DataTypes.TangentPointPosition)">
+            <summary>
+            Expresses this position as an East, North, Up displacement from an origin.
+            </summary>
+            <param name="position">The geodetic position.</param>
+            <param name="origin">The tangent point that is the origin of the ENU frame.</param>
+            <returns>The displacement in meters.</returns>
+        </member>
+        <member name="M:Ethar.GeoPose.Extensions.TangentPointPositionGeodesyExtensions.OffsetBy(Ethar.GeoPose.DataTypes.TangentPointPosition,Ethar.GeoPose.Geodesy.EnuVector)">
+            <summary>
+            Returns the geodetic position reached by moving this position by an East, North, Up displacement.
+            </summary>
+            <param name="origin">The starting position, which is the tangent point of the displacement.</param>
+            <param name="displacement">The displacement in meters.</param>
+            <returns>The displaced geodetic position.</returns>
+        </member>
+        <member name="M:Ethar.GeoPose.Extensions.TangentPointPositionGeodesyExtensions.DistanceTo(Ethar.GeoPose.DataTypes.TangentPointPosition,Ethar.GeoPose.DataTypes.TangentPointPosition)">
+            <summary>
+            Great circle distance to another position, ignoring height.
+            </summary>
+            <remarks>
+            Uses a spherical earth model; the result is within about 0.56 % of the WGS 84 ellipsoidal distance. See
+            <see cref="M:Ethar.GeoPose.Geodesy.GeodeticConverter.GreatCircleDistance(Ethar.GeoPose.DataTypes.TangentPointPosition,Ethar.GeoPose.DataTypes.TangentPointPosition)"/>.
+            </remarks>
+            <param name="from">This position.</param>
+            <param name="to">The other position.</param>
+            <returns>The distance in meters.</returns>
+        </member>
+        <member name="M:Ethar.GeoPose.Extensions.TangentPointPositionGeodesyExtensions.BearingTo(Ethar.GeoPose.DataTypes.TangentPointPosition,Ethar.GeoPose.DataTypes.TangentPointPosition)">
+            <summary>
+            Initial compass bearing to another position.
+            </summary>
+            <remarks>
+            Uses a spherical earth model; the result is within about 0.2° of the WGS 84 ellipsoidal bearing for paths up to 5000 km. See
+            <see cref="M:Ethar.GeoPose.Geodesy.GeodeticConverter.InitialBearing(Ethar.GeoPose.DataTypes.TangentPointPosition,Ethar.GeoPose.DataTypes.TangentPointPosition)"/>.
+            </remarks>
+            <param name="from">This position.</param>
+            <param name="to">The other position.</param>
+            <returns>The bearing in degrees, clockwise from true North, in the range [0, 360).</returns>
         </member>
         <member name="T:Ethar.GeoPose.Extensions.UnitQuaternionExtensions">
             <summary>
-            Extensions for the <see cref="T:Ethar.GeoPose.DataTypes.UnitQuaternion"/> data type.
+            Extensions for <see cref="T:Ethar.GeoPose.DataTypes.UnitQuaternion"/>.
             </summary>
         </member>
         <member name="M:Ethar.GeoPose.Extensions.UnitQuaternionExtensions.BuildRotationParamString(Ethar.GeoPose.DataTypes.UnitQuaternion)">
             <summary>
-            Builds a parameter string for a <see cref="T:Ethar.GeoPose.DataTypes.UnitQuaternion"/>. The string will have "rotation" prepended to the members.
+            Builds the Ethar authority rotation parameter string, culture-invariant: <c>rotation.x=…&amp;rotation.y=…&amp;rotation.z=…&amp;rotation.w=…</c>.
             </summary>
-            <param name="quat">The <see cref="T:Ethar.GeoPose.DataTypes.UnitQuaternion"/> to generate the parameter string for.</param>
-            <returns>A string representing the <see cref="T:Ethar.GeoPose.DataTypes.UnitQuaternion"/>.</returns>
+            <param name="quat">The quaternion.</param>
+            <returns>The parameter string.</returns>
         </member>
         <member name="M:Ethar.GeoPose.Extensions.UnitQuaternionExtensions.BuildOrientationParamString(Ethar.GeoPose.DataTypes.UnitQuaternion)">
             <summary>
-            Builds a parameter string for a <see cref="T:Ethar.GeoPose.DataTypes.UnitQuaternion"/>. The string will have "orientation" prepended to the members.
+            Builds the Ethar authority orientation parameter string, culture-invariant: <c>orientation.x=…&amp;orientation.y=…&amp;orientation.z=…&amp;orientation.w=…</c>.
             </summary>
-            <param name="quat">The <see cref="T:Ethar.GeoPose.DataTypes.UnitQuaternion"/> to generate the parameter string for.</param>
-            <returns>A string representing the <see cref="T:Ethar.GeoPose.DataTypes.UnitQuaternion"/>.</returns>
+            <param name="quat">The quaternion.</param>
+            <returns>The parameter string.</returns>
         </member>
         <member name="T:Ethar.GeoPose.Extensions.UnitVector3Extensions">
             <summary>
-            Extensions for the <see cref="T:Ethar.GeoPose.DataTypes.UnitVector3"/> data type.
+            Extensions for <see cref="T:Ethar.GeoPose.DataTypes.UnitVector3"/>.
             </summary>
         </member>
         <member name="M:Ethar.GeoPose.Extensions.UnitVector3Extensions.BuildTranslationParamString(Ethar.GeoPose.DataTypes.UnitVector3)">
             <summary>
-            Builds a parameter string for the <see cref="T:Ethar.GeoPose.DataTypes.UnitVector3"/>.
+            Builds the Ethar authority translation parameter string, culture-invariant: <c>translation.x=…&amp;translation.y=…&amp;translation.z=…</c>.
             </summary>
-            <param name="vector">The <see cref="T:Ethar.GeoPose.DataTypes.UnitVector3"/> to generate a parameter string for.</param>
-            <returns>A string representation of the <see cref="T:Ethar.GeoPose.DataTypes.UnitVector3"/>.</returns>
-            <remarks>Convenience method used to generate parameter strings for frame specifications in the /Ethar.GeoPose/1.0 authority.</remarks>
+            <param name="vector">The vector.</param>
+            <returns>The parameter string.</returns>
         </member>
         <member name="T:Ethar.GeoPose.Extensions.YawPitchRollAnglesExtensions">
             <summary>
-            Extensions for the <see cref="T:Ethar.GeoPose.DataTypes.YawPitchRollAngles"/> data type.
+            Extensions for <see cref="T:Ethar.GeoPose.DataTypes.YawPitchRollAngles"/>.
             </summary>
         </member>
         <member name="M:Ethar.GeoPose.Extensions.YawPitchRollAnglesExtensions.BuildOrientationParamString(Ethar.GeoPose.DataTypes.YawPitchRollAngles)">
             <summary>
-            Builds a parameter string for a <see cref="T:Ethar.GeoPose.DataTypes.YawPitchRollAngles"/>.
+            Builds the Ethar authority orientation parameter string, culture-invariant: <c>orientation.yaw=…&amp;orientation.pitch=…&amp;orientation.roll=…</c>.
             </summary>
-            <param name="ypr">The <see cref="T:Ethar.GeoPose.DataTypes.YawPitchRollAngles"/> to generate the parameter string for.</param>
-            <returns>A string representing the <see cref="T:Ethar.GeoPose.DataTypes.YawPitchRollAngles"/>.</returns>
+            <param name="ypr">The angles.</param>
+            <returns>The parameter string.</returns>
         </member>
         <member name="T:Ethar.GeoPose.FrameSpecifications.BaseFrameSpecification">
              <summary>
@@ -838,6 +1626,370 @@
         </member>
         <member name="M:Ethar.GeoPose.FrameSpecifications.BaseFrameSpecification.ToString">
             <inheritdoc/>
+        </member>
+        <member name="T:Ethar.GeoPose.Geodesy.EcefPosition">
+            <summary>
+            A position in the Earth-Centered, Earth-Fixed (ECEF) Cartesian frame, in meters.
+            </summary>
+            <remarks>
+            The frame is right-handed: X points from the Earth's centre through the intersection of the equator and the prime meridian,
+            Z points through the North pole, and Y completes the right-handed set (through 90° East on the equator).
+            </remarks>
+        </member>
+        <member name="M:Ethar.GeoPose.Geodesy.EcefPosition.#ctor(System.Double,System.Double,System.Double)">
+            <summary>
+            Initializes a new instance of the <see cref="T:Ethar.GeoPose.Geodesy.EcefPosition"/> struct.
+            </summary>
+            <param name="x">The X coordinate in meters.</param>
+            <param name="y">The Y coordinate in meters.</param>
+            <param name="z">The Z coordinate in meters.</param>
+        </member>
+        <member name="P:Ethar.GeoPose.Geodesy.EcefPosition.X">
+            <summary>
+            Gets or sets the X coordinate in meters.
+            </summary>
+        </member>
+        <member name="P:Ethar.GeoPose.Geodesy.EcefPosition.Y">
+            <summary>
+            Gets or sets the Y coordinate in meters.
+            </summary>
+        </member>
+        <member name="P:Ethar.GeoPose.Geodesy.EcefPosition.Z">
+            <summary>
+            Gets or sets the Z coordinate in meters.
+            </summary>
+        </member>
+        <member name="M:Ethar.GeoPose.Geodesy.EcefPosition.op_Equality(Ethar.GeoPose.Geodesy.EcefPosition,Ethar.GeoPose.Geodesy.EcefPosition)">
+            <summary>
+            Performs an equality comparison on two objects of type <see cref="T:Ethar.GeoPose.Geodesy.EcefPosition"/>.
+            </summary>
+            <param name="a">The first object.</param>
+            <param name="b">The second object.</param>
+            <returns>True if the objects are equal.</returns>
+        </member>
+        <member name="M:Ethar.GeoPose.Geodesy.EcefPosition.op_Inequality(Ethar.GeoPose.Geodesy.EcefPosition,Ethar.GeoPose.Geodesy.EcefPosition)">
+            <summary>
+            Performs an inequality comparison on two objects of type <see cref="T:Ethar.GeoPose.Geodesy.EcefPosition"/>.
+            </summary>
+            <param name="a">The first object.</param>
+            <param name="b">The second object.</param>
+            <returns>True if the objects are not equal.</returns>
+        </member>
+        <member name="M:Ethar.GeoPose.Geodesy.EcefPosition.Equals(Ethar.GeoPose.Geodesy.EcefPosition)">
+            <inheritdoc/>
+        </member>
+        <member name="M:Ethar.GeoPose.Geodesy.EcefPosition.Equals(System.Object)">
+            <inheritdoc/>
+        </member>
+        <member name="M:Ethar.GeoPose.Geodesy.EcefPosition.GetHashCode">
+            <inheritdoc/>
+        </member>
+        <member name="M:Ethar.GeoPose.Geodesy.EcefPosition.ToString">
+            <inheritdoc/>
+        </member>
+        <member name="T:Ethar.GeoPose.Geodesy.EnuVector">
+            <summary>
+            A displacement in a Local Tangent Plane East-North-Up (LTP-ENU) frame, in meters.
+            </summary>
+            <remarks>
+            <para>
+            LTP-ENU is the inner frame of the GeoPose Basic targets and the frame in which the Basic yaw, pitch and roll angles are defined.
+            It is right-handed: X points East, Y points North and Z points Up along the ellipsoid normal at the tangent point.
+            </para>
+            <para>
+            Positive rotation about Up (yaw) is therefore counter-clockwise when viewed from above, turning East towards North.
+            Engines that use a left-handed, Y-up frame must map both the axes and the sense of rotation; see
+            <see cref="T:Ethar.GeoPose.Conventions.LeftHandedYUpConversions"/>.
+            </para>
+            </remarks>
+        </member>
+        <member name="M:Ethar.GeoPose.Geodesy.EnuVector.#ctor(System.Double,System.Double,System.Double)">
+            <summary>
+            Initializes a new instance of the <see cref="T:Ethar.GeoPose.Geodesy.EnuVector"/> struct.
+            </summary>
+            <param name="east">The East component in meters.</param>
+            <param name="north">The North component in meters.</param>
+            <param name="up">The Up component in meters.</param>
+        </member>
+        <member name="P:Ethar.GeoPose.Geodesy.EnuVector.Zero">
+            <summary>
+            Gets the zero displacement.
+            </summary>
+        </member>
+        <member name="P:Ethar.GeoPose.Geodesy.EnuVector.East">
+            <summary>
+            Gets or sets the East component in meters.
+            </summary>
+        </member>
+        <member name="P:Ethar.GeoPose.Geodesy.EnuVector.North">
+            <summary>
+            Gets or sets the North component in meters.
+            </summary>
+        </member>
+        <member name="P:Ethar.GeoPose.Geodesy.EnuVector.Up">
+            <summary>
+            Gets or sets the Up component in meters.
+            </summary>
+        </member>
+        <member name="P:Ethar.GeoPose.Geodesy.EnuVector.Length">
+            <summary>
+            Gets the Euclidean length of the displacement in meters.
+            </summary>
+        </member>
+        <member name="P:Ethar.GeoPose.Geodesy.EnuVector.HorizontalLength">
+            <summary>
+            Gets the length of the horizontal (East, North) part of the displacement in meters.
+            </summary>
+        </member>
+        <member name="M:Ethar.GeoPose.Geodesy.EnuVector.op_Addition(Ethar.GeoPose.Geodesy.EnuVector,Ethar.GeoPose.Geodesy.EnuVector)">
+            <summary>
+            Adds two displacements.
+            </summary>
+            <param name="a">The first displacement.</param>
+            <param name="b">The second displacement.</param>
+            <returns>The component-wise sum.</returns>
+        </member>
+        <member name="M:Ethar.GeoPose.Geodesy.EnuVector.op_Subtraction(Ethar.GeoPose.Geodesy.EnuVector,Ethar.GeoPose.Geodesy.EnuVector)">
+            <summary>
+            Subtracts one displacement from another.
+            </summary>
+            <param name="a">The displacement to subtract from.</param>
+            <param name="b">The displacement to subtract.</param>
+            <returns>The component-wise difference.</returns>
+        </member>
+        <member name="M:Ethar.GeoPose.Geodesy.EnuVector.op_Equality(Ethar.GeoPose.Geodesy.EnuVector,Ethar.GeoPose.Geodesy.EnuVector)">
+            <summary>
+            Performs an equality comparison on two objects of type <see cref="T:Ethar.GeoPose.Geodesy.EnuVector"/>.
+            </summary>
+            <param name="a">The first object.</param>
+            <param name="b">The second object.</param>
+            <returns>True if the objects are equal.</returns>
+        </member>
+        <member name="M:Ethar.GeoPose.Geodesy.EnuVector.op_Inequality(Ethar.GeoPose.Geodesy.EnuVector,Ethar.GeoPose.Geodesy.EnuVector)">
+            <summary>
+            Performs an inequality comparison on two objects of type <see cref="T:Ethar.GeoPose.Geodesy.EnuVector"/>.
+            </summary>
+            <param name="a">The first object.</param>
+            <param name="b">The second object.</param>
+            <returns>True if the objects are not equal.</returns>
+        </member>
+        <member name="M:Ethar.GeoPose.Geodesy.EnuVector.ToNed">
+            <summary>
+            Converts this displacement to the North-East-Down convention used by the LTP-NED frame.
+            </summary>
+            <returns>The same displacement expressed as North, East, Down.</returns>
+        </member>
+        <member name="M:Ethar.GeoPose.Geodesy.EnuVector.Equals(Ethar.GeoPose.Geodesy.EnuVector)">
+            <inheritdoc/>
+        </member>
+        <member name="M:Ethar.GeoPose.Geodesy.EnuVector.Equals(System.Object)">
+            <inheritdoc/>
+        </member>
+        <member name="M:Ethar.GeoPose.Geodesy.EnuVector.GetHashCode">
+            <inheritdoc/>
+        </member>
+        <member name="M:Ethar.GeoPose.Geodesy.EnuVector.ToString">
+            <inheritdoc/>
+        </member>
+        <member name="T:Ethar.GeoPose.Geodesy.GeodeticConverter">
+            <summary>
+            Double precision conversions between WGS 84 geodetic positions, ECEF positions and Local Tangent Plane ENU displacements.
+            </summary>
+            <remarks>
+            <para>
+            All angles are decimal degrees and all lengths are meters, matching the GeoPose data types. Every calculation is carried out in
+            double precision; callers that need single precision (for example a game engine vector) should convert only the final local
+            displacement, never the geodetic or ECEF values. ECEF coordinates are of the order of 6.4 million meters and lose about half a
+            meter of resolution in single precision.
+            </para>
+            <para>
+            Heights are ellipsoidal (above WGS 84), as required by the GeoPose standard. Device altitudes reported above mean sea level must be
+            corrected by the local geoid separation before use.
+            </para>
+            </remarks>
+        </member>
+        <member name="M:Ethar.GeoPose.Geodesy.GeodeticConverter.GeodeticToEcef(Ethar.GeoPose.DataTypes.TangentPointPosition)">
+            <summary>
+            Converts a geodetic position to ECEF.
+            </summary>
+            <param name="position">The geodetic position (WGS 84, ellipsoidal height).</param>
+            <returns>The ECEF position in meters.</returns>
+        </member>
+        <member name="M:Ethar.GeoPose.Geodesy.GeodeticConverter.EcefToGeodetic(Ethar.GeoPose.Geodesy.EcefPosition)">
+            <summary>
+            Converts an ECEF position to a geodetic position.
+            </summary>
+            <param name="position">The ECEF position in meters.</param>
+            <returns>The geodetic position (WGS 84, ellipsoidal height).</returns>
+        </member>
+        <member name="M:Ethar.GeoPose.Geodesy.GeodeticConverter.EcefToEnu(Ethar.GeoPose.Geodesy.EcefPosition,Ethar.GeoPose.DataTypes.TangentPointPosition)">
+            <summary>
+            Expresses the displacement from an origin to an ECEF position in the origin's LTP-ENU frame.
+            </summary>
+            <param name="position">The ECEF position of the point.</param>
+            <param name="origin">The geodetic position of the tangent point (origin of the ENU frame).</param>
+            <returns>The East, North, Up displacement in meters.</returns>
+        </member>
+        <member name="M:Ethar.GeoPose.Geodesy.GeodeticConverter.EnuToEcef(Ethar.GeoPose.Geodesy.EnuVector,Ethar.GeoPose.DataTypes.TangentPointPosition)">
+            <summary>
+            Converts a displacement in an origin's LTP-ENU frame back to an ECEF position.
+            </summary>
+            <param name="displacement">The East, North, Up displacement in meters.</param>
+            <param name="origin">The geodetic position of the tangent point (origin of the ENU frame).</param>
+            <returns>The ECEF position of the displaced point.</returns>
+        </member>
+        <member name="M:Ethar.GeoPose.Geodesy.GeodeticConverter.GeodeticToEnu(Ethar.GeoPose.DataTypes.TangentPointPosition,Ethar.GeoPose.DataTypes.TangentPointPosition)">
+            <summary>
+            Expresses the displacement from an origin to another geodetic position in the origin's LTP-ENU frame.
+            </summary>
+            <param name="position">The geodetic position of the point.</param>
+            <param name="origin">The geodetic position of the tangent point (origin of the ENU frame).</param>
+            <returns>The East, North, Up displacement in meters.</returns>
+        </member>
+        <member name="M:Ethar.GeoPose.Geodesy.GeodeticConverter.EnuToGeodetic(Ethar.GeoPose.Geodesy.EnuVector,Ethar.GeoPose.DataTypes.TangentPointPosition)">
+            <summary>
+            Converts a displacement in an origin's LTP-ENU frame to a geodetic position.
+            </summary>
+            <param name="displacement">The East, North, Up displacement in meters.</param>
+            <param name="origin">The geodetic position of the tangent point (origin of the ENU frame).</param>
+            <returns>The geodetic position of the displaced point.</returns>
+        </member>
+        <member name="M:Ethar.GeoPose.Geodesy.GeodeticConverter.GreatCircleDistance(Ethar.GeoPose.DataTypes.TangentPointPosition,Ethar.GeoPose.DataTypes.TangentPointPosition)">
+            <summary>
+            Great circle distance between two positions over the WGS 84 mean sphere, using the haversine formula. Heights are ignored.
+            </summary>
+            <remarks>
+            The earth model is a sphere of radius <see cref="F:Ethar.GeoPose.Geodesy.Wgs84.MeanRadius"/>, not the WGS 84 ellipsoid. Compared with the ellipsoidal
+            (geodesic) distance, the result is within about 0.56 %, which is under 6 meters per kilometer, at any range. Use
+            <see cref="M:Ethar.GeoPose.Geodesy.GeodeticConverter.GeodeticToEnu(Ethar.GeoPose.DataTypes.TangentPointPosition,Ethar.GeoPose.DataTypes.TangentPointPosition)"/> when a local offset is needed to better than that.
+            </remarks>
+            <param name="from">The first position.</param>
+            <param name="to">The second position.</param>
+            <returns>The distance in meters.</returns>
+        </member>
+        <member name="M:Ethar.GeoPose.Geodesy.GeodeticConverter.InitialBearing(Ethar.GeoPose.DataTypes.TangentPointPosition,Ethar.GeoPose.DataTypes.TangentPointPosition)">
+            <summary>
+            Initial compass bearing of the great circle from one position to another.
+            </summary>
+            <remarks>
+            The earth model is a sphere, not the WGS 84 ellipsoid. Compared with the ellipsoidal (geodesic) initial bearing, the result is
+            within about 0.2° for paths up to 5000 km and within about 0.26° for longer paths.
+            </remarks>
+            <param name="from">The starting position.</param>
+            <param name="to">The destination position.</param>
+            <returns>The bearing in decimal degrees, clockwise from true North, in the range [0, 360).</returns>
+        </member>
+        <member name="T:Ethar.GeoPose.Geodesy.NedVector">
+            <summary>
+            A displacement in a Local Tangent Plane North-East-Down (LTP-NED) frame, in meters.
+            </summary>
+            <remarks>
+            LTP-NED is right-handed: X points North, Y points East and Z points Down along the ellipsoid normal.
+            It is the frame used by the Ethar authority's <c>LTP-NED</c> frame specification. Convert to ENU with <see cref="M:Ethar.GeoPose.Geodesy.NedVector.ToEnu"/>.
+            </remarks>
+        </member>
+        <member name="M:Ethar.GeoPose.Geodesy.NedVector.#ctor(System.Double,System.Double,System.Double)">
+            <summary>
+            Initializes a new instance of the <see cref="T:Ethar.GeoPose.Geodesy.NedVector"/> struct.
+            </summary>
+            <param name="north">The North component in meters.</param>
+            <param name="east">The East component in meters.</param>
+            <param name="down">The Down component in meters.</param>
+        </member>
+        <member name="P:Ethar.GeoPose.Geodesy.NedVector.North">
+            <summary>
+            Gets or sets the North component in meters.
+            </summary>
+        </member>
+        <member name="P:Ethar.GeoPose.Geodesy.NedVector.East">
+            <summary>
+            Gets or sets the East component in meters.
+            </summary>
+        </member>
+        <member name="P:Ethar.GeoPose.Geodesy.NedVector.Down">
+            <summary>
+            Gets or sets the Down component in meters.
+            </summary>
+        </member>
+        <member name="M:Ethar.GeoPose.Geodesy.NedVector.op_Equality(Ethar.GeoPose.Geodesy.NedVector,Ethar.GeoPose.Geodesy.NedVector)">
+            <summary>
+            Performs an equality comparison on two objects of type <see cref="T:Ethar.GeoPose.Geodesy.NedVector"/>.
+            </summary>
+            <param name="a">The first object.</param>
+            <param name="b">The second object.</param>
+            <returns>True if the objects are equal.</returns>
+        </member>
+        <member name="M:Ethar.GeoPose.Geodesy.NedVector.op_Inequality(Ethar.GeoPose.Geodesy.NedVector,Ethar.GeoPose.Geodesy.NedVector)">
+            <summary>
+            Performs an inequality comparison on two objects of type <see cref="T:Ethar.GeoPose.Geodesy.NedVector"/>.
+            </summary>
+            <param name="a">The first object.</param>
+            <param name="b">The second object.</param>
+            <returns>True if the objects are not equal.</returns>
+        </member>
+        <member name="M:Ethar.GeoPose.Geodesy.NedVector.ToEnu">
+            <summary>
+            Converts this displacement to the East-North-Up convention.
+            </summary>
+            <returns>The same displacement expressed as East, North, Up.</returns>
+        </member>
+        <member name="M:Ethar.GeoPose.Geodesy.NedVector.Equals(Ethar.GeoPose.Geodesy.NedVector)">
+            <inheritdoc/>
+        </member>
+        <member name="M:Ethar.GeoPose.Geodesy.NedVector.Equals(System.Object)">
+            <inheritdoc/>
+        </member>
+        <member name="M:Ethar.GeoPose.Geodesy.NedVector.GetHashCode">
+            <inheritdoc/>
+        </member>
+        <member name="M:Ethar.GeoPose.Geodesy.NedVector.ToString">
+            <inheritdoc/>
+        </member>
+        <member name="T:Ethar.GeoPose.Geodesy.Wgs84">
+            <summary>
+            Defining constants of the WGS 84 reference ellipsoid (EPSG:4979 when used as a three dimensional geographic CRS).
+            </summary>
+            <remarks>
+            The GeoPose Basic targets use WGS 84 as their outer frame, and <see cref="P:Ethar.GeoPose.DataTypes.TangentPointPosition.HeightInMeters"/>
+            is a height above this ellipsoid (OGC GeoPose 1.0, requirement /req/tangent-point/height). It is not a height above sea level.
+            </remarks>
+        </member>
+        <member name="F:Ethar.GeoPose.Geodesy.Wgs84.SemiMajorAxis">
+            <summary>
+            Semi-major axis (equatorial radius) in meters.
+            </summary>
+        </member>
+        <member name="F:Ethar.GeoPose.Geodesy.Wgs84.InverseFlattening">
+            <summary>
+            Inverse flattening 1/f.
+            </summary>
+        </member>
+        <member name="F:Ethar.GeoPose.Geodesy.Wgs84.Flattening">
+            <summary>
+            Flattening f = (a - b) / a.
+            </summary>
+        </member>
+        <member name="F:Ethar.GeoPose.Geodesy.Wgs84.SemiMinorAxis">
+            <summary>
+            Semi-minor axis (polar radius) in meters, b = a (1 - f).
+            </summary>
+        </member>
+        <member name="F:Ethar.GeoPose.Geodesy.Wgs84.EccentricitySquared">
+            <summary>
+            First eccentricity squared, e² = f (2 - f).
+            </summary>
+        </member>
+        <member name="F:Ethar.GeoPose.Geodesy.Wgs84.MeanRadius">
+            <summary>
+            Mean radius in meters, (2a + b) / 3, used for great circle distances.
+            </summary>
+        </member>
+        <member name="M:Ethar.GeoPose.Geodesy.Wgs84.PrimeVerticalRadius(System.Double)">
+            <summary>
+            Radius of curvature in the prime vertical, N(φ) = a / sqrt(1 - e² sin²φ).
+            </summary>
+            <param name="latitudeRadians">Geodetic latitude in radians.</param>
+            <returns>The prime vertical radius of curvature in meters.</returns>
         </member>
         <member name="T:Ethar.GeoPose.Interfaces.IFrameSpecification">
              <summary>
@@ -895,33 +2047,62 @@
         <member name="M:Ethar.GeoPose.JsonConversion.GeoposeDurationJsonConverter.WriteJson(Newtonsoft.Json.JsonWriter,Ethar.GeoPose.DataTypes.GeoPoseDuration,Newtonsoft.Json.JsonSerializer)">
             <inheritdoc/>
         </member>
+        <member name="T:Ethar.GeoPose.JsonConversion.InvariantNumber">
+            <summary>
+            Culture-invariant formatting and parsing of the numbers that appear in frame specification parameter strings.
+            </summary>
+            <remarks>
+            Parameter strings travel between devices, so they must use the JSON number format (period decimal separator, no grouping)
+            regardless of the current thread culture. A device set to a German, French or most other continental European locales would
+            otherwise write <c>latitude=48,85</c> and read <c>48.85</c> as 4885.
+            </remarks>
+        </member>
+        <member name="M:Ethar.GeoPose.JsonConversion.InvariantNumber.Format(System.Double)">
+            <summary>
+            Formats a number in round-trip, culture-invariant form.
+            </summary>
+            <param name="value">The value.</param>
+            <returns>The invariant text, for example <c>-122.3</c>.</returns>
+        </member>
+        <member name="M:Ethar.GeoPose.JsonConversion.InvariantNumber.Parse(System.String,System.String)">
+            <summary>
+            Parses a culture-invariant number.
+            </summary>
+            <param name="text">The text, for example <c>-122.3000000</c>.</param>
+            <param name="parameterName">The parameter name, used in the error message.</param>
+            <returns>The parsed value.</returns>
+            <exception cref="T:Ethar.GeoPose.Exceptions.FrameSpecificationInvalidException">Thrown if the text is not an invariant number.</exception>
+        </member>
+        <member name="M:Ethar.GeoPose.JsonConversion.InvariantNumber.FormatArray(System.Double[])">
+            <summary>
+            Formats a list of numbers in the bracketed array form used by the OGC instance files, for example <c>[0.0, 0.0, 0.0]</c>.
+            </summary>
+            <param name="values">The values.</param>
+            <returns>The invariant array text.</returns>
+        </member>
+        <member name="M:Ethar.GeoPose.JsonConversion.InvariantNumber.ParseArray(System.String,System.String,System.Int32)">
+            <summary>
+            Parses a bracketed array of culture-invariant numbers, for example <c>[0.0, 0.0, 0.0]</c>. Brackets are optional.
+            </summary>
+            <param name="text">The array text.</param>
+            <param name="parameterName">The parameter name, used in the error message.</param>
+            <param name="expectedLength">The number of elements the array must contain.</param>
+            <returns>The parsed values.</returns>
+            <exception cref="T:Ethar.GeoPose.Exceptions.FrameSpecificationInvalidException">Thrown if the text is not an array of the expected length.</exception>
+        </member>
         <member name="T:Ethar.GeoPose.JsonConversion.ParamStringBuilder">
             <summary>
-            A utility class that is used to build generic parameter strings.
+            Builds a query-string style parameter string from the JSON-annotated properties of an object, culture-invariant.
             </summary>
         </member>
         <member name="M:Ethar.GeoPose.JsonConversion.ParamStringBuilder.BuildParamString``1(``0)">
             <summary>
-            Builds a parameter string for the object.
+            Builds a parameter string of the form <c>name=value&amp;name=value</c> from every property carrying a <see cref="T:Newtonsoft.Json.JsonPropertyAttribute"/>.
+            Nested objects are flattened. Numbers are formatted with the invariant culture.
             </summary>
-            <typeparam name="T">The type of object.</typeparam>
-            <param name="obj">The object to build a parameter string for.</param>
-            <returns>A parameter string representation of the object.</returns>
-            <remarks>
-            This works by using reflection to determine which properties have the <see cref="T:Newtonsoft.Json.JsonPropertyAttribute"/> and generating a parameter
-            string from those properties.
-            </remarks>
-            <example>
-            Assume a class with the following member.
-            <code>
-            class TestClass
-            {
-                [JsonProperty("p1")]
-                int Param1
-            }
-            </code>
-            This method would generate the parameter string: "p1={value of Param1}".
-            </example>
+            <typeparam name="T">The type of the object.</typeparam>
+            <param name="obj">The object.</param>
+            <returns>The parameter string.</returns>
         </member>
         <member name="T:Ethar.GeoPose.JsonConversion.TransitionModelJsonConverter">
             <summary>
@@ -1459,7 +2640,7 @@
             <summary>
             Initializes a new instance of the <see cref="T:Ethar.GeoPose.StructuralDataUnits.StreamRecordSdu"/> struct.
             </summary>
-            <param name="streamHeader">The stream header.</param>
+            <param name="header">The stream header.</param>
             <param name="streamElements">The stream elements.</param>
         </member>
         <member name="P:Ethar.GeoPose.StructuralDataUnits.StreamRecordSdu.StreamHeader">

@@ -29,7 +29,7 @@ namespace Ethar.GeoPose.UnitTests
                             $"\"parameters\": \"\"" +
                         "}," +
                         $"\"poseCount\": 2," +
-                        $"\"integrityCheck\": \"{{\\\"SHA256\\\": \\\"5556fb65f8bf9eddb3ace1329c9a6aeedd4833409965aeee3e6b61ed21f47858\\\"}}\"," +
+                        $"\"integrityCheck\": \"{{\\\"SHA256\\\": \\\"5556b658bf9eddb3ace1329c9a6aeedd4833409965aeee3e6b61ed2147858\\\"}}\"," +
                         $"\"startInstant\": {validTime}," +
                         $"\"stopInstant\": {validTime}" +
                     "}," +
@@ -71,7 +71,7 @@ namespace Ethar.GeoPose.UnitTests
                     $"\"trailer\":" +
                     "{" +
                         $"\"poseCount\": 2," +
-                        $"\"integrityCheck\":  \"{{\\\"SHA256\\\": \\\"5556fb65f8bf9eddb3ace1329c9a6aeedd4833409965aeee3e6b61ed21f47858\\\"}}\"," +
+                        $"\"integrityCheck\":  \"{{\\\"SHA256\\\": \\\"5556b658bf9eddb3ace1329c9a6aeedd4833409965aeee3e6b61ed2147858\\\"}}\"," +
                     "}" +
                 "}";
 
@@ -91,29 +91,29 @@ namespace Ethar.GeoPose.UnitTests
             var translateRotateList = sdu.InnerFrameAndTimeSeries.Select(x => x.Frame as TranslateRotateSpecification).ToList();
             Assert.That(translateRotateList.Count, Is.EqualTo(3));
 
-            Assert.That(translateRotateList.ElementAt(0).Translation.X, Is.EqualTo(0.1f));
-            Assert.That(translateRotateList.ElementAt(0).Translation.Y, Is.EqualTo(0.2f));
-            Assert.That(translateRotateList.ElementAt(0).Translation.Z, Is.EqualTo(0.3f));
-            Assert.That(translateRotateList.ElementAt(0).Rotation.X, Is.EqualTo(0.692f));
-            Assert.That(translateRotateList.ElementAt(0).Rotation.Y, Is.EqualTo(0.691f));
-            Assert.That(translateRotateList.ElementAt(0).Rotation.Z, Is.EqualTo(0.141f));
-            Assert.That(translateRotateList.ElementAt(0).Rotation.W, Is.EqualTo(0.14f));
+            Assert.That(translateRotateList.ElementAt(0).Translation.X, Is.EqualTo(0.1));
+            Assert.That(translateRotateList.ElementAt(0).Translation.Y, Is.EqualTo(0.2));
+            Assert.That(translateRotateList.ElementAt(0).Translation.Z, Is.EqualTo(0.3));
+            Assert.That(translateRotateList.ElementAt(0).Rotation.X, Is.EqualTo(0.692));
+            Assert.That(translateRotateList.ElementAt(0).Rotation.Y, Is.EqualTo(0.691));
+            Assert.That(translateRotateList.ElementAt(0).Rotation.Z, Is.EqualTo(0.141));
+            Assert.That(translateRotateList.ElementAt(0).Rotation.W, Is.EqualTo(0.14));
 
-            Assert.That(translateRotateList.ElementAt(1).Translation.X, Is.EqualTo(0.4f));
-            Assert.That(translateRotateList.ElementAt(1).Translation.Y, Is.EqualTo(0.5f));
-            Assert.That(translateRotateList.ElementAt(1).Translation.Z, Is.EqualTo(0.6f));
-            Assert.That(translateRotateList.ElementAt(1).Rotation.X, Is.EqualTo(0.692f));
-            Assert.That(translateRotateList.ElementAt(1).Rotation.Y, Is.EqualTo(0.691f));
-            Assert.That(translateRotateList.ElementAt(1).Rotation.Z, Is.EqualTo(0.141f));
-            Assert.That(translateRotateList.ElementAt(1).Rotation.W, Is.EqualTo(0.14f));
+            Assert.That(translateRotateList.ElementAt(1).Translation.X, Is.EqualTo(0.4));
+            Assert.That(translateRotateList.ElementAt(1).Translation.Y, Is.EqualTo(0.5));
+            Assert.That(translateRotateList.ElementAt(1).Translation.Z, Is.EqualTo(0.6));
+            Assert.That(translateRotateList.ElementAt(1).Rotation.X, Is.EqualTo(0.692));
+            Assert.That(translateRotateList.ElementAt(1).Rotation.Y, Is.EqualTo(0.691));
+            Assert.That(translateRotateList.ElementAt(1).Rotation.Z, Is.EqualTo(0.141));
+            Assert.That(translateRotateList.ElementAt(1).Rotation.W, Is.EqualTo(0.14));
 
-            Assert.That(translateRotateList.ElementAt(2).Translation.X, Is.EqualTo(0.7f));
-            Assert.That(translateRotateList.ElementAt(2).Translation.Y, Is.EqualTo(0.8f));
-            Assert.That(translateRotateList.ElementAt(2).Translation.Z, Is.EqualTo(0.9f));
-            Assert.That(translateRotateList.ElementAt(2).Rotation.X, Is.EqualTo(0.692f));
-            Assert.That(translateRotateList.ElementAt(2).Rotation.Y, Is.EqualTo(0.691f));
-            Assert.That(translateRotateList.ElementAt(2).Rotation.Z, Is.EqualTo(0.141f));
-            Assert.That(translateRotateList.ElementAt(2).Rotation.W, Is.EqualTo(0.14f));
+            Assert.That(translateRotateList.ElementAt(2).Translation.X, Is.EqualTo(0.7));
+            Assert.That(translateRotateList.ElementAt(2).Translation.Y, Is.EqualTo(0.8));
+            Assert.That(translateRotateList.ElementAt(2).Translation.Z, Is.EqualTo(0.9));
+            Assert.That(translateRotateList.ElementAt(2).Rotation.X, Is.EqualTo(0.692));
+            Assert.That(translateRotateList.ElementAt(2).Rotation.Y, Is.EqualTo(0.691));
+            Assert.That(translateRotateList.ElementAt(2).Rotation.Z, Is.EqualTo(0.141));
+            Assert.That(translateRotateList.ElementAt(2).Rotation.W, Is.EqualTo(0.14));
         }
 
         [TestCase(16534234327, "/Ethar.GeoPose/1.0", "LTP-ENU", "\"latitude=48&longitude=-122&heightInMeters=5\"", "Translate-Rotate",
@@ -126,7 +126,7 @@ namespace Ethar.GeoPose.UnitTests
             {
                 TransitionModel = new NoneTransitionModel(),
                 IntegrityCheck =
-                    "SHA256: 5556fb65f8bf9eddb3ace1329c9a6aeedd4833409965aeee3e6b61ed21f47858",
+                    "SHA256: 5556b658bf9eddb3ace1329c9a6aeedd4833409965aeee3e6b61ed2147858",
                 PoseCount = 2,
                 StartInstant = validTime,
                 StopInstant = validTime
@@ -137,7 +137,7 @@ namespace Ethar.GeoPose.UnitTests
             var trailer = new SeriesTrailer()
             {
                 IntegrityCheck =
-                    "SHA256: 5556fb65f8bf9eddb3ace1329c9a6aeedd4833409965aeee3e6b61ed21f47859",
+                    "SHA256: 5556b658bf9eddb3ace1329c9a6aeedd4833409965aeee3e6b61ed2147859",
                 PoseCount = 2
             };
 
@@ -145,17 +145,17 @@ namespace Ethar.GeoPose.UnitTests
             {
                 new FrameAndTimeElement()
                 {
-                    Frame = new TranslateRotateSpecification(new DataTypes.UnitVector3(0.1f, 0.2f, 0.3f), new UnitQuaternion() { X = 0.692f, Y = 0.691f, Z = 0.141f, W = 0.14f }),
+                    Frame = new TranslateRotateSpecification(new DataTypes.UnitVector3(0.1, 0.2, 0.3), new UnitQuaternion() { X = 0.692, Y = 0.691, Z = 0.141, W = 0.14 }),
                     ValidTime = validTime,
                 },
                 new FrameAndTimeElement()
                 {
-                    Frame = new TranslateRotateSpecification(new DataTypes.UnitVector3(0.4f, 0.5f, 0.6f), new UnitQuaternion() { X = 0.692f, Y = 0.691f, Z = 0.141f, W = 0.14f }),
+                    Frame = new TranslateRotateSpecification(new DataTypes.UnitVector3(0.4, 0.5, 0.6), new UnitQuaternion() { X = 0.692, Y = 0.691, Z = 0.141, W = 0.14 }),
                     ValidTime = validTime,
                 },
                 new FrameAndTimeElement()
                 {
-                    Frame = new TranslateRotateSpecification(new DataTypes.UnitVector3(0.7f, 0.8f, 0.9f), new UnitQuaternion() { X = 0.692f, Y = 0.691f, Z = 0.141f, W = 0.14f }),
+                    Frame = new TranslateRotateSpecification(new DataTypes.UnitVector3(0.7, 0.8, 0.9), new UnitQuaternion() { X = 0.692, Y = 0.691, Z = 0.141, W = 0.14 }),
                     ValidTime = validTime,
                 }
             };
@@ -175,7 +175,7 @@ namespace Ethar.GeoPose.UnitTests
                         $"\"poseCount\":{sdu.Header.PoseCount}," +
                         $"\"startInstant\":{validTime}," +
                         $"\"stopInstant\":{validTime}," +
-                        $"\"integrityCheck\":\"SHA256: 5556fb65f8bf9eddb3ace1329c9a6aeedd4833409965aeee3e6b61ed21f47858\"" +
+                        $"\"integrityCheck\":\"SHA256: 5556b658bf9eddb3ace1329c9a6aeedd4833409965aeee3e6b61ed2147858\"" +
                     "}," +
                     "\"outerFrame\":" +
                     "{" +
@@ -215,7 +215,7 @@ namespace Ethar.GeoPose.UnitTests
                     $"\"trailer\":" +
                     "{" +
                         $"\"poseCount\":{sdu.Trailer.PoseCount}," +
-                        $"\"integrityCheck\":\"SHA256: 5556fb65f8bf9eddb3ace1329c9a6aeedd4833409965aeee3e6b61ed21f47859\"" +
+                        $"\"integrityCheck\":\"SHA256: 5556b658bf9eddb3ace1329c9a6aeedd4833409965aeee3e6b61ed2147859\"" +
                     "}" +
                 "}";
 
@@ -236,7 +236,7 @@ namespace Ethar.GeoPose.UnitTests
             {
                 TransitionModel = new NoneTransitionModel(),
                 IntegrityCheck =
-                    "SHA256: 5556fb65f8bf9eddb3ace1329c9a6aeedd4833409965aeee3e6b61ed21f47858",
+                    "SHA256: 5556b658bf9eddb3ace1329c9a6aeedd4833409965aeee3e6b61ed2147858",
                 PoseCount = 2,
                 StartInstant = validTime,
                 StopInstant = validTime
@@ -247,7 +247,7 @@ namespace Ethar.GeoPose.UnitTests
             var trailer = new SeriesTrailer()
             {
                 IntegrityCheck =
-                    "SHA256: 5556fb65f8bf9eddb3ace1329c9a6aeedd4833409965aeee3e6b61ed21f47859",
+                    "SHA256: 5556b658bf9eddb3ace1329c9a6aeedd4833409965aeee3e6b61ed2147859",
                 PoseCount = 2
             };
 
@@ -255,17 +255,17 @@ namespace Ethar.GeoPose.UnitTests
             {
                 new FrameAndTimeElement()
                 {
-                    Frame = new TranslateRotateSpecification(new DataTypes.UnitVector3(0.1f, 0.2f, 0.3f), new UnitQuaternion() { X = 0.692f, Y = 0.691f, Z = 0.141f, W = 0.14f }),
+                    Frame = new TranslateRotateSpecification(new DataTypes.UnitVector3(0.1, 0.2, 0.3), new UnitQuaternion() { X = 0.692, Y = 0.691, Z = 0.141, W = 0.14 }),
                     ValidTime = validTime,
                 },
                 new FrameAndTimeElement()
                 {
-                    Frame = new TranslateRotateSpecification(new DataTypes.UnitVector3(0.4f, 0.5f, 0.6f), new UnitQuaternion() { X = 0.692f, Y = 0.691f, Z = 0.141f, W = 0.14f }),
+                    Frame = new TranslateRotateSpecification(new DataTypes.UnitVector3(0.4, 0.5, 0.6), new UnitQuaternion() { X = 0.692, Y = 0.691, Z = 0.141, W = 0.14 }),
                     ValidTime = validTime,
                 },
                 new FrameAndTimeElement()
                 {
-                    Frame = new TranslateRotateSpecification(new DataTypes.UnitVector3(0.7f, 0.8f, 0.9f), new UnitQuaternion() { X = 0.692f, Y = 0.691f, Z = 0.141f, W = 0.14f }),
+                    Frame = new TranslateRotateSpecification(new DataTypes.UnitVector3(0.7, 0.8, 0.9), new UnitQuaternion() { X = 0.692, Y = 0.691, Z = 0.141, W = 0.14 }),
                     ValidTime = validTime,
                 }
             };
@@ -288,7 +288,7 @@ namespace Ethar.GeoPose.UnitTests
             {
                 TransitionModel = new NoneTransitionModel(),
                 IntegrityCheck =
-                    "SHA256: 5556fb65f8bf9eddb3ace1329c9a6aeedd4833409965aeee3e6b61ed21f47858",
+                    "SHA256: 5556b658bf9eddb3ace1329c9a6aeedd4833409965aeee3e6b61ed2147858",
                 PoseCount = 2,
                 StartInstant = validTime,
                 StopInstant = validTime
@@ -299,7 +299,7 @@ namespace Ethar.GeoPose.UnitTests
             var trailer = new SeriesTrailer()
             {
                 IntegrityCheck =
-                    "SHA256: 5556fb65f8bf9eddb3ace1329c9a6aeedd4833409965aeee3e6b61ed21f47859",
+                    "SHA256: 5556b658bf9eddb3ace1329c9a6aeedd4833409965aeee3e6b61ed2147859",
                 PoseCount = 2
             };
 
@@ -307,17 +307,17 @@ namespace Ethar.GeoPose.UnitTests
             {
                 new FrameAndTimeElement()
                 {
-                    Frame = new TranslateRotateSpecification(new DataTypes.UnitVector3(0.1f, 0.2f, 0.3f), new UnitQuaternion() { X = 0.692f, Y = 0.691f, Z = 0.141f, W = 0.14f }),
+                    Frame = new TranslateRotateSpecification(new DataTypes.UnitVector3(0.1, 0.2, 0.3), new UnitQuaternion() { X = 0.692, Y = 0.691, Z = 0.141, W = 0.14 }),
                     ValidTime = validTime,
                 },
                 new FrameAndTimeElement()
                 {
-                    Frame = new TranslateRotateSpecification(new DataTypes.UnitVector3(0.4f, 0.5f, 0.6f), new UnitQuaternion() { X = 0.692f, Y = 0.691f, Z = 0.141f, W = 0.14f }),
+                    Frame = new TranslateRotateSpecification(new DataTypes.UnitVector3(0.4, 0.5, 0.6), new UnitQuaternion() { X = 0.692, Y = 0.691, Z = 0.141, W = 0.14 }),
                     ValidTime = validTime,
                 },
                 new FrameAndTimeElement()
                 {
-                    Frame = new TranslateRotateSpecification(new DataTypes.UnitVector3(0.7f, 0.8f, 0.9f), new UnitQuaternion() { X = 0.692f, Y = 0.691f, Z = 0.141f, W = 0.14f }),
+                    Frame = new TranslateRotateSpecification(new DataTypes.UnitVector3(0.7, 0.8, 0.9), new UnitQuaternion() { X = 0.692, Y = 0.691, Z = 0.141, W = 0.14 }),
                     ValidTime = validTime,
                 }
             };
@@ -325,7 +325,7 @@ namespace Ethar.GeoPose.UnitTests
             var sdu = new IrregularSeriesSdu(header, outerFrame, trailer, innerFrames);
             var result = sdu.ToString();
             Assert.That(result, !Is.Empty);
-            Assert.That(result, Is.EqualTo("Header:[TransitionModel:[Authority:/Ethar.GeoPose/1.0, Id:none], PoseCount:2, StartInstant:16534234327, StopInstant:16534234327, IntegrityCheck:SHA256: 5556fb65f8bf9eddb3ace1329c9a6aeedd4833409965aeee3e6b61ed21f47858], OuterFrame:[Authority:/Ethar.GeoPose/1.0, Id:LTP-ENU], InnerFrameAndTimeSeriesCount:3, Trailer:[PoseCount:2, IntegrityCheck:SHA256: 5556fb65f8bf9eddb3ace1329c9a6aeedd4833409965aeee3e6b61ed21f47859]"));
+            Assert.That(result, Is.EqualTo("Header:[TransitionModel:[Authority:/Ethar.GeoPose/1.0, Id:none], PoseCount:2, StartInstant:16534234327, StopInstant:16534234327, IntegrityCheck:SHA256: 5556b658bf9eddb3ace1329c9a6aeedd4833409965aeee3e6b61ed2147858], OuterFrame:[Authority:/Ethar.GeoPose/1.0, Id:LTP-ENU], InnerFrameAndTimeSeriesCount:3, Trailer:[PoseCount:2, IntegrityCheck:SHA256: 5556b658bf9eddb3ace1329c9a6aeedd4833409965aeee3e6b61ed2147859]"));
         }
 
         [TestCase(16534234327)]
@@ -335,7 +335,7 @@ namespace Ethar.GeoPose.UnitTests
             {
                 TransitionModel = new NoneTransitionModel(),
                 IntegrityCheck =
-                    "SHA256: 5556fb65f8bf9eddb3ace1329c9a6aeedd4833409965aeee3e6b61ed21f47858",
+                    "SHA256: 5556b658bf9eddb3ace1329c9a6aeedd4833409965aeee3e6b61ed2147858",
                 PoseCount = 2,
                 StartInstant = validTime,
                 StopInstant = validTime
@@ -344,14 +344,14 @@ namespace Ethar.GeoPose.UnitTests
             var trailer = new SeriesTrailer()
             {
                 IntegrityCheck =
-                    "SHA256: 5556fb65f8bf9eddb3ace1329c9a6aeedd4833409965aeee3e6b61ed21f47859",
+                    "SHA256: 5556b658bf9eddb3ace1329c9a6aeedd4833409965aeee3e6b61ed2147859",
                 PoseCount = 2
             };
 
             var sdu = new IrregularSeriesSdu(header, null, trailer, null);
             var result = sdu.ToString();
             Assert.That(result, !Is.Empty);
-            Assert.That(result, Is.EqualTo("Header:[TransitionModel:[Authority:/Ethar.GeoPose/1.0, Id:none], PoseCount:2, StartInstant:16534234327, StopInstant:16534234327, IntegrityCheck:SHA256: 5556fb65f8bf9eddb3ace1329c9a6aeedd4833409965aeee3e6b61ed21f47858], OuterFrame:[], InnerFrameAndTimeSeriesCount:0, Trailer:[PoseCount:2, IntegrityCheck:SHA256: 5556fb65f8bf9eddb3ace1329c9a6aeedd4833409965aeee3e6b61ed21f47859]"));
+            Assert.That(result, Is.EqualTo("Header:[TransitionModel:[Authority:/Ethar.GeoPose/1.0, Id:none], PoseCount:2, StartInstant:16534234327, StopInstant:16534234327, IntegrityCheck:SHA256: 5556b658bf9eddb3ace1329c9a6aeedd4833409965aeee3e6b61ed2147858], OuterFrame:[], InnerFrameAndTimeSeriesCount:0, Trailer:[PoseCount:2, IntegrityCheck:SHA256: 5556b658bf9eddb3ace1329c9a6aeedd4833409965aeee3e6b61ed2147859]"));
         }
 
         [Test]
