@@ -121,7 +121,7 @@ jobs:
             echo "- Version: \`$VERSION\` (pre-release: $PRERELEASE) from Directory.Build.props"
             echo "- Would tag: \`v$VERSION\` on main and \`upm-v$VERSION\` on upm"
             echo "- Would publish to nuget.org: Ethar.GeoPose $VERSION, Ethar.GeoPose.Authority $VERSION, Ethar.GeoPose.H3 $VERSION"
-            echo "- Would commit to upm: net48 assemblies, samples, tests and package.json version $VERSION"
+            echo "- Would commit to upm: netstandard2.1 assemblies, samples, tests and package.json version $VERSION"
             echo "- Packages and upm payload are attached as the \`release-files-v$VERSION\` artifact"
           } >> "$GITHUB_STEP_SUMMARY"
 

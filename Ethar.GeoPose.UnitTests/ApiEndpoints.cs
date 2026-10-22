@@ -2,7 +2,7 @@
 {
     public static class ApiEndpoints
     {
-        public const string BaseUrl = "https://service.geopose.io/solar";
-        public const string BasicYprGet = "https://service.geopose.io/solar/solarpose/YPR";
+        public const string BaseUrl = "https://geopose.io";
+        public const string BasicYprGet = "https://geopose.io/solarpose/YPR";
     }
 }

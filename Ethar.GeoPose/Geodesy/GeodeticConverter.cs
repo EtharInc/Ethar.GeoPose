@@ -168,6 +168,11 @@ namespace Ethar.GeoPose.Geodesy
         /// <summary>
         /// Great circle distance between two positions over the WGS 84 mean sphere, using the haversine formula. Heights are ignored.
         /// </summary>
+        /// <remarks>
+        /// The earth model is a sphere of radius <see cref="Wgs84.MeanRadius"/>, not the WGS 84 ellipsoid. Compared with the ellipsoidal
+        /// (geodesic) distance, the result is within about 0.56 %, which is under 6 meters per kilometer, at any range. Use
+        /// <see cref="GeodeticToEnu"/> when a local offset is needed to better than that.
+        /// </remarks>
         /// <param name="from">The first position.</param>
         /// <param name="to">The second position.</param>
         /// <returns>The distance in meters.</returns>
@@ -189,6 +194,10 @@ namespace Ethar.GeoPose.Geodesy
         /// <summary>
         /// Initial compass bearing of the great circle from one position to another.
         /// </summary>
+        /// <remarks>
+        /// The earth model is a sphere, not the WGS 84 ellipsoid. Compared with the ellipsoidal (geodesic) initial bearing, the result is
+        /// within about 0.2° for paths up to 5000 km and within about 0.26° for longer paths.
+        /// </remarks>
         /// <param name="from">The starting position.</param>
         /// <param name="to">The destination position.</param>
         /// <returns>The bearing in decimal degrees, clockwise from true North, in the range [0, 360).</returns>

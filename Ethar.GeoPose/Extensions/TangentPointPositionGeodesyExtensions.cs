@@ -38,6 +38,10 @@ namespace Ethar.GeoPose.Extensions
         /// <summary>
         /// Great circle distance to another position, ignoring height.
         /// </summary>
+        /// <remarks>
+        /// Uses a spherical earth model; the result is within about 0.56 % of the WGS 84 ellipsoidal distance. See
+        /// <see cref="GeodeticConverter.GreatCircleDistance"/>.
+        /// </remarks>
         /// <param name="from">This position.</param>
         /// <param name="to">The other position.</param>
         /// <returns>The distance in meters.</returns>
@@ -46,6 +50,10 @@ namespace Ethar.GeoPose.Extensions
         /// <summary>
         /// Initial compass bearing to another position.
         /// </summary>
+        /// <remarks>
+        /// Uses a spherical earth model; the result is within about 0.2° of the WGS 84 ellipsoidal bearing for paths up to 5000 km. See
+        /// <see cref="GeodeticConverter.InitialBearing"/>.
+        /// </remarks>
         /// <param name="from">This position.</param>
         /// <param name="to">The other position.</param>
         /// <returns>The bearing in degrees, clockwise from true North, in the range [0, 360).</returns>

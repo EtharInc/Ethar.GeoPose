@@ -275,7 +275,7 @@ dotnet test  Ethar.GeoPose.sln
 - numeric precision from integer, single and double inputs through JSON, parameter strings and geodesy;
 - culture invariance: every parameter string, JSON payload and conversion run under nineteen locales, including the comma-decimal ones that broke version 1, with hazard tests proving the runtime would otherwise misparse.
 
-The tests that call the public `service.geopose.io` endpoint are compiled out unless the `APITEST` symbol is defined. The same test sources ship in the UPM package under `Samples~/Tests` for the Unity Test Runner; nothing in them requires Unity.
+The tests that call the public SolarPose service at `geopose.io` are compiled out unless the `APITEST` symbol is defined. The same test sources ship in the UPM package under `Samples~/Tests` for the Unity Test Runner; nothing in them requires Unity.
 
 ## Terms of Use
 
