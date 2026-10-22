@@ -6,6 +6,8 @@ H3 is Uber's hexagonal hierarchical geospatial index. It divides the Earth into 
 
 The assembly targets net452 through net7.0 and netstandard2.0 and 2.1, uses no unsafe code and runs under Unity 2022.3 IL2CPP.
 
+The usage guide and API reference are on the documentation site: [H3 cell indexing](https://etharinc.github.io/Ethar.GeoPose.Docs/articles/h3.html) and [H3 Api](https://etharinc.github.io/Ethar.GeoPose.Docs/h3api/index.html).
+
 ## The two conversions
 
 ```csharp

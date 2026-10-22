@@ -51,7 +51,7 @@ Along the way we have built some useful tooling, that we want to share with the 
 - Extensions and implementation helpers for various implementations, including C# and Unity.
 - Two Code Examples (that demonstrate the transmission of GeoPose data, and creating an authority to transposition GeoPose data).
 - Ethar Core Authority implementation (Which implements the most common frame specifications).
-- Ethar.GeoPose.H3: conversion between GeoPose positions and Uber H3 cell indexes, search of registered GeoPoses by cell, and an H3 cell frame specification for Advanced GeoPoses. A dependency-free C# port of the H3 v4.5.0 cell indexing subset, verified against Uber's fixtures. See the [package readme](Ethar.GeoPose.H3/readme.md).
+- Ethar.GeoPose.H3: conversion between GeoPose positions and Uber H3 cell indexes, search of registered GeoPoses by cell, and an H3 cell frame specification for Advanced GeoPoses. A dependency-free C# port of the H3 v4.5.0 cell indexing subset, verified against Uber's fixtures. See the [package readme](Ethar.GeoPose.H3/readme.md) and the [H3 cell indexing guide](https://etharinc.github.io/Ethar.GeoPose.Docs/articles/h3.html) on the documentation site.
 - Full Unit Testing of GeoPose concepts and elements.
 
 > Full documentation on the implementation specification and helper docs, including common guides for C# and Unity can be found at:
